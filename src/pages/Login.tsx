@@ -54,7 +54,7 @@ export default function Login() {
         className="w-full max-w-md z-10"
       >
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-black tracking-tighter text-white mb-2">CINESTREAM</h1>
+          <h1 className="text-5xl font-black tracking-tighter text-red-600 mb-2">NEOFLIX</h1>
           <p className="text-gray-400">Your gateway to infinite entertainment</p>
         </div>
 
@@ -62,7 +62,7 @@ export default function Login() {
           <CardHeader>
             <CardTitle>{isLogin ? 'Welcome Back' : 'Create Account'}</CardTitle>
             <CardDescription className="text-zinc-400">
-              {isLogin ? 'Enter your credentials to access your library' : 'Join CineStream and start your 7-day free trial'}
+              {isLogin ? 'Enter your credentials to access your library' : 'Join NeoFlix and start your 7-day free trial'}
             </CardDescription>
           </CardHeader>
           <CardContent>

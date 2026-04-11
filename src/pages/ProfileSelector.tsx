@@ -54,7 +54,7 @@ export default function ProfileSelector() {
           <div className="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Lock className="w-10 h-10 text-red-600" />
           </div>
-          <h2 className="text-3xl font-bold text-white mb-4">Unlock CineStream</h2>
+          <h2 className="text-3xl font-bold text-white mb-4">Unlock NeoFlix</h2>
           <p className="text-zinc-400 mb-8">
             Get unlimited access to thousands of movies and TV shows for just $1/month. 
             Start your 7-day free trial today!
@@ -83,7 +83,7 @@ export default function ProfileSelector() {
         >
           <div className="p-8">
             <h2 className="text-2xl font-bold text-white mb-2">Complete Subscription</h2>
-            <p className="text-zinc-400 mb-8">Secure checkout for your CineStream account</p>
+            <p className="text-zinc-400 mb-8">Secure checkout for your NeoFlix account</p>
             
             <div className="bg-zinc-800/50 rounded-2xl p-6 mb-8">
               <div className="flex justify-between items-center mb-4">
