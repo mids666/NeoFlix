@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'subscriptionStatus']) &&
+             data.email is string &&
+             data.subscriptionStatus in ['active', 'trialing', 'canceled', 'none'];
+    }
+
+    function isValidProfile(data) {
+      return data.keys().hasAll(['name', 'avatar']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 50 &&
+             data.avatar is string;
+    }
+
+    function isValidWatchlistItem(data) {
+      return data.keys().hasAll(['tmdbId', 'type', 'title']) &&
+             data.tmdbId is string &&
+             data.type in ['movie', 'tv'] &&
+             data.title is string && data.title.size() > 0;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+
+      match /profiles/{profileId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidProfile(request.resource.data);
+        allow update: if isOwner(userId) && isValidProfile(request.resource.data);
+        allow delete: if isOwner(userId);
+
+        match /watchlist/{itemId} {
+          allow read: if isOwner(userId);
+          allow create: if isOwner(userId) && isValidWatchlistItem(request.resource.data);
+          allow update: if isOwner(userId) && isValidWatchlistItem(request.resource.data);
+          allow delete: if isOwner(userId);
+        }
+      }
+    }
+  }
+}

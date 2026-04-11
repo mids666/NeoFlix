@@ -1,0 +1,54 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Main user account information",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "subscriptionStatus": { "type": "string", "enum": ["active", "trialing", "canceled", "none"] },
+        "trialEndsAt": { "type": "string", "format": "date-time" },
+        "subscriptionEndsAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "subscriptionStatus"]
+    },
+    "Profile": {
+      "title": "Profile",
+      "description": "User profile for personalized experience",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "avatar": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "avatar"]
+    },
+    "WatchlistItem": {
+      "title": "Watchlist Item",
+      "description": "A movie or TV show in a user's watchlist",
+      "type": "object",
+      "properties": {
+        "tmdbId": { "type": "string" },
+        "type": { "type": "string", "enum": ["movie", "tv"] },
+        "title": { "type": "string" },
+        "posterPath": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["tmdbId", "type", "title"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "User account data"
+    },
+    "/users/{uid}/profiles/{profileId}": {
+      "schema": "Profile",
+      "description": "User profiles"
+    },
+    "/users/{uid}/profiles/{profileId}/watchlist/{itemId}": {
+      "schema": "WatchlistItem",
+      "description": "Items in a profile's watchlist"
+    }
+  }
+}
