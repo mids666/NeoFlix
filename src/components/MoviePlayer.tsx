@@ -29,10 +29,45 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
       const type = item.media_type || (item.title ? 'movie' : 'tv');
       tmdbService.getDetails(type as 'movie' | 'tv', item.id.toString()).then(setDetails);
       setIsPlaying(false);
-      setSelectedSeason(1);
-      setSelectedEpisode(1);
     }
   }, [item]);
+
+  useEffect(() => {
+    if (details) {
+      const type = details.title ? 'movie' : 'tv';
+      
+      // Load last watched episode from localStorage
+      if (type === 'tv' || details.number_of_seasons) {
+        const saved = localStorage.getItem(`last_watched_${details.id}`);
+        if (saved) {
+          try {
+            const { season, episode } = JSON.parse(saved);
+            setSelectedSeason(season || 1);
+            setSelectedEpisode(episode || 1);
+          } catch (e) {
+            setSelectedSeason(1);
+            setSelectedEpisode(1);
+          }
+        } else {
+          setSelectedSeason(1);
+          setSelectedEpisode(1);
+        }
+      } else {
+        setSelectedSeason(1);
+        setSelectedEpisode(1);
+      }
+    }
+  }, [details?.id]);
+
+  // Save last watched episode to localStorage
+  useEffect(() => {
+    if (details && (details.number_of_seasons || !details.title)) {
+      localStorage.setItem(`last_watched_${details.id}`, JSON.stringify({
+        season: selectedSeason,
+        episode: selectedEpisode
+      }));
+    }
+  }, [selectedSeason, selectedEpisode, details?.id]);
 
   useEffect(() => {
     if (details && details.number_of_seasons) {
