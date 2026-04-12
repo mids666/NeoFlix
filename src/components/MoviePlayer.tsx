@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { TMDBItem } from '../types';
 import { tmdbService, getImageUrl } from '../lib/tmdb';
 import { Button } from '@/components/ui/button';
-import { Play, X, Star, Calendar, Clock, User } from 'lucide-react';
+import { Play, X, Star, Calendar, Clock, User, Server } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'motion/react';
@@ -14,12 +14,15 @@ interface MoviePlayerProps {
   onClose: () => void;
 }
 
+type ServerOption = 'vidsrc' | 'videasy';
+
 export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps) {
   const [details, setDetails] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
   const [episodes, setEpisodes] = useState<any[]>([]);
+  const [selectedServer, setSelectedServer] = useState<ServerOption>('vidsrc');
 
   useEffect(() => {
     if (item) {
@@ -40,9 +43,20 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
   if (!item || !details) return null;
 
   const type = item.media_type || (item.title ? 'movie' : 'tv');
-  const embedUrl = type === 'movie' 
-    ? `https://vidsrc.ru/movie/${item.id}`
-    : `https://vidsrc.ru/tv/${item.id}/${selectedSeason}/${selectedEpisode}`;
+  
+  const getEmbedUrl = () => {
+    if (selectedServer === 'vidsrc') {
+      return type === 'movie' 
+        ? `https://vidsrc.ru/movie/${item.id}`
+        : `https://vidsrc.ru/tv/${item.id}/${selectedSeason}/${selectedEpisode}`;
+    } else {
+      return type === 'movie'
+        ? `https://player.videasy.net/movie/${item.id}`
+        : `https://player.videasy.net/tv/${item.id}/${selectedSeason}/${selectedEpisode}`;
+    }
+  };
+
+  const embedUrl = getEmbedUrl();
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -63,12 +77,38 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
 
           <div className="relative w-full h-[60vh] md:h-[80vh] bg-black flex-none">
             {isPlaying ? (
-              <iframe
-                src={embedUrl}
-                className="w-full h-full"
-                allowFullScreen
-                frameBorder="0"
-              />
+              <div className="w-full h-full flex flex-col">
+                <iframe
+                  src={embedUrl}
+                  className="w-full flex-1"
+                  allowFullScreen
+                  frameBorder="0"
+                />
+                <div className="bg-zinc-900/80 backdrop-blur-md p-4 flex items-center justify-center gap-4 border-t border-zinc-800">
+                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                    <Server className="w-3 h-3" />
+                    Switch Server:
+                  </span>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant={selectedServer === 'vidsrc' ? 'default' : 'outline'}
+                      className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidsrc' ? 'bg-red-600 hover:bg-red-700' : 'border-zinc-700 text-zinc-400'}`}
+                      onClick={() => setSelectedServer('vidsrc')}
+                    >
+                      VidSrc (Main)
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedServer === 'videasy' ? 'default' : 'outline'}
+                      className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'videasy' ? 'bg-red-600 hover:bg-red-700' : 'border-zinc-700 text-zinc-400'}`}
+                      onClick={() => setSelectedServer('videasy')}
+                    >
+                      VidEasy (Backup)
+                    </Button>
+                  </div>
+                </div>
+              </div>
             ) : (
               <div className="relative w-full h-full">
                 <img 
