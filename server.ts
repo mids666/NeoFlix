@@ -2,6 +2,7 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from "cors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,32 +11,67 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  app.use(cors());
   app.use(express.json());
+
+  // Health check
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
 
   // NeoPay Secure Payment API
   app.post("/api/pay", async (req, res) => {
-    const { cardNumber, expiry, cvc, amount, userId } = req.body;
+    try {
+      const { cardNumber, expiry, cvc, amount, userId, name } = req.body;
 
-    // SECURITY: In a real app, you would NEVER handle raw card data here.
-    // You would use a token from your provider (like PayPal or a local bank).
-    // For this custom gateway, we simulate a secure handshake.
-    
-    console.log(`Processing payment of $${amount} for user ${userId}`);
+      console.log(`[NeoPay] Processing request:`, { 
+        amount, 
+        userId, 
+        name,
+        cardLast4: cardNumber?.slice(-4) 
+      });
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+      // Basic validation
+      if (!cardNumber || cardNumber.replace(/\s/g, '').length < 16) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid card number. Please enter a 16-digit card number." 
+        });
+      }
 
-    // Basic validation simulation
-    if (!cardNumber || cardNumber.length < 16) {
-      return res.status(400).json({ success: false, message: "Invalid card details" });
+      if (!expiry || !expiry.includes('/')) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid expiry date. Use MM/YY format." 
+        });
+      }
+
+      if (!cvc || cvc.length < 3) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid CVC." 
+        });
+      }
+
+      // Simulate processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      const transactionId = `TXN_${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+      
+      console.log(`[NeoPay] Payment successful: ${transactionId}`);
+
+      res.json({ 
+        success: true, 
+        transactionId,
+        message: "Payment processed successfully"
+      });
+    } catch (error) {
+      console.error(`[NeoPay] Payment Error:`, error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Internal server error during payment processing" 
+      });
     }
-
-    // Success simulation
-    res.json({ 
-      success: true, 
-      transactionId: `TXN_${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-      message: "Payment processed successfully via NeoPay Gateway"
-    });
   });
 
   // Vite middleware for development

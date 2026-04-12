@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { CreditCard, Lock, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
+import { useAuth } from '../hooks/useAuth';
 
 interface CreditCardFormProps {
   amount: number;
@@ -12,6 +13,7 @@ interface CreditCardFormProps {
 }
 
 export default function CreditCardForm({ amount, onSuccess, onCancel }: CreditCardFormProps) {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     cardNumber: '',
@@ -42,7 +44,8 @@ export default function CreditCardForm({ amount, onSuccess, onCancel }: CreditCa
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          amount
+          amount,
+          userId: user?.uid
         })
       });
 
@@ -55,7 +58,8 @@ export default function CreditCardForm({ amount, onSuccess, onCancel }: CreditCa
         toast.error(data.message || 'Payment failed');
       }
     } catch (error) {
-      toast.error('Network error. Please try again.');
+      console.error('Payment fetch error:', error);
+      toast.error('Connection error. Please check your internet and try again.');
     } finally {
       setLoading(false);
     }
