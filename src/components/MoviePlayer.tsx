@@ -14,7 +14,7 @@ interface MoviePlayerProps {
   onClose: () => void;
 }
 
-type ServerOption = 'vidsrc' | 'videasy';
+type ServerOption = 'vidsrc' | 'videasy' | 'vidlink';
 
 export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps) {
   const [details, setDetails] = useState<any>(null);
@@ -84,10 +84,14 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
       return type === 'movie' 
         ? `https://vidsrc.ru/movie/${item.id}`
         : `https://vidsrc.ru/tv/${item.id}/${selectedSeason}/${selectedEpisode}`;
-    } else {
+    } else if (selectedServer === 'videasy') {
       return type === 'movie'
         ? `https://player.videasy.net/movie/${item.id}`
         : `https://player.videasy.net/tv/${item.id}/${selectedSeason}/${selectedEpisode}`;
+    } else {
+      return type === 'movie'
+        ? `https://vidlink.pro/movie/${item.id}`
+        : `https://vidlink.pro/tv/${item.id}/${selectedSeason}/${selectedEpisode}`;
     }
   };
 
@@ -140,6 +144,14 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                       onClick={() => setSelectedServer('videasy')}
                     >
                       VidEasy (Backup)
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedServer === 'vidlink' ? 'default' : 'outline'}
+                      className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidlink' ? 'bg-red-600 hover:bg-red-700' : 'border-zinc-700 text-zinc-400'}`}
+                      onClick={() => setSelectedServer('vidlink')}
+                    >
+                      VidLink (Backup 2)
                     </Button>
                   </div>
                 </div>
