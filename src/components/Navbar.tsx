@@ -14,7 +14,8 @@ import {
   Settings, 
   PlusCircle,
   Menu,
-  X
+  X,
+  Film
 } from 'lucide-react';
 import { 
   DropdownMenu, 
@@ -26,6 +27,9 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { motion, AnimatePresence } from 'motion/react';
+import { tmdbService, getImageUrl } from '../lib/tmdb';
+import { TMDBItem } from '../types';
+import MoviePlayer from './MoviePlayer';
 
 export default function Navbar() {
   const { currentProfile, profiles, setCurrentProfile } = useAuth();
@@ -33,8 +37,23 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [notifications, setNotifications] = useState<TMDBItem[]>([]);
+  const [selectedItem, setSelectedItem] = useState<TMDBItem | null>(null);
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const data = await tmdbService.getUpcoming();
+        setNotifications(data.slice(0, 5));
+      } catch (error) {
+        console.error('Failed to fetch notifications:', error);
+      }
+    };
+    fetchNotifications();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -121,9 +140,68 @@ export default function Navbar() {
           </button>
         </div>
 
-        <button className="hidden md:block text-white hover:text-red-500 transition-colors">
-          <Bell className="w-5 h-5" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="hidden md:block text-white hover:text-red-500 transition-colors relative">
+              <Bell className="w-5 h-5" />
+              {notifications.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-600 rounded-full" />
+              )}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-zinc-900 border-zinc-800 text-white w-80 mt-2 p-0 overflow-hidden">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="p-4 border-b border-zinc-800 flex items-center justify-between">
+                <span>New Releases</span>
+                <span className="text-[10px] bg-red-600 px-2 py-0.5 rounded-full uppercase font-black">Live</span>
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
+            <div className="max-h-[400px] overflow-y-auto">
+              {notifications.length > 0 ? (
+                notifications.map((movie) => (
+                  <DropdownMenuItem 
+                    key={movie.id} 
+                    className="p-3 focus:bg-zinc-800 cursor-pointer border-b border-zinc-800/50 last:border-0"
+                    onClick={() => {
+                      setSelectedItem(movie);
+                      setIsPlayerOpen(true);
+                    }}
+                  >
+                    <div className="flex gap-3">
+                      <div className="w-16 h-24 flex-none rounded-md overflow-hidden bg-zinc-800">
+                        <img 
+                          src={getImageUrl(movie.poster_path, 'w185') || undefined} 
+                          alt={movie.title} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-center gap-1">
+                        <div className="font-bold text-sm line-clamp-1">{movie.title}</div>
+                        <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
+                          {new Date(movie.release_date || '').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </div>
+                        <div className="text-xs text-zinc-400 line-clamp-2 leading-tight">
+                          {movie.overview}
+                        </div>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                ))
+              ) : (
+                <div className="p-8 text-center text-zinc-500 text-sm">
+                  No new notifications
+                </div>
+              )}
+            </div>
+            <DropdownMenuSeparator className="bg-zinc-800 m-0" />
+            <button 
+              className="w-full p-3 text-center text-xs font-bold text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+              onClick={() => navigate('/browse/movie')}
+            >
+              View All Movies
+            </button>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Profile Dropdown */}
         <DropdownMenu>
@@ -199,6 +277,12 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <MoviePlayer 
+        item={selectedItem} 
+        isOpen={isPlayerOpen} 
+        onClose={() => setIsPlayerOpen(false)} 
+      />
     </nav>
   );
 }

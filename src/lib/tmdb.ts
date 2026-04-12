@@ -66,4 +66,8 @@ export const tmdbService = {
     const { data } = await tmdb.get(`/tv/${id}/season/${season}`);
     return data.episodes;
   },
+  getUpcoming: async () => {
+    const { data } = await tmdb.get('/movie/upcoming');
+    return data.results;
+  },
 };
