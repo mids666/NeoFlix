@@ -64,7 +64,10 @@ async function startServer() {
     });
 
     const authUrl = `https://www.patreon.com/oauth2/authorize?${params.toString()}`;
-    res.json({ url: authUrl });
+    res.json({ 
+      url: authUrl,
+      campaignUrl: process.env.PATREON_CAMPAIGN_URL || "https://www.patreon.com"
+    });
   });
 
   // 2. Patreon Callback Handler

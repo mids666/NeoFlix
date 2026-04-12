@@ -8,6 +8,7 @@ import { useAuth } from '../hooks/useAuth';
 export default function PatreonConnect() {
   const { user, userData } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [campaignUrl, setCampaignUrl] = useState('https://www.patreon.com');
 
   const handleConnect = async () => {
     if (!user) return;
@@ -19,7 +20,8 @@ export default function PatreonConnect() {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to get auth URL');
       }
-      const { url } = await response.json();
+      const { url, campaignUrl: fetchedUrl } = await response.json();
+      if (fetchedUrl) setCampaignUrl(fetchedUrl);
 
       const authWindow = window.open(
         url,
@@ -39,6 +41,14 @@ export default function PatreonConnect() {
   };
 
   useEffect(() => {
+    // Pre-fetch campaign URL
+    fetch(`/api/auth/patreon/url?userId=guest`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.campaignUrl) setCampaignUrl(data.campaignUrl);
+      })
+      .catch(() => {});
+
     const handleMessage = (event: MessageEvent) => {
       if (!event.origin.endsWith('.run.app') && !event.origin.includes('localhost')) return;
 
@@ -100,7 +110,7 @@ export default function PatreonConnect() {
               <Button 
                 variant="outline"
                 className="border-zinc-700 hover:bg-zinc-800 text-white"
-                onClick={() => window.open('https://www.patreon.com', '_blank')}
+                onClick={() => window.open(campaignUrl, '_blank')}
               >
                 Visit Patreon Page
               </Button>
