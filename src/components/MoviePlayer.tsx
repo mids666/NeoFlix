@@ -68,6 +68,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                 className="w-full h-full"
                 allowFullScreen
                 frameBorder="0"
+                sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
               />
             ) : (
               <div className="relative w-full h-full">
