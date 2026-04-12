@@ -5,10 +5,13 @@ import { db } from '../lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Plus, User, Check, Lock, ShieldCheck, ExternalLink } from 'lucide-react';
+import { Plus, User, Check, Lock, ShieldCheck, ExternalLink, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import PatreonConnect from '../components/PatreonConnect';
+import { auth } from '../lib/firebase';
+import { signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const AVATARS = [
   'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
@@ -25,6 +28,12 @@ export default function ProfileSelector() {
   const [isAdding, setIsAdding] = useState(false);
   const [showSubscription, setShowSubscription] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+    navigate('/login');
+  };
 
   const handleAddProfile = async () => {
     if (!user || !newProfileName) return;
@@ -86,6 +95,14 @@ export default function ProfileSelector() {
             >
               <ExternalLink className="w-5 h-5" />
               Connect Patreon
+            </Button>
+            <Button 
+              variant="ghost"
+              className="w-full text-zinc-500 hover:text-white gap-2"
+              onClick={handleSignOut}
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out / Back to Login
             </Button>
             <p className="text-xs text-zinc-500">Subscription managed via Patreon. Cancel anytime.</p>
           </div>

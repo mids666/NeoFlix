@@ -1,13 +1,25 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { tmdbService, getImageUrl } from '../lib/tmdb';
 import { TMDBItem } from '../types';
 import MovieRow from '../components/MovieRow';
 import MoviePlayer from '../components/MoviePlayer';
 import { Button } from '@/components/ui/button';
-import { Play, Info, Star } from 'lucide-react';
+import { Play, Info, Star, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useAuth } from '../hooks/useAuth';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription,
+  DialogFooter
+} from '@/components/ui/dialog';
 
 export default function Home() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [trending, setTrending] = useState<TMDBItem[]>([]);
   const [popularMovies, setPopularMovies] = useState<TMDBItem[]>([]);
   const [popularTV, setPopularTV] = useState<TMDBItem[]>([]);
@@ -16,6 +28,7 @@ export default function Home() {
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState<TMDBItem | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,7 +66,20 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [trending]);
 
+  useEffect(() => {
+    if (!user) {
+      const timer = setTimeout(() => {
+        setShowAuthModal(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
   const handleSelect = (item: TMDBItem) => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
     setSelectedItem(item);
     setIsPlayerOpen(true);
   };
@@ -148,6 +174,39 @@ export default function Home() {
         isOpen={isPlayerOpen} 
         onClose={() => setIsPlayerOpen(false)} 
       />
+
+      {/* Auth Modal */}
+      <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-md">
+          <DialogHeader className="items-center text-center space-y-4">
+            <div className="w-16 h-16 bg-red-600/20 rounded-full flex items-center justify-center">
+              <Lock className="w-8 h-8 text-red-600" />
+            </div>
+            <DialogTitle className="text-3xl font-black tracking-tighter">JOIN NEOFLIX</DialogTitle>
+            <DialogDescription className="text-zinc-400 text-lg">
+              Sign in to watch thousands of movies and TV shows, and sync your progress across all devices.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-6 space-y-4">
+            <Button 
+              className="w-full bg-red-600 hover:bg-red-700 h-14 text-lg font-bold rounded-2xl"
+              onClick={() => navigate('/login')}
+            >
+              Sign In / Sign Up
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="w-full text-zinc-500 hover:text-white"
+              onClick={() => setShowAuthModal(false)}
+            >
+              Maybe Later
+            </Button>
+          </div>
+          <div className="text-center text-[10px] text-zinc-600 uppercase font-bold tracking-widest">
+            Unlimited Entertainment Awaits
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

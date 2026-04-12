@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
@@ -21,6 +22,7 @@ const countries = [
 ];
 
 export default function Login() {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -204,6 +206,16 @@ export default function Login() {
               <Chrome className="mr-2 h-4 w-4" />
               Google
             </Button>
+
+            <div className="mt-4">
+              <Button
+                variant="ghost"
+                className="w-full text-zinc-500 hover:text-white"
+                onClick={() => navigate('/')}
+              >
+                Browse as Guest
+              </Button>
+            </div>
           </CardContent>
           <CardFooter className="flex justify-center">
             <button

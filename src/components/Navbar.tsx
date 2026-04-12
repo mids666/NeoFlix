@@ -32,7 +32,7 @@ import { TMDBItem } from '../types';
 import MoviePlayer from './MoviePlayer';
 
 export default function Navbar() {
-  const { currentProfile, profiles, setCurrentProfile } = useAuth();
+  const { user, currentProfile, profiles, setCurrentProfile } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -204,45 +204,54 @@ export default function Navbar() {
         </DropdownMenu>
 
         {/* Profile Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-2 group outline-none">
-            <div className="w-8 h-8 rounded-md overflow-hidden border border-zinc-700 group-hover:border-white transition-all">
-              <img src={currentProfile?.avatar || undefined} alt={currentProfile?.name} className="w-full h-full object-cover" />
-            </div>
-            <ChevronDown className="w-4 h-4 text-zinc-400 group-hover:text-white transition-all" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-zinc-900 border-zinc-800 text-white w-56 mt-2">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>Profiles</DropdownMenuLabel>
-              {profiles.map((profile) => (
-                <DropdownMenuItem 
-                  key={profile.id}
-                  className={`flex items-center gap-3 cursor-pointer ${profile.id === currentProfile?.id ? 'bg-zinc-800' : ''}`}
-                  onClick={() => setCurrentProfile(profile)}
-                >
-                  <img src={profile.avatar || undefined} alt={profile.name} className="w-6 h-6 rounded-sm object-cover" />
-                  <span>{profile.name}</span>
+        {user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2 group outline-none">
+              <div className="w-8 h-8 rounded-md overflow-hidden border border-zinc-700 group-hover:border-white transition-all">
+                <img src={currentProfile?.avatar || undefined} alt={currentProfile?.name} className="w-full h-full object-cover" />
+              </div>
+              <ChevronDown className="w-4 h-4 text-zinc-400 group-hover:text-white transition-all" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-zinc-900 border-zinc-800 text-white w-56 mt-2">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Profiles</DropdownMenuLabel>
+                {profiles.map((profile) => (
+                  <DropdownMenuItem 
+                    key={profile.id}
+                    className={`flex items-center gap-3 cursor-pointer ${profile.id === currentProfile?.id ? 'bg-zinc-800' : ''}`}
+                    onClick={() => setCurrentProfile(profile)}
+                  >
+                    <img src={profile.avatar || undefined} alt={profile.name} className="w-6 h-6 rounded-sm object-cover" />
+                    <span>{profile.name}</span>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuItem className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentProfile(null)}>
+                  <PlusCircle className="w-6 h-6 text-zinc-500" />
+                  <span>Manage Profiles</span>
                 </DropdownMenuItem>
-              ))}
-              <DropdownMenuItem className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentProfile(null)}>
-                <PlusCircle className="w-6 h-6 text-zinc-500" />
-                <span>Manage Profiles</span>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator className="bg-zinc-800" />
+              <DropdownMenuItem 
+                className="flex items-center gap-3 cursor-pointer"
+                onClick={() => navigate('/settings')}
+              >
+                <Settings className="w-4 h-4" />
+                <span>Account Settings</span>
               </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator className="bg-zinc-800" />
-            <DropdownMenuItem 
-              className="flex items-center gap-3 cursor-pointer"
-              onClick={() => navigate('/settings')}
-            >
-              <Settings className="w-4 h-4" />
-              <span>Account Settings</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-3 cursor-pointer text-red-500 focus:text-red-400" onClick={handleLogout}>
-              <LogOut className="w-4 h-4" />
-              <span>Sign Out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuItem className="flex items-center gap-3 cursor-pointer text-red-500 focus:text-red-400" onClick={handleLogout}>
+                <LogOut className="w-4 h-4" />
+                <span>Sign Out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button 
+            className="bg-red-600 hover:bg-red-700 font-bold px-6"
+            onClick={() => navigate('/login')}
+          >
+            Sign In
+          </Button>
+        )}
 
         {/* Mobile Menu Toggle */}
         <button 

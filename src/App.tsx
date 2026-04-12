@@ -26,16 +26,8 @@ function AppRoutes() {
     );
   }
 
-  if (!user) {
-    return (
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    );
-  }
-
-  if (!currentProfile) {
+  // If user is logged in but has no profile, force profile selection
+  if (user && !currentProfile) {
     return <ProfileSelector />;
   }
 
@@ -43,10 +35,11 @@ function AppRoutes() {
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/browse/:type" element={<Browse />} />
+        <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/browse/:type" element={user ? <Browse /> : <Navigate to="/login" replace />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/watchlist" element={<Watchlist />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/watchlist" element={user ? <Watchlist /> : <Navigate to="/login" replace />} />
+        <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Layout>
