@@ -19,6 +19,19 @@ export default function PatreonConnect() {
 
     try {
       const response = await fetch(`/api/auth/patreon/url?userId=${user.uid}`);
+      
+      // Check if the response is actually JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Expected JSON but got:', text.substring(0, 100));
+        
+        if (window.location.hostname.includes('github.io')) {
+          throw new Error('Patreon connection requires a backend server. It will not work on GitHub Pages. Please use the AI Studio preview link.');
+        }
+        throw new Error('The server returned an invalid response. Please try again later.');
+      }
+
       const data = await response.json();
       
       if (!response.ok) {
@@ -46,6 +59,16 @@ export default function PatreonConnect() {
   };
 
   useEffect(() => {
+    // Check backend health
+    fetch('/api/health')
+      .then(res => res.json())
+      .then(data => {
+        console.log('Backend health:', data);
+      })
+      .catch(err => {
+        console.error('Backend unreachable:', err);
+      });
+
     // Pre-fetch campaign URL and redirect info
     fetch(`/api/auth/patreon/url?userId=guest`)
       .then(res => res.json())

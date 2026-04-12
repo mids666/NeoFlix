@@ -196,6 +196,7 @@ async function startServer() {
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`NeoFlix Server running on http://localhost:${PORT}`);
+    console.log(`Patreon Redirect URI: ${REDIRECT_URI}`);
   });
 }
 
