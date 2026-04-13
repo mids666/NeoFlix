@@ -58,6 +58,25 @@ export default function MovieCard({ item, onSelect }: MovieCardProps) {
     }
   };
 
+  const getQuality = () => {
+    const releaseDate = item.release_date || item.first_air_date;
+    if (!releaseDate) return 'HD';
+
+    const date = new Date(releaseDate);
+    const now = new Date();
+    const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (item.media_type === 'tv' || !item.title) {
+      return diffDays < 30 ? 'HD' : 'FHD';
+    }
+
+    if (diffDays < 45) return 'CAM';
+    if (diffDays < 120) return 'HD';
+    return 'FHD';
+  };
+
+  const quality = getQuality();
+
   return (
     <div 
       className="relative flex-none w-[160px] md:w-[240px] aspect-[2/3] cursor-pointer group"
@@ -71,6 +90,17 @@ export default function MovieCard({ item, onSelect }: MovieCardProps) {
         className="w-full h-full object-cover rounded-md transition-transform duration-300 group-hover:scale-105"
         referrerPolicy="no-referrer"
       />
+
+      {/* Quality Badge */}
+      <div className="absolute top-2 left-2 z-20">
+        <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider shadow-lg ${
+          quality === 'CAM' ? 'bg-yellow-500 text-black' : 
+          quality === 'HD' ? 'bg-blue-500 text-white' : 
+          'bg-green-600 text-white'
+        }`}>
+          {quality}
+        </span>
+      </div>
       
       <AnimatePresence>
         {isHovered && (
