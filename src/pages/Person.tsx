@@ -62,7 +62,7 @@ export default function Person() {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate(-1)}
-              className="text-zinc-400 hover:text-white -ml-2 bg-zinc-900/50 backdrop-blur-md border border-zinc-800"
+              className="text-zinc-400 hover:text-white -ml-2 bg-zinc-900/50 backdrop-blur-md border border-zinc-800 relative z-20"
             >
               <ChevronLeft className="w-4 h-4 mr-1" /> Back to Movie
             </Button>

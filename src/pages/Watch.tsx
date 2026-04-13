@@ -84,6 +84,7 @@ export default function Watch() {
         type: details.title ? 'movie' : 'tv',
         title: details.title || details.name,
         posterPath: details.poster_path,
+        voteAverage: details.vote_average,
         watchedAt: new Date().toISOString(),
         season: details.number_of_seasons ? selectedSeason : undefined,
         episode: details.number_of_seasons ? selectedEpisode : undefined,

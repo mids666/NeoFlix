@@ -57,7 +57,7 @@ export default function RecentlyWatched() {
                 overview: '',
                 poster_path: item.posterPath,
                 backdrop_path: '',
-                vote_average: 0,
+                vote_average: item.voteAverage || 0,
                 media_type: item.type,
                 genre_ids: [],
               }} 
