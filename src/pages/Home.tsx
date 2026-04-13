@@ -39,13 +39,34 @@ export default function Home() {
         tmdbService.getTopRated('movie'),
       ]);
 
-      setTrending(trendingData);
+      // Filter trending for the banner to only show recently released items (last 6 months)
+      const now = new Date();
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(now.getMonth() - 6);
+
+      const recentlyReleasedTrending = trendingData.filter(item => {
+        const releaseDate = item.release_date || item.first_air_date;
+        if (!releaseDate) return false;
+        const date = new Date(releaseDate);
+        return date >= sixMonthsAgo && date <= now;
+      });
+
+      // Fallback to original trending if filter is too restrictive, but sort by date
+      const finalTrending = recentlyReleasedTrending.length >= 3 
+        ? recentlyReleasedTrending 
+        : [...trendingData].sort((a, b) => {
+            const dateA = new Date(a.release_date || a.first_air_date || 0).getTime();
+            const dateB = new Date(b.release_date || b.first_air_date || 0).getTime();
+            return dateB - dateA;
+          });
+
+      setTrending(finalTrending);
       setPopularMovies(moviesData);
       setPopularTV(tvData);
       setTopRated(topData);
       
-      if (trendingData.length > 0) {
-        setFeatured(trendingData[0]);
+      if (finalTrending.length > 0) {
+        setFeatured(finalTrending[0]);
       }
     };
 
@@ -108,7 +129,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/20 to-transparent" />
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full p-4 md:p-12 md:pb-32 space-y-6 max-w-3xl">
+            <div className="absolute bottom-0 left-0 w-full p-4 md:p-12 md:pb-20 space-y-6 max-w-4xl">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -152,11 +173,11 @@ export default function Home() {
                   })()}
                 </div>
                 
-                <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-white leading-none">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-[0.9] max-w-4xl text-balance">
                   {featured.title || featured.name}
                 </h1>
                 
-                <p className="text-lg text-zinc-300 line-clamp-3 md:line-clamp-4 max-w-2xl leading-relaxed">
+                <p className="text-base md:text-lg text-zinc-300 line-clamp-2 md:line-clamp-3 max-w-2xl leading-relaxed">
                   {featured.overview}
                 </p>
 
