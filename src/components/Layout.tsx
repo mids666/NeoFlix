@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -19,17 +20,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="space-y-4">
             <h4 className="text-white font-bold">Platform</h4>
             <ul className="space-y-2 text-zinc-500 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">Browse</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">New Releases</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Top Rated</a></li>
+              <li><Link to="/browse/movie" className="hover:text-white transition-colors">Movies</Link></li>
+              <li><Link to="/browse/tv" className="hover:text-white transition-colors">TV Shows</Link></li>
+              <li><Link to="/search" className="hover:text-white transition-colors">Search</Link></li>
             </ul>
           </div>
           <div className="space-y-4">
             <h4 className="text-white font-bold">Support</h4>
             <ul className="space-y-2 text-zinc-500 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><Link to="/help" className="hover:text-white transition-colors">Help Center</Link></li>
+              <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+              <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
           <div className="space-y-4">

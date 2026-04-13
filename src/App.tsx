@@ -14,6 +14,9 @@ import RecentlyWatched from './pages/RecentlyWatched';
 import Watch from './pages/Watch';
 import Person from './pages/Person';
 import Settings from './pages/Settings';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import HelpCenter from './pages/HelpCenter';
 import Login from './pages/Login';
 import ProfileSelector from './pages/ProfileSelector';
 import Layout from './components/Layout';
@@ -46,6 +49,9 @@ function AppRoutes() {
         <Route path="/watch/:type/:id" element={user ? <Watch /> : <Navigate to="/login" replace />} />
         <Route path="/person/:id" element={user ? <Person /> : <Navigate to="/login" replace />} />
         <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" replace />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/help" element={<HelpCenter />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Layout>
