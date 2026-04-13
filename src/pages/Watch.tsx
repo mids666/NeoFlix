@@ -111,18 +111,19 @@ export default function Watch() {
   );
 
   const getEmbedUrl = () => {
+    const params = '?autoplay=1';
     if (selectedServer === 'vidsrc') {
       return type === 'movie' 
-        ? `https://vidsrc.ru/movie/${id}`
-        : `https://vidsrc.ru/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        ? `https://vidsrc.ru/movie/${id}${params}`
+        : `https://vidsrc.ru/tv/${id}/${selectedSeason}/${selectedEpisode}${params}`;
     } else if (selectedServer === 'videasy') {
       return type === 'movie'
-        ? `https://player.videasy.net/movie/${id}`
-        : `https://player.videasy.net/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        ? `https://player.videasy.net/movie/${id}${params}`
+        : `https://player.videasy.net/tv/${id}/${selectedSeason}/${selectedEpisode}${params}`;
     } else {
       return type === 'movie'
-        ? `https://vidlink.pro/movie/${id}`
-        : `https://vidlink.pro/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        ? `https://vidlink.pro/movie/${id}${params}`
+        : `https://vidlink.pro/tv/${id}/${selectedSeason}/${selectedEpisode}${params}`;
     }
   };
 
@@ -138,7 +139,9 @@ export default function Watch() {
                 src={embedUrl}
                 className="w-full flex-1"
                 allowFullScreen
+                allow="autoplay; fullscreen"
                 frameBorder="0"
+                referrerPolicy="no-referrer"
               />
               <div className="bg-zinc-900/80 backdrop-blur-md p-4 flex items-center justify-center gap-4 border-t border-zinc-800">
                 <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
