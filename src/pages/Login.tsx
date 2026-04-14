@@ -119,7 +119,7 @@ export default function Login() {
           <CardHeader>
             <CardTitle>{isLogin ? 'Welcome Back' : 'Create Account'}</CardTitle>
             <CardDescription className="text-zinc-400">
-              {isLogin ? 'Enter your credentials to access your library' : 'Join NeoFlix and start streaming for free'}
+              {isLogin ? 'Enter your credentials to access your library' : 'Join FlixLab and start streaming for free'}
             </CardDescription>
           </CardHeader>
           <CardContent>

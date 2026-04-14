@@ -23,7 +23,7 @@ export default function Person() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">NEOFLIX</div>
+        <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">FLIXLAB</div>
       </div>
     );
   }

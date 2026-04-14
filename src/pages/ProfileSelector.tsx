@@ -77,7 +77,7 @@ export default function ProfileSelector() {
           <h2 className="text-3xl font-bold text-white mb-4">Verify Your Email</h2>
           <p className="text-zinc-400 mb-8">
             We've sent a verification email to <span className="text-white font-bold">{user.email}</span>. 
-            Please verify your email to access NeoFlix.
+            Please verify your email to access FlixLab.
           </p>
           <div className="space-y-4">
             <Button 

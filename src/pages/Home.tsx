@@ -218,7 +218,7 @@ export default function Home() {
             <div className="w-16 h-16 bg-red-600/20 rounded-full flex items-center justify-center">
               <Lock className="w-8 h-8 text-red-600" />
             </div>
-            <DialogTitle className="text-3xl font-black tracking-tighter">JOIN NEOFLIX</DialogTitle>
+            <DialogTitle className="text-3xl font-black tracking-tighter">JOIN FLIXLAB</DialogTitle>
             <DialogDescription className="text-zinc-400 text-lg">
               Sign in to watch thousands of movies and TV shows, and sync your progress across all devices.
             </DialogDescription>

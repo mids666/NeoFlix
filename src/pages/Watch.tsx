@@ -118,7 +118,7 @@ export default function Watch() {
 
   if (!details) return (
     <div className="h-screen w-screen flex items-center justify-center bg-[#0a0a0a] text-white">
-      <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">NEOFLIX</div>
+      <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">FLIXLAB</div>
     </div>
   );
 
