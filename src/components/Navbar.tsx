@@ -83,7 +83,7 @@ export default function Navbar() {
 
   return (
     <nav 
-      className={`fixed top-0 w-full z-50 transition-all duration-300 px-4 md:px-12 py-4 flex items-center justify-between ${
+      className={`fixed top-0 w-full z-50 transition-all duration-300 px-4 lg:px-12 py-4 flex items-center justify-between ${
         isScrolled ? 'bg-[#0a0a0a]/90 backdrop-blur-md border-b border-zinc-800' : 'bg-transparent'
       }`}
     >
@@ -93,7 +93,7 @@ export default function Navbar() {
         </Link>
         
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden lg:flex items-center gap-6">
           {navLinks.map((link) => (
             <button
               key={link.name}
@@ -114,7 +114,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className="flex items-center gap-4 md:gap-6">
+      <div className="flex items-center gap-4 lg:gap-6">
         {/* Search */}
         <div className="relative flex items-center">
           <AnimatePresence>
@@ -146,7 +146,7 @@ export default function Navbar() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="hidden md:block text-white hover:text-red-500 transition-colors relative">
+            <button className="hidden lg:block text-white hover:text-red-500 transition-colors relative">
               <Bell className="w-5 h-5" />
               {notifications.length > 0 && (
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-600 rounded-full" />
@@ -259,7 +259,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button 
-          className="md:hidden text-white"
+          className="lg:hidden text-white"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -273,8 +273,17 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full bg-[#0a0a0a] border-b border-zinc-800 p-6 flex flex-col gap-4 md:hidden"
+            className="absolute top-full left-0 w-full bg-[#0a0a0a] border-b border-zinc-800 p-6 flex flex-col gap-4 lg:hidden"
           >
+            <form onSubmit={handleSearch} className="relative mb-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+              <Input
+                placeholder="Search..."
+                className="bg-zinc-900 border-zinc-800 pl-10 h-12 text-white"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
             {navLinks.map((link) => (
               <button
                 key={link.name}
