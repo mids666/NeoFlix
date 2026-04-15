@@ -300,14 +300,46 @@ export default function Watch() {
                     <span className="px-2 py-0.5 bg-zinc-800 rounded text-[10px] uppercase tracking-widest">
                       {type === 'movie' ? 'Movie' : 'TV Show'}
                     </span>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className={`w-8 h-8 rounded-full border-zinc-700 hover:border-white transition-all ${isInWatchlist ? 'bg-red-600 border-red-600 text-white hover:bg-red-700' : 'text-zinc-400'}`}
+                    <motion.button
+                      initial={{ width: 32 }}
+                      animate={{ 
+                        width: details && !isInWatchlist ? [32, 180, 180, 32] : 32 
+                      }}
+                      transition={{ 
+                        duration: 3, 
+                        times: [0, 0.15, 0.85, 1],
+                        delay: 1,
+                        ease: "easeInOut"
+                      }}
+                      className={`h-8 flex items-center justify-center gap-2 rounded-full border transition-all overflow-hidden group ${
+                        isInWatchlist 
+                          ? 'bg-red-600 border-red-600 text-white w-8' 
+                          : 'border-zinc-700 text-zinc-400 hover:border-white px-2'
+                      }`}
                       onClick={toggleWatchlist}
                     >
-                      {isInWatchlist ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                    </Button>
+                      <div className="flex-none flex items-center justify-center w-4 h-4">
+                        {isInWatchlist ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                      </div>
+                      {!isInWatchlist && (
+                        <motion.span
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ 
+                            opacity: [0, 1, 1, 0],
+                            width: [0, "auto", "auto", 0]
+                          }}
+                          transition={{ 
+                            duration: 3, 
+                            times: [0, 0.15, 0.85, 1],
+                            delay: 1,
+                            ease: "easeInOut"
+                          }}
+                          className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap overflow-hidden"
+                        >
+                          Add to Watchlist
+                        </motion.span>
+                      )}
+                    </motion.button>
                   </div>
                   <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
                     {details.title || details.name}
