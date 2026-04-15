@@ -4,9 +4,10 @@ import { tmdbService, getImageUrl } from '../lib/tmdb';
 import { TMDBItem } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { db } from '../lib/firebase';
-import { doc, setDoc, collection } from 'firebase/firestore';
+import { doc, setDoc, collection, onSnapshot, query, where, deleteDoc } from 'firebase/firestore';
 import MovieRow from '../components/MovieRow';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import {
   Select,
   SelectContent,
@@ -14,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Play, Star, Calendar, Clock, User, Server, ChevronLeft, Download, Youtube } from 'lucide-react';
+import { Play, Star, Calendar, Clock, User, Server, ChevronLeft, Download, Youtube, Plus, Check } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -30,7 +31,7 @@ type ServerOption = 'vidsrc' | 'videasy' | 'vidlink';
 export default function Watch() {
   const { type, id } = useParams<{ type: string; id: string }>();
   const navigate = useNavigate();
-  const { user, currentProfile } = useAuth();
+  const { user, currentProfile, setShowAuthModal } = useAuth();
   
   const [details, setDetails] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -39,12 +40,26 @@ export default function Watch() {
   const [selectedEpisode, setSelectedEpisode] = useState(1);
   const [episodes, setEpisodes] = useState<any[]>([]);
   const [selectedServer, setSelectedServer] = useState<ServerOption>('videasy');
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
 
   useEffect(() => {
     if (id && type) {
       tmdbService.getDetails(type as 'movie' | 'tv', id).then(setDetails);
     }
   }, [id, type]);
+
+  useEffect(() => {
+    if (!user || !currentProfile || !id) return;
+
+    const watchlistRef = collection(db, 'users', user.uid, 'profiles', currentProfile.id, 'watchlist');
+    const q = query(watchlistRef, where('tmdbId', '==', id.toString()));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setIsInWatchlist(!snapshot.empty);
+    });
+
+    return () => unsubscribe();
+  }, [user, currentProfile, id]);
 
   useEffect(() => {
     if (details) {
@@ -104,6 +119,35 @@ export default function Watch() {
       await setDoc(recentlyWatchedRef, data);
     } catch (error) {
       console.error('Failed to add to recently watched:', error);
+    }
+  };
+
+  const toggleWatchlist = async () => {
+    if (!user || !currentProfile) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (!details) return;
+
+    const watchlistRef = doc(db, 'users', user.uid, 'profiles', currentProfile.id, 'watchlist', details.id.toString());
+
+    try {
+      if (isInWatchlist) {
+        await deleteDoc(watchlistRef);
+        toast.success('Removed from watchlist');
+      } else {
+        await setDoc(watchlistRef, {
+          tmdbId: details.id.toString(),
+          type: details.title ? 'movie' : 'tv',
+          title: details.title || details.name,
+          posterPath: details.poster_path,
+          addedAt: new Date().toISOString(),
+        });
+        toast.success('Added to watchlist');
+      }
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
@@ -256,6 +300,14 @@ export default function Watch() {
                     <span className="px-2 py-0.5 bg-zinc-800 rounded text-[10px] uppercase tracking-widest">
                       {type === 'movie' ? 'Movie' : 'TV Show'}
                     </span>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className={`w-8 h-8 rounded-full border-zinc-700 hover:border-white transition-all ${isInWatchlist ? 'bg-red-600 border-red-600 text-white hover:bg-red-700' : 'text-zinc-400'}`}
+                      onClick={toggleWatchlist}
+                    >
+                      {isInWatchlist ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    </Button>
                   </div>
                   <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
                     {details.title || details.name}
