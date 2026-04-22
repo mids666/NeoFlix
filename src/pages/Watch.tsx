@@ -15,7 +15,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Play, Star, Calendar, Clock, User, Server, ChevronLeft, ChevronRight, Youtube, Plus, Check, SkipForward } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Play, Star, Calendar, Clock, User, Server, ChevronLeft, ChevronRight, Youtube, Plus, Check, SkipForward, ChevronDown } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -26,7 +32,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'motion/react';
 
-type ServerOption = 'vidsrc' | 'videasy' | 'vidlink';
+type ServerOption = 'vidsrc' | 'videasy' | 'vidlink' | '111movies' | 'vidfast' | 'vidnest';
 
 export default function Watch() {
   const { type, id } = useParams<{ type: string; id: string }>();
@@ -203,10 +209,22 @@ export default function Watch() {
       return type === 'movie'
         ? `https://player.videasy.net/movie/${id}${params}`
         : `https://player.videasy.net/tv/${id}/${selectedSeason}/${selectedEpisode}${params}`;
-    } else {
+    } else if (selectedServer === 'vidlink') {
       return type === 'movie'
         ? `https://vidlink.pro/movie/${id}${params}`
         : `https://vidlink.pro/tv/${id}/${selectedSeason}/${selectedEpisode}${params}`;
+    } else if (selectedServer === '111movies') {
+      return type === 'movie'
+        ? `https://111movies.net/movie/${id}`
+        : `https://111movies.net/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+    } else if (selectedServer === 'vidfast') {
+      return type === 'movie'
+        ? `https://vidfast.pro/movie/${id}`
+        : `https://vidfast.pro/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+    } else {
+      return type === 'movie'
+        ? `https://vidnest.fun/movie/${id}`
+        : `https://vidnest.fun/tv/${id}/${selectedSeason}/${selectedEpisode}`;
     }
   };
 
@@ -257,6 +275,39 @@ export default function Watch() {
                   >
                     Alternative Server
                   </Button>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant={['111movies', 'vidfast', 'vidnest'].includes(selectedServer) ? 'default' : 'outline'}
+                        className={`h-8 px-4 rounded-full text-xs font-bold gap-2 ${['111movies', 'vidfast', 'vidnest'].includes(selectedServer) ? 'bg-zinc-100 text-black hover:bg-zinc-200' : 'border-zinc-700 text-zinc-400'}`}
+                      >
+                        Additional Servers
+                        <ChevronDown className="w-3 h-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-zinc-900 border-zinc-800 text-zinc-300">
+                      <DropdownMenuItem 
+                        className={`cursor-pointer focus:bg-red-600 focus:text-white ${selectedServer === '111movies' ? 'bg-red-600 text-white' : ''}`}
+                        onClick={() => setSelectedServer('111movies')}
+                      >
+                        111Movies Server
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className={`cursor-pointer focus:bg-red-600 focus:text-white ${selectedServer === 'vidfast' ? 'bg-red-600 text-white' : ''}`}
+                        onClick={() => setSelectedServer('vidfast')}
+                      >
+                        VidFast Server
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className={`cursor-pointer focus:bg-red-600 focus:text-white ${selectedServer === 'vidnest' ? 'bg-red-600 text-white' : ''}`}
+                        onClick={() => setSelectedServer('vidnest')}
+                      >
+                        VidNest Server
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
 
                 <div className="h-4 w-[1px] bg-zinc-800 mx-2 hidden md:block" />
