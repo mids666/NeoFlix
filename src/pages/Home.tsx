@@ -187,7 +187,42 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Content Rows */}
-      <div className="space-y-8 -mt-12 md:-mt-20 relative z-10">
+      <div className="space-y-12 -mt-12 md:-mt-20 relative z-10">
+        {/* Streaming Platforms Section */}
+        <div className="px-4 md:px-12">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-1 h-6 bg-red-600 rounded-full" />
+            <h2 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-white">Streaming Platforms</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {[
+              { name: 'Netflix', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', color: 'bg-red-600/10 hover:bg-black', border: 'border-red-600/20' },
+              { name: 'HBO Max', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg', color: 'bg-indigo-600/10 hover:bg-black', border: 'border-indigo-600/20' },
+              { name: 'Disney+', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg', color: 'bg-blue-600/10 hover:bg-black', border: 'border-blue-600/20' },
+              { name: 'Prime Video', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png', color: 'bg-cyan-600/10 hover:bg-black', border: 'border-cyan-600/20' },
+              { name: 'Apple TV+', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg', color: 'bg-zinc-600/10 hover:bg-black', border: 'border-zinc-600/20' },
+              { name: 'Paramount+', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Paramount_Plus.svg', color: 'bg-blue-400/10 hover:bg-black', border: 'border-blue-400/20' }
+            ].map((service) => (
+              <motion.button
+                key={service.name}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex items-center justify-center p-6 rounded-2xl border ${service.border} ${service.color} transition-all duration-300 group`}
+                onClick={() => {
+                  // Filter by provider logic or just search
+                  navigate(`/search?q=${encodeURIComponent(service.name)}`);
+                }}
+              >
+                <img 
+                  src={service.logo} 
+                  alt={service.name} 
+                  className={`max-h-8 md:max-h-10 w-auto object-contain transition-all duration-300 ${service.name === 'Apple TV+' ? 'brightness-100' : 'group-hover:brightness-125 hover:scale-110'}`} 
+                />
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
         <MovieRow title="Trending Now" items={trending} onSelect={handleSelect} />
         <MovieRow title="Popular Movies" items={popularMovies} onSelect={handleSelect} />
         <MovieRow title="Popular TV Shows" items={popularTV} onSelect={handleSelect} />

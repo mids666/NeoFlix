@@ -70,6 +70,15 @@ export const tmdbService = {
     const { data } = await tmdb.get('/movie/upcoming');
     return data.results;
   },
+  searchPeople: async (query: string, page: number = 1) => {
+    const { data } = await tmdb.get('/search/person', {
+      params: { query, page },
+    });
+    return {
+      results: data.results,
+      total_pages: data.total_pages
+    };
+  },
   getPersonDetails: async (id: number) => {
     const { data } = await tmdb.get(`/person/${id}`, {
       params: { append_to_response: 'combined_credits,images' },

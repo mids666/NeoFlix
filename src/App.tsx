@@ -15,6 +15,7 @@ import Watchlist from './pages/Watchlist';
 import RecentlyWatched from './pages/RecentlyWatched';
 import Watch from './pages/Watch';
 import Person from './pages/Person';
+import Discover from './pages/Discover';
 import Settings from './pages/Settings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
@@ -40,24 +41,29 @@ function AppRoutes() {
   }
 
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/live" element={<LiveTV />} />
-        <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
-        <Route path="/browse/:type" element={<Browse />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/watchlist" element={user ? <Watchlist /> : <Navigate to="/login" replace />} />
-        <Route path="/recently-watched" element={user ? <RecentlyWatched /> : <Navigate to="/login" replace />} />
-        <Route path="/watch/:type/:id" element={<Watch />} />
-        <Route path="/person/:id" element={<Person />} />
-        <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" replace />} />
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<TermsOfService />} />
-        <Route path="/help" element={<HelpCenter />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Layout>
+    <Routes>
+      <Route path="/discover" element={<Discover />} />
+      <Route path="*" element={
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/live" element={<LiveTV />} />
+            <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+            <Route path="/browse/:type" element={<Browse />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/watchlist" element={user ? <Watchlist /> : <Navigate to="/login" replace />} />
+            <Route path="/recently-watched" element={user ? <RecentlyWatched /> : <Navigate to="/login" replace />} />
+            <Route path="/watch/:type/:id" element={<Watch />} />
+            <Route path="/person/:id" element={<Person />} />
+            <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" replace />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/help" element={<HelpCenter />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Layout>
+      } />
+    </Routes>
   );
 }
 
