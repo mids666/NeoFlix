@@ -62,6 +62,28 @@ export const tmdbService = {
       total_pages: data.total_pages
     };
   },
+  getByProvider: async (providerId: string, page: number = 1) => {
+    const { data } = await tmdb.get('/discover/movie', {
+      params: { 
+        with_watch_providers: providerId,
+        watch_region: 'US',
+        page 
+      },
+    });
+    // For simplicity, we merge movie and tv if needed, but here we just return movies or maybe do two calls
+    const tvData = await tmdb.get('/discover/tv', {
+      params: { 
+        with_watch_providers: providerId,
+        watch_region: 'US',
+        page 
+      },
+    });
+    
+    return {
+      results: [...data.results, ...tvData.data.results].sort((a, b) => b.popularity - a.popularity),
+      total_pages: Math.max(data.total_pages, tvData.data.total_pages)
+    };
+  },
   getTVShowEpisodes: async (id: string, season: number) => {
     const { data } = await tmdb.get(`/tv/${id}/season/${season}`);
     return data.episodes;

@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Search() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
+  const providerId = searchParams.get('providerId') || '';
   const [results, setResults] = useState<TMDBItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -18,21 +19,28 @@ export default function Search() {
 
   useEffect(() => {
     setPage(1);
-  }, [query]);
+  }, [query, providerId]);
 
   useEffect(() => {
     const fetchResults = async () => {
-      if (!query) return;
+      if (!query && !providerId) return;
       setLoading(true);
-      const data = await tmdbService.search(query, page);
+      
+      let data;
+      if (providerId) {
+        data = await tmdbService.getByProvider(providerId, page);
+      } else {
+        data = await tmdbService.search(query, page);
+      }
+
       // Filter out items without posters or backdrops
-      setResults(data.results.filter((item: any) => item.poster_path && (item.media_type === 'movie' || item.media_type === 'tv')));
+      setResults(data.results.filter((item: any) => item.poster_path && (item.media_type === 'movie' || item.media_type === 'tv' || (!item.media_type && (item.title || item.name)))));
       setTotalPages(Math.min(data.total_pages, 500));
       setLoading(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     fetchResults();
-  }, [query, page]);
+  }, [query, providerId, page]);
 
   const handleSelect = (item: TMDBItem) => {
     const type = item.media_type || (item.title ? 'movie' : 'tv');

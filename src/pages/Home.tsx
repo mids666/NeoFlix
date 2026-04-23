@@ -196,12 +196,12 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {[
-              { name: 'Netflix', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', color: 'bg-red-600/10 hover:bg-black', border: 'border-red-600/20' },
-              { name: 'HBO Max', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg', color: 'bg-indigo-600/10 hover:bg-black', border: 'border-indigo-600/20' },
-              { name: 'Disney+', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg', color: 'bg-blue-600/10 hover:bg-black', border: 'border-blue-600/20' },
-              { name: 'Prime Video', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png', color: 'bg-cyan-600/10 hover:bg-black', border: 'border-cyan-600/20' },
-              { name: 'Apple TV+', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg', color: 'bg-zinc-600/10 hover:bg-black', border: 'border-zinc-600/20' },
-              { name: 'Paramount+', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Paramount_Plus.svg', color: 'bg-blue-400/10 hover:bg-black', border: 'border-blue-400/20' }
+              { name: 'Netflix', id: '8', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', color: 'bg-red-600/10 hover:bg-black', border: 'border-red-600/20' },
+              { name: 'HBO', id: '1899', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/de/HBO_logo.svg', color: 'bg-indigo-600/10 hover:bg-black', border: 'border-indigo-600/20' },
+              { name: 'Disney+', id: '337', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg', color: 'bg-blue-600/10 hover:bg-black', border: 'border-blue-600/20' },
+              { name: 'Prime Video', id: '9', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png', color: 'bg-cyan-600/10 hover:bg-black', border: 'border-cyan-600/20' },
+              { name: 'Apple TV+', id: '350', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg', color: 'bg-zinc-600/10 hover:bg-black', border: 'border-zinc-600/20' },
+              { name: 'Paramount+', id: '531', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Paramount_Plus.svg', color: 'bg-blue-400/10 hover:bg-black', border: 'border-blue-400/20' }
             ].map((service) => (
               <motion.button
                 key={service.name}
@@ -209,14 +209,13 @@ export default function Home() {
                 whileTap={{ scale: 0.95 }}
                 className={`flex items-center justify-center p-6 rounded-2xl border ${service.border} ${service.color} transition-all duration-300 group`}
                 onClick={() => {
-                  // Filter by provider logic or just search
-                  navigate(`/search?q=${encodeURIComponent(service.name)}`);
+                  navigate(`/search?providerId=${service.id}&q=${encodeURIComponent(service.name)}`);
                 }}
               >
                 <img 
                   src={service.logo} 
                   alt={service.name} 
-                  className={`max-h-8 md:max-h-10 w-auto object-contain transition-all duration-300 ${service.name === 'Apple TV+' ? 'brightness-100' : 'group-hover:brightness-125 hover:scale-110'}`} 
+                  className={`max-h-8 md:max-h-10 w-auto object-contain transition-all duration-300 ${['Apple TV+', 'HBO'].includes(service.name) ? 'brightness-0 invert' : 'group-hover:brightness-125 hover:scale-110'}`} 
                 />
               </motion.button>
             ))}

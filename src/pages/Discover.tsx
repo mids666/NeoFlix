@@ -291,12 +291,21 @@ export default function Discover() {
             className="absolute inset-0 z-0"
           >
             {trailerKey ? (
-              <iframe
-                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=0&mute=1&loop=1&playlist=${trailerKey}&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&disablekb=1&fs=0&autohide=1`}
-                className="w-full h-full pointer-events-none scale-150 grayscale-[0.3]"
-                allow="autoplay"
-                frameBorder="0"
-              />
+              <div className="relative w-full h-full">
+                <iframe
+                  src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=0&mute=1&loop=1&playlist=${trailerKey}&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&disablekb=1&fs=0&autohide=1`}
+                  className="w-full h-full pointer-events-none scale-150 grayscale-[0.3]"
+                  allow="autoplay"
+                  frameBorder="0"
+                />
+                {/* Overlay to hide the initial YouTube pause/play flash */}
+                <motion.div 
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 0 }}
+                  transition={{ duration: 1.5, delay: 0.5 }}
+                  className="absolute inset-0 bg-black z-10 pointer-events-none"
+                />
+              </div>
             ) : (
               <img 
                 src={getImageUrl(currentItem.backdrop_path, 'original') || ''}
