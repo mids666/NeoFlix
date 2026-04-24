@@ -227,7 +227,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                   </div>
 
                   {details.tagline && (
-                    <p className="text-2xl italic text-zinc-500 font-medium">
+                    <p className="text-2xl text-zinc-500 font-medium">
                       "{details.tagline}"
                     </p>
                   )}

@@ -197,9 +197,9 @@ export default function Home() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {[
               { name: 'Netflix', id: '8', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', color: 'bg-red-600/10 hover:bg-black', border: 'border-red-600/20' },
-              { name: 'HBO', id: '1899', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/de/HBO_logo.svg', color: 'bg-indigo-600/10 hover:bg-black', border: 'border-indigo-600/20' },
+              { name: 'HBO', id: '1899|27|384', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/de/HBO_logo.svg', color: 'bg-indigo-600/10 hover:bg-black', border: 'border-indigo-600/20' },
               { name: 'Disney+', id: '337', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg', color: 'bg-blue-600/10 hover:bg-black', border: 'border-blue-600/20' },
-              { name: 'Prime Video', id: '9', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png', color: 'bg-cyan-600/10 hover:bg-black', border: 'border-cyan-600/20' },
+              { name: 'Prime Video', id: '9|119', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png', color: 'bg-cyan-600/10 hover:bg-black', border: 'border-cyan-600/20' },
               { name: 'Apple TV+', id: '350', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg', color: 'bg-zinc-600/10 hover:bg-black', border: 'border-zinc-600/20' },
               { name: 'Paramount+', id: '531', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Paramount_Plus.svg', color: 'bg-blue-400/10 hover:bg-black', border: 'border-blue-400/20' }
             ].map((service) => (

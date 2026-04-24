@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Play, Star, Calendar, Clock, User, Server, ChevronLeft, ChevronRight, Youtube, Plus, Check, SkipForward, ChevronDown } from 'lucide-react';
+import { Play, Star, Calendar, Clock, User, Server, ChevronLeft, ChevronRight, Youtube, Plus, Check, SkipForward, ChevronDown, Download, ExternalLink } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -42,6 +42,7 @@ export default function Watch() {
   const [details, setDetails] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [showDownloadInfo, setShowDownloadInfo] = useState(false);
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
   const [episodes, setEpisodes] = useState<any[]>([]);
@@ -388,6 +389,16 @@ export default function Watch() {
                         Trailer
                       </Button>
                     )}
+
+                    <Button 
+                      size="lg"
+                      variant="outline"
+                      className="bg-zinc-500/30 backdrop-blur-md border-transparent hover:bg-zinc-500/50 text-white px-8 h-14 text-lg font-bold rounded-md gap-3 transition-all"
+                      onClick={() => setShowDownloadInfo(true)}
+                    >
+                      <Download className="w-6 h-6 text-blue-500" />
+                      Download
+                    </Button>
 
                     <motion.button
                       initial={{ width: 56 }}
@@ -783,6 +794,38 @@ export default function Watch() {
                 frameBorder="0"
               />
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* Download Info Modal */}
+      <Dialog open={showDownloadInfo} onOpenChange={setShowDownloadInfo}>
+        <DialogContent className="bg-zinc-950 border-zinc-800 text-white max-w-md p-6">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black flex items-center gap-2">
+              <Download className="w-6 h-6 text-blue-500" />
+              Download Video
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-zinc-400">
+              To download this video, we recommend using the <span className="text-white font-bold">CocoCut Video Downloader</span> browser extension.
+            </p>
+            <div className="bg-zinc-900 p-4 rounded-xl space-y-2 border border-zinc-800">
+              <h4 className="font-bold text-sm text-zinc-200">How to use:</h4>
+              <ol className="text-xs text-zinc-500 space-y-2 list-decimal list-inside">
+                <li>Install the CocoCut extension from their website.</li>
+                <li>Play the video on this page.</li>
+                <li>Click the CocoCut icon in your browser toolbar.</li>
+                <li>Select the video quality and download!</li>
+              </ol>
+            </div>
+            <Button 
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 gap-2"
+              onClick={() => window.open('https://cococut.net/', '_blank')}
+            >
+              Get CocoCut Extension
+              <ExternalLink className="w-4 h-4" />
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

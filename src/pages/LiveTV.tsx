@@ -257,7 +257,7 @@ export default function LiveTV() {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center flex-col gap-6">
         <Loader2 className="w-12 h-12 text-red-600 animate-spin" />
-        <div className="text-xl font-black tracking-tighter text-white uppercase italic">Initializing Guide...</div>
+        <div className="text-xl font-black tracking-tighter text-white uppercase">Initializing Guide...</div>
         <p className="text-zinc-500 text-sm animate-pulse text-center">Filtering dozens of global streams for you</p>
       </div>
     );
