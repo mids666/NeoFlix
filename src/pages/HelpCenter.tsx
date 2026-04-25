@@ -38,7 +38,7 @@ export default function HelpCenter() {
   );
 
   return (
-    <div className="min-h-screen bg-zinc-950 pt-32 pb-20 px-4">
+    <div className="min-h-screen bg-background pt-32 pb-20 px-4 transition-colors duration-300">
       <div className="max-w-5xl mx-auto space-y-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -46,14 +46,14 @@ export default function HelpCenter() {
           className="text-center space-y-8"
         >
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white">How can we help?</h1>
-            <p className="text-zinc-400 text-lg">Search our help center for answers to your questions.</p>
+            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-foreground">How can we help?</h1>
+            <p className="text-muted-foreground text-lg">Search our help center for answers to your questions.</p>
           </div>
 
           <div className="max-w-2xl mx-auto relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 w-5 h-5" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 w-5 h-5" />
             <Input 
-              className="w-full h-14 pl-12 bg-zinc-900 border-zinc-800 text-white rounded-xl focus:ring-red-600 transition-all" 
+              className="w-full h-14 pl-12 bg-muted border-border text-foreground rounded-xl focus:ring-red-600 transition-all" 
               placeholder="Search for answers..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -68,17 +68,17 @@ export default function HelpCenter() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl hover:border-red-600 transition-all group cursor-pointer hover:bg-zinc-900"
+              className="p-6 bg-card border border-border rounded-2xl hover:border-red-600 transition-all group cursor-pointer hover:bg-muted"
             >
               <cat.icon className="w-8 h-8 text-red-600 mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-lg font-bold text-white mb-2">{cat.title}</h3>
-              <p className="text-sm text-zinc-500 leading-relaxed">{cat.desc}</p>
+              <h3 className="text-lg font-bold text-foreground mb-2">{cat.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{cat.desc}</p>
             </motion.div>
           ))}
         </div>
 
         <div className="space-y-8">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <HelpCircle className="w-6 h-6 text-red-600" />
             Frequently Asked Questions
           </h2>
@@ -88,14 +88,14 @@ export default function HelpCenter() {
               filteredFaqs.map((faq, i) => (
                 <div 
                   key={i} 
-                  className="bg-zinc-900/30 border border-zinc-800 rounded-xl overflow-hidden"
+                  className="bg-card border border-border rounded-xl overflow-hidden"
                 >
                   <button
                     onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                    className="w-full p-5 flex items-center justify-between text-left hover:bg-zinc-900/50 transition-colors"
+                    className="w-full p-5 flex items-center justify-between text-left hover:bg-muted transition-colors"
                   >
-                    <span className="text-white font-bold">{faq.q}</span>
-                    <ChevronDown className={`w-5 h-5 text-zinc-500 transition-transform duration-300 ${activeFaq === i ? 'rotate-180' : ''}`} />
+                    <span className="text-foreground font-bold">{faq.q}</span>
+                    <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${activeFaq === i ? 'rotate-180' : ''}`} />
                   </button>
                   <AnimatePresence>
                     {activeFaq === i && (
@@ -105,7 +105,7 @@ export default function HelpCenter() {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
                       >
-                        <div className="px-5 pb-5 text-zinc-400 text-sm leading-relaxed border-t border-zinc-800/50 pt-4">
+                        <div className="px-5 pb-5 text-muted-foreground text-sm leading-relaxed border-t border-border pt-4">
                           {faq.a}
                         </div>
                       </motion.div>
@@ -114,8 +114,8 @@ export default function HelpCenter() {
                 </div>
               ))
             ) : (
-              <div className="text-center py-12 bg-zinc-900/20 rounded-2xl border border-dashed border-zinc-800">
-                <p className="text-zinc-500">No results found for "{searchQuery}"</p>
+              <div className="text-center py-12 bg-muted/20 rounded-2xl border border-dashed border-border">
+                <p className="text-muted-foreground">No results found for "{searchQuery}"</p>
               </div>
             )}
           </div>

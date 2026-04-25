@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-zinc-950 pt-32 pb-20 px-4">
+    <div className="min-h-screen bg-background pt-32 pb-20 px-4 transition-colors duration-300">
       <div className="max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -10,13 +10,13 @@ export default function PrivacyPolicy() {
           className="space-y-8"
         >
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white">Privacy Policy</h1>
-            <p className="text-zinc-500 font-medium">Last updated: April 13, 2026</p>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground">Privacy Policy</h1>
+            <p className="text-muted-foreground font-medium">Last updated: April 13, 2026</p>
           </div>
 
-          <div className="prose prose-invert max-w-none space-y-6 text-zinc-400">
+          <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-white">1. Introduction</h2>
+              <h2 className="text-2xl font-bold text-foreground">1. Introduction</h2>
               <p>
                 Welcome to FlixLab. We respect your privacy and are committed to protecting your personal data. 
                 This privacy policy will inform you about how we look after your personal data when you visit our 
@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-white">2. Data We Collect</h2>
+              <h2 className="text-2xl font-bold text-foreground">2. Data We Collect</h2>
               <p>
                 We may collect, use, store and transfer different kinds of personal data about you which we have 
                 grouped together as follows:
@@ -39,7 +39,7 @@ export default function PrivacyPolicy() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-white">3. How We Use Your Data</h2>
+              <h2 className="text-2xl font-bold text-foreground">3. How We Use Your Data</h2>
               <p>
                 We will only use your personal data when the law allows us to. Most commonly, we will use your 
                 personal data in the following circumstances:
@@ -53,7 +53,7 @@ export default function PrivacyPolicy() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-white">4. Data Security</h2>
+              <h2 className="text-2xl font-bold text-foreground">4. Data Security</h2>
               <p>
                 We have put in place appropriate security measures to prevent your personal data from being 
                 accidentally lost, used or accessed in an unauthorized way, altered or disclosed.

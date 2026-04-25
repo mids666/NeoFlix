@@ -108,11 +108,13 @@ export default function Home() {
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/20 to-transparent" />
+              {/* Overlays for contrast and blending */}
+              <div className="absolute inset-0 bg-black/30 dark:bg-black/50 transition-colors duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent dark:from-black/80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent transition-colors duration-500" />
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full p-4 md:p-12 pb-24 md:pb-40 space-y-6 max-w-4xl">
+            <div className="absolute bottom-0 left-0 w-full p-4 md:p-12 pb-24 md:pb-40 space-y-6 max-w-4xl z-10">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -124,10 +126,10 @@ export default function Home() {
                     <Star className="w-5 h-5 fill-current" />
                     <span>{featured.vote_average.toFixed(1)}</span>
                   </div>
-                  <span className="text-zinc-300 font-medium">
+                  <span className="text-white/80 font-bold">
                     {new Date(featured.release_date || featured.first_air_date || '').getFullYear()}
                   </span>
-                  <span className="px-2 py-0.5 bg-zinc-800/80 rounded text-xs font-bold text-white uppercase tracking-wider">
+                  <span className="px-2 py-0.5 bg-black/40 backdrop-blur-md rounded text-xs font-bold text-white uppercase tracking-wider border border-white/20">
                     {featured.media_type || 'trending'}
                   </span>
                   {(() => {
@@ -153,18 +155,18 @@ export default function Home() {
                   })()}
                 </div>
                 
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-[0.9] max-w-4xl text-balance">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-[0.9] max-w-4xl text-balance drop-shadow-xl">
                   {featured.title || featured.name}
                 </h1>
                 
-                <p className="text-base md:text-lg text-zinc-300 line-clamp-2 md:line-clamp-3 max-w-2xl leading-relaxed">
+                <p className="text-base md:text-lg text-white/80 line-clamp-2 md:line-clamp-3 max-w-2xl leading-relaxed drop-shadow-md">
                   {featured.overview}
                 </p>
 
                 <div className="flex items-center gap-4 pt-4">
                   <Button 
                     size="lg" 
-                    className="bg-white text-black hover:bg-zinc-200 h-14 px-8 rounded-full text-lg font-bold gap-2"
+                    className="bg-red-600 text-white hover:bg-red-700 h-14 px-8 rounded-full text-lg font-bold gap-2"
                     onClick={() => handleSelect(featured)}
                   >
                     <Play className="w-6 h-6 fill-current" />
@@ -173,7 +175,7 @@ export default function Home() {
                   <Button 
                     size="lg" 
                     variant="outline" 
-                    className="bg-zinc-900/40 backdrop-blur-md border-zinc-700 hover:bg-zinc-800 h-14 px-8 rounded-full text-lg font-bold gap-2 text-white"
+                    className="bg-muted/40 backdrop-blur-md border-border hover:bg-muted/60 h-14 px-8 rounded-full text-lg font-bold gap-2 text-foreground"
                     onClick={() => handleSelect(featured)}
                   >
                     <Info className="w-6 h-6" />
@@ -192,16 +194,16 @@ export default function Home() {
         <div className="px-4 md:px-12">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-1 h-6 bg-red-600 rounded-full" />
-            <h2 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-white">Streaming Platforms</h2>
+            <h2 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-foreground">Streaming Platforms</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {[
-              { name: 'Netflix', id: '8', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', color: 'bg-red-600/10 hover:bg-black', border: 'border-red-600/20' },
-              { name: 'HBO', id: '1899|27|384', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/de/HBO_logo.svg', color: 'bg-indigo-600/10 hover:bg-black', border: 'border-indigo-600/20' },
-              { name: 'Disney+', id: '337', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg', color: 'bg-blue-600/10 hover:bg-black', border: 'border-blue-600/20' },
-              { name: 'Prime Video', id: '9|119', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png', color: 'bg-cyan-600/10 hover:bg-black', border: 'border-cyan-600/20' },
-              { name: 'Apple TV+', id: '350', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg', color: 'bg-zinc-600/10 hover:bg-black', border: 'border-zinc-600/20' },
-              { name: 'Paramount+', id: '531', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Paramount_Plus.svg', color: 'bg-blue-400/10 hover:bg-black', border: 'border-blue-400/20' }
+              { name: 'Netflix', id: '8', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', color: 'bg-red-600/20 dark:bg-red-600/10 hover:bg-muted', border: 'border-red-600/30 dark:border-red-600/20' },
+              { name: 'HBO', id: '1899|27|384', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/de/HBO_logo.svg', color: 'bg-indigo-600/20 dark:bg-indigo-600/10 hover:bg-muted', border: 'border-indigo-600/30 dark:border-indigo-600/20' },
+              { name: 'Disney+', id: '337', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg', color: 'bg-blue-600/20 dark:bg-blue-600/10 hover:bg-muted', border: 'border-blue-600/30 dark:border-blue-600/20' },
+              { name: 'Prime Video', id: '9|119', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png', color: 'bg-cyan-600/20 dark:bg-cyan-600/10 hover:bg-muted', border: 'border-cyan-600/30 dark:border-cyan-600/20' },
+              { name: 'Apple TV+', id: '350', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg', color: 'bg-zinc-600/20 dark:bg-zinc-600/10 hover:bg-muted', border: 'border-zinc-600/30 dark:border-zinc-600/20' },
+              { name: 'Paramount+', id: '531', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Paramount_Plus.svg', color: 'bg-blue-400/20 dark:bg-blue-400/10 hover:bg-muted', border: 'border-blue-400/30 dark:border-blue-400/20' }
             ].map((service) => (
               <motion.button
                 key={service.name}
@@ -215,7 +217,7 @@ export default function Home() {
                 <img 
                   src={service.logo} 
                   alt={service.name} 
-                  className={`max-h-8 md:max-h-10 w-auto object-contain transition-all duration-300 ${['Apple TV+', 'HBO'].includes(service.name) ? 'brightness-0 invert' : 'group-hover:brightness-125 hover:scale-110'}`} 
+                  className={`max-h-8 md:max-h-10 w-auto object-contain transition-all duration-300 ${['Apple TV+', 'HBO'].includes(service.name) ? 'dark:brightness-0 dark:invert transition-all' : 'group-hover:brightness-125 dark:group-hover:brightness-125 hover:scale-110'}`} 
                 />
               </motion.button>
             ))}

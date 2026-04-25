@@ -8,6 +8,7 @@ import { doc, setDoc, collection, onSnapshot, query, where, deleteDoc } from 'fi
 import MovieRow from '../components/MovieRow';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useSettings } from '../hooks/useSettings';
 import {
   Select,
   SelectContent,
@@ -38,6 +39,7 @@ export default function Watch() {
   const { type, id } = useParams<{ type: string; id: string }>();
   const navigate = useNavigate();
   const { user, currentProfile, setShowAuthModal } = useAuth();
+  const { settings } = useSettings();
   
   const [details, setDetails] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -195,13 +197,13 @@ export default function Watch() {
   };
 
   if (!details) return (
-    <div className="h-screen w-screen flex items-center justify-center bg-[#0a0a0a] text-white">
+    <div className="h-screen w-screen flex items-center justify-center bg-background text-foreground">
       <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">FLIXLAB</div>
     </div>
   );
 
   const getEmbedUrl = () => {
-    const params = '?autoplay=1';
+    const params = settings.autoplay ? '?autoplay=1' : '?autoplay=0';
     if (selectedServer === 'vidsrc') {
       return type === 'movie' 
         ? `https://vidsrc.ru/movie/${id}${params}`
@@ -233,7 +235,7 @@ export default function Watch() {
   const trailer = details?.videos?.results?.find((v: any) => v.type === 'Trailer' && v.site === 'YouTube') || details?.videos?.results?.find((v: any) => v.site === 'YouTube');
 
   return (
-    <div className="min-h-screen bg-zinc-950 pt-20">
+    <div className="min-h-screen bg-background pt-20 text-foreground transition-colors duration-300">
       <div className="relative w-full flex flex-col">
         <div className="relative w-full h-[70vh] md:h-[90vh] bg-black">
           {isPlaying ? (
@@ -246,8 +248,8 @@ export default function Watch() {
                 frameBorder="0"
                 referrerPolicy="no-referrer"
               />
-              <div className="bg-zinc-900/80 backdrop-blur-md p-4 flex items-center justify-center gap-4 border-t border-zinc-800">
-                <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+              <div className="bg-muted/80 backdrop-blur-md p-4 flex items-center justify-center gap-4 border-t border-border">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                   <Server className="w-3 h-3" />
                   Switch Server:
                 </span>
@@ -255,7 +257,7 @@ export default function Watch() {
                   <Button
                     size="sm"
                     variant={selectedServer === 'videasy' ? 'default' : 'outline'}
-                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'videasy' ? 'bg-red-600 hover:bg-red-700' : 'border-zinc-700 text-zinc-400'}`}
+                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'videasy' ? 'bg-red-600 hover:bg-red-700 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
                     onClick={() => setSelectedServer('videasy')}
                   >
                     Primary Server
@@ -263,7 +265,7 @@ export default function Watch() {
                   <Button
                     size="sm"
                     variant={selectedServer === 'vidsrc' ? 'default' : 'outline'}
-                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidsrc' ? 'bg-red-600 hover:bg-red-700' : 'border-zinc-700 text-zinc-400'}`}
+                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidsrc' ? 'bg-red-600 hover:bg-red-700 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
                     onClick={() => setSelectedServer('vidsrc')}
                   >
                     Secondary Server
@@ -271,7 +273,7 @@ export default function Watch() {
                   <Button
                     size="sm"
                     variant={selectedServer === 'vidlink' ? 'default' : 'outline'}
-                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidlink' ? 'bg-red-600 hover:bg-red-700' : 'border-zinc-700 text-zinc-400'}`}
+                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidlink' ? 'bg-red-600 hover:bg-red-700 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
                     onClick={() => setSelectedServer('vidlink')}
                   >
                     Alternative Server
@@ -282,13 +284,13 @@ export default function Watch() {
                       <Button
                         size="sm"
                         variant={['111movies', 'vidfast', 'vidnest'].includes(selectedServer) ? 'default' : 'outline'}
-                        className={`h-8 px-4 rounded-full text-xs font-bold gap-2 ${['111movies', 'vidfast', 'vidnest'].includes(selectedServer) ? 'bg-zinc-100 text-black hover:bg-zinc-200' : 'border-zinc-700 text-zinc-400'}`}
+                        className={`h-8 px-4 rounded-full text-xs font-bold gap-2 ${['111movies', 'vidfast', 'vidnest'].includes(selectedServer) ? 'bg-foreground text-background hover:bg-foreground/90' : 'border-border text-muted-foreground hover:text-foreground'}`}
                       >
                         Additional Servers
                         <ChevronDown className="w-3 h-3" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-zinc-900 border-zinc-800 text-zinc-300">
+                    <DropdownMenuContent className="bg-card border-border text-foreground">
                       <DropdownMenuItem 
                         className={`cursor-pointer focus:bg-red-600 focus:text-white ${selectedServer === '111movies' ? 'bg-red-600 text-white' : ''}`}
                         onClick={() => setSelectedServer('111movies')}
@@ -311,19 +313,19 @@ export default function Watch() {
                   </DropdownMenu>
                 </div>
 
-                <div className="h-4 w-[1px] bg-zinc-800 mx-2 hidden md:block" />
+                <div className="h-4 w-[1px] bg-border mx-2 hidden md:block" />
 
                 {type === 'tv' && hasNextEpisode() && (
                   <>
                     <Button
                       size="sm"
-                      className="h-8 px-4 rounded-full text-xs font-bold bg-white text-black hover:bg-zinc-200 gap-2"
+                      className="h-8 px-4 rounded-full text-xs font-bold bg-foreground text-background hover:bg-foreground/90 gap-2"
                       onClick={handleNextEpisode}
                     >
                       <SkipForward className="w-3 h-3 fill-current" />
                       Next Episode
                     </Button>
-                    <div className="h-4 w-[1px] bg-zinc-800 mx-2 hidden md:block" />
+                    <div className="h-4 w-[1px] bg-border mx-2 hidden md:block" />
                   </>
                 )}
               </div>
@@ -333,45 +335,46 @@ export default function Watch() {
               <img 
                 src={getImageUrl(details.backdrop_path, 'original') || undefined} 
                 alt={details.title || details.name}
-                className="w-full h-full object-cover opacity-50"
+                className="w-full h-full object-cover opacity-60"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/40 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-black/30" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent transition-colors duration-500" />
               
-              <div className="absolute inset-0 flex flex-col justify-end pb-12 md:pb-24 px-4 md:px-12 max-w-7xl mx-auto">
+              <div className="absolute inset-0 flex flex-col justify-end pb-12 md:pb-24 px-4 md:px-12 max-w-7xl mx-auto z-10">
                 <div className="max-w-3xl space-y-6">
-                  <div className="flex items-center gap-4 text-sm font-bold">
-                    <div className="flex items-center gap-1 text-yellow-500">
+                  <div className="flex items-center gap-4 text-white drop-shadow-md font-bold">
+                    <div className="flex items-center gap-1 text-yellow-500 bg-black/30 px-2 py-0.5 rounded backdrop-blur-sm border border-white/10">
                       <Star className="w-4 h-4 fill-current" />
                       <span>{details.vote_average.toFixed(1)}</span>
                     </div>
-                    <span className="text-zinc-300">
+                    <span className="text-white/80 transition-colors">
                       {new Date(details.release_date || details.first_air_date).getFullYear()}
                     </span>
                     {details.runtime && (
-                      <span className="text-zinc-300 flex items-center gap-1">
+                      <span className="text-white/80 flex items-center gap-1 transition-colors">
                         <Clock className="w-4 h-4" />
                         {Math.floor(details.runtime / 60)}h {details.runtime % 60}m
                       </span>
                     )}
-                    <span className="px-2 py-0.5 bg-zinc-800 rounded text-[10px] uppercase tracking-widest text-zinc-300">
+                    <span className="px-2 py-0.5 bg-black/40 backdrop-blur-md rounded text-[10px] uppercase tracking-widest text-white border border-white/20 transition-colors">
                       {type === 'movie' ? 'Movie' : 'TV Show'}
                     </span>
                   </div>
 
-                  <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white leading-[0.85]">
+                  <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
                     {details.title || details.name}
                   </h1>
 
-                  <p className="text-base text-zinc-300 leading-relaxed line-clamp-3 md:line-clamp-none max-w-2xl">
+                  <p className="text-base text-white/90 leading-relaxed line-clamp-3 md:line-clamp-none max-w-2xl drop-shadow-xl font-medium">
                     {details.overview}
                   </p>
 
                   <div className="flex flex-wrap items-center gap-4 pt-4">
                     <Button 
                       size="lg" 
-                      className="bg-white text-black hover:bg-zinc-200 px-8 h-14 text-lg font-bold rounded-md gap-3"
+                      className="bg-red-600 text-white hover:bg-red-700 px-8 h-14 text-lg font-bold rounded-md gap-3 shadow-lg transition-all"
                       onClick={handlePlay}
                     >
                       <Play className="w-6 h-6 fill-current" />
@@ -382,7 +385,7 @@ export default function Watch() {
                       <Button 
                         size="lg"
                         variant="outline"
-                        className="bg-zinc-500/30 backdrop-blur-md border-transparent hover:bg-zinc-500/50 text-white px-8 h-14 text-lg font-bold rounded-md gap-3 transition-all"
+                        className="bg-muted/30 backdrop-blur-md border-border hover:bg-muted/50 text-foreground px-8 h-14 text-lg font-bold rounded-md gap-3 transition-all"
                         onClick={() => setShowTrailer(true)}
                       >
                         <Youtube className="w-6 h-6 text-red-600" />
@@ -393,7 +396,7 @@ export default function Watch() {
                     <Button 
                       size="lg"
                       variant="outline"
-                      className="bg-zinc-500/30 backdrop-blur-md border-transparent hover:bg-zinc-500/50 text-white px-8 h-14 text-lg font-bold rounded-md gap-3 transition-all"
+                      className="bg-muted/30 backdrop-blur-md border-border hover:bg-muted/50 text-foreground px-8 h-14 text-lg font-bold rounded-md gap-3 transition-all"
                       onClick={() => setShowDownloadInfo(true)}
                     >
                       <Download className="w-6 h-6 text-blue-500" />
@@ -413,8 +416,8 @@ export default function Watch() {
                       }}
                       className={`h-14 flex items-center justify-center gap-2 rounded-md border transition-all overflow-hidden group backdrop-blur-md ${
                         isInWatchlist 
-                          ? 'bg-red-600 border-red-600 text-white w-14' 
-                          : 'bg-zinc-500/30 border-transparent text-white hover:bg-zinc-500/50 px-4'
+                          ? 'bg-red-600 border-red-600 text-white w-14 shadow-lg' 
+                          : 'bg-muted/30 border-border text-foreground hover:bg-muted/50 px-4'
                       }`}
                       onClick={toggleWatchlist}
                     >
@@ -458,16 +461,16 @@ export default function Watch() {
                         <Star className="w-4 h-4 fill-current" />
                         <span>{details.vote_average.toFixed(1)}</span>
                       </div>
-                      <span className="text-zinc-500">
+                      <span className="text-muted-foreground transition-colors">
                         {new Date(details.release_date || details.first_air_date).getFullYear()}
                       </span>
                       {details.runtime && (
-                        <span className="text-zinc-500 flex items-center gap-1">
+                        <span className="text-muted-foreground flex items-center gap-1 transition-colors">
                           <Clock className="w-4 h-4" />
                           {Math.floor(details.runtime / 60)}h {details.runtime % 60}m
                         </span>
                       )}
-                      <span className="px-2 py-0.5 bg-zinc-800 rounded text-[10px] uppercase tracking-widest">
+                      <span className="px-2 py-0.5 bg-muted rounded text-[10px] uppercase tracking-widest text-foreground border border-border transition-colors">
                         {type === 'movie' ? 'Movie' : 'TV Show'}
                       </span>
                       <motion.button
@@ -484,7 +487,7 @@ export default function Watch() {
                         className={`h-8 flex items-center justify-center gap-2 rounded-full border transition-all overflow-hidden group ${
                           isInWatchlist 
                             ? 'bg-red-600 border-red-600 text-white w-8' 
-                            : 'border-zinc-700 text-zinc-400 hover:border-white px-2'
+                            : 'border-border text-muted-foreground hover:text-foreground px-2'
                         }`}
                         onClick={toggleWatchlist}
                       >
@@ -511,17 +514,17 @@ export default function Watch() {
                         )}
                       </motion.button>
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
+                    <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-foreground transition-colors">
                       {details.title || details.name}
                     </h1>
                     <div className="flex flex-wrap gap-2">
                       {details.genres?.map((genre: any) => (
-                        <span key={genre.id} className="text-xs text-zinc-400 border border-zinc-800 px-3 py-1 rounded-full">
+                        <span key={genre.id} className="text-xs text-muted-foreground border border-border px-3 py-1 rounded-full transition-colors">
                           {genre.name}
                         </span>
                       ))}
                     </div>
-                    <p className="text-lg text-zinc-400 leading-relaxed max-w-4xl">
+                    <p className="text-lg text-muted-foreground leading-relaxed max-w-4xl transition-colors">
                       {details.overview}
                     </p>
                   </div>
@@ -530,7 +533,7 @@ export default function Watch() {
                 {!isPlaying && (
                   <div className="flex flex-wrap gap-2">
                     {details.genres?.map((genre: any) => (
-                      <span key={genre.id} className="text-xs text-zinc-400 border border-zinc-800 px-3 py-1 rounded-full">
+                      <span key={genre.id} className="text-xs text-muted-foreground border border-border px-3 py-1 rounded-full transition-colors">
                         {genre.name}
                       </span>
                     ))}
@@ -550,7 +553,7 @@ export default function Watch() {
                         className="flex flex-col items-center gap-3 group text-center"
                         onClick={() => handlePersonClick(person.id)}
                       >
-                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-zinc-900 border-2 border-zinc-800 group-hover:border-red-600 transition-all duration-300 shadow-xl">
+                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-muted border-2 border-border group-hover:border-red-600 transition-all duration-300 shadow-xl">
                           {person.profile_path ? (
                             <img 
                               src={getImageUrl(person.profile_path, 'w185') || undefined} 
@@ -559,13 +562,13 @@ export default function Watch() {
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <User className="w-8 h-8 text-zinc-700" />
+                              <User className="w-8 h-8 text-muted-foreground" />
                             </div>
                           )}
                         </div>
                         <div className="min-w-0 space-y-0.5">
-                          <div className="text-xs font-bold text-white group-hover:text-red-500 transition-colors truncate w-full">{person.name}</div>
-                          <div className="text-[10px] text-zinc-500 truncate w-full">{person.character}</div>
+                          <div className="text-xs font-bold text-foreground group-hover:text-red-500 transition-colors truncate w-full">{person.name}</div>
+                          <div className="text-[10px] text-muted-foreground truncate w-full">{person.character}</div>
                         </div>
                       </button>
                     ))}
@@ -573,46 +576,46 @@ export default function Watch() {
                 </div>
 
                 {/* Details Section - Now under cast */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-zinc-900">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-border transition-colors">
                   <div className="space-y-4">
-                    <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest">Production Info</h3>
+                    <h3 className="text-sm font-black text-muted-foreground uppercase tracking-widest transition-colors">Production Info</h3>
                     <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-zinc-500">Status</span>
-                        <span className="text-white font-bold">{details.status}</span>
+                      <div className="flex justify-between text-sm border-b border-border/50 pb-2">
+                        <span className="text-muted-foreground">Status</span>
+                        <span className="text-foreground font-bold transition-colors">{details.status}</span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-zinc-500">Original Title</span>
-                        <span className="text-white font-bold">{details.original_title || details.original_name}</span>
+                      <div className="flex justify-between text-sm border-b border-border/50 pb-2">
+                        <span className="text-muted-foreground">Original Title</span>
+                        <span className="text-foreground font-bold transition-colors">{details.original_title || details.original_name}</span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-zinc-500">Original Language</span>
-                        <span className="text-white font-bold uppercase">{details.original_language}</span>
+                      <div className="flex justify-between text-sm border-b border-border/50 pb-2">
+                        <span className="text-muted-foreground">Original Language</span>
+                        <span className="text-foreground font-bold uppercase transition-colors">{details.original_language}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest">Financials & Networks</h3>
+                    <h3 className="text-sm font-black text-muted-foreground uppercase tracking-widest transition-colors">Financials & Networks</h3>
                     <div className="space-y-3">
                       {details.budget > 0 && (
-                        <div className="flex justify-between text-sm">
-                          <span className="text-zinc-500">Budget</span>
-                          <span className="text-white font-bold">${(details.budget / 1000000).toFixed(1)}M</span>
+                        <div className="flex justify-between text-sm border-b border-border/50 pb-2">
+                          <span className="text-muted-foreground">Budget</span>
+                          <span className="text-foreground font-bold transition-colors">${(details.budget / 1000000).toFixed(1)}M</span>
                         </div>
                       )}
                       {details.revenue > 0 && (
-                        <div className="flex justify-between text-sm">
-                          <span className="text-zinc-500">Revenue</span>
-                          <span className="text-white font-bold">${(details.revenue / 1000000).toFixed(1)}M</span>
+                        <div className="flex justify-between text-sm border-b border-border/50 pb-2">
+                          <span className="text-muted-foreground">Revenue</span>
+                          <span className="text-foreground font-bold transition-colors">${(details.revenue / 1000000).toFixed(1)}M</span>
                         </div>
                       )}
                       {details.production_companies?.length > 0 && (
-                        <div className="flex justify-between text-sm">
-                          <span className="text-zinc-500">Production</span>
+                        <div className="flex justify-between text-sm border-b border-border/50 pb-2">
+                          <span className="text-muted-foreground">Production</span>
                           <div className="flex flex-wrap justify-end gap-2 max-w-[200px]">
                             {details.production_companies.slice(0, 2).map((company: any, index: number) => (
-                              <span key={`${company.id}-${index}`} className="text-[10px] text-white font-bold">
+                              <span key={`${company.id}-${index}`} className="text-[10px] text-foreground font-bold transition-colors">
                                 {company.name}
                               </span>
                             ))}
@@ -625,13 +628,13 @@ export default function Watch() {
 
                 {/* Episodes Section - Priority for TV Shows */}
                 {details.number_of_seasons && (
-                  <div className="space-y-6 pt-12 border-t border-zinc-900">
+                  <div className="space-y-6 pt-12 border-t border-border transition-colors">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-xl font-bold">
+                      <h3 className="text-xl font-bold text-foreground">
                         Episodes
                       </h3>
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Season</span>
+                        <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Season</span>
                         <Select 
                           value={selectedSeason.toString()} 
                           onValueChange={(val) => {
@@ -639,10 +642,10 @@ export default function Watch() {
                             setSelectedEpisode(1);
                           }}
                         >
-                          <SelectTrigger className="w-[140px] bg-zinc-900 border-zinc-800 text-white font-bold">
+                          <SelectTrigger className="w-[140px] bg-muted border-border text-foreground font-bold transition-colors">
                             <SelectValue placeholder="Select Season" />
                           </SelectTrigger>
-                          <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                          <SelectContent className="bg-card border-border text-foreground">
                             {Array.from({ length: details.number_of_seasons }).map((_, i) => (
                               <SelectItem 
                                 key={i} 
@@ -664,7 +667,7 @@ export default function Watch() {
                           className={`flex gap-4 p-3 rounded-xl transition-all text-left group ${
                             selectedEpisode === ep.episode_number 
                               ? 'bg-red-600/10 border border-red-600/50' 
-                              : 'bg-zinc-900/50 border border-transparent hover:bg-zinc-900'
+                              : 'bg-muted/50 border border-transparent hover:bg-muted transition-colors'
                           }`}
                           onClick={() => {
                             setSelectedEpisode(ep.episode_number);
@@ -672,7 +675,7 @@ export default function Watch() {
                             addToRecentlyWatched();
                           }}
                         >
-                          <div className="relative w-32 aspect-video rounded-lg overflow-hidden flex-none bg-zinc-800">
+                          <div className="relative w-32 aspect-video rounded-lg overflow-hidden flex-none bg-muted">
                             {ep.still_path ? (
                               <img 
                                 src={getImageUrl(ep.still_path, 'w300') || undefined} 
@@ -680,27 +683,27 @@ export default function Watch() {
                                 referrerPolicy="no-referrer"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <Play className="w-6 h-6 text-zinc-700" />
+                              <div className="w-full h-full flex items-center justify-center transition-colors">
+                                <Play className="w-6 h-6 text-muted-foreground" />
                               </div>
                             )}
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
                             {selectedEpisode === ep.episode_number && (
                               <div className="absolute inset-0 flex items-center justify-center bg-red-600/20">
-                                <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
-                                  <Play className="w-4 h-4 fill-current" />
+                                <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                                  <Play className="w-4 h-4 fill-current text-white" />
                                 </div>
                               </div>
                             )}
                           </div>
                           <div className="flex flex-col justify-center min-w-0">
-                            <div className="text-xs font-bold text-zinc-500 mb-1">
+                            <div className="text-xs font-bold text-muted-foreground mb-1 transition-colors">
                               Episode {ep.episode_number}
                             </div>
-                            <div className="font-bold text-sm text-white line-clamp-1 group-hover:text-red-500 transition-colors">
+                            <div className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-red-500 transition-colors">
                               {ep.name}
                             </div>
-                            <div className="text-xs text-zinc-500 line-clamp-2 mt-1">
+                            <div className="text-xs text-muted-foreground line-clamp-2 mt-1 transition-colors">
                               {ep.overview || 'No description available.'}
                             </div>
                           </div>
@@ -712,12 +715,12 @@ export default function Watch() {
 
                 {/* Trailer Section - Only for Movies or below episodes for TV */}
                 {trailer && type === 'movie' && (
-                  <div className="pt-12 border-t border-zinc-900">
+                  <div className="pt-12 border-t border-border">
                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                       Official Trailer
                       <span className="w-8 h-0.5 bg-red-600 rounded-full" />
                     </h3>
-                    <div className="relative aspect-video w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 bg-zinc-900">
+                    <div className="relative aspect-video w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-border bg-muted">
                       <iframe
                         src={`https://www.youtube.com/embed/${trailer.key}`}
                         className="absolute inset-0 w-full h-full"
@@ -732,12 +735,12 @@ export default function Watch() {
               {/* Sidebar - Now used for extra metadata or empty for better focus */}
               <div className="space-y-8 hidden lg:block">
                 {details.networks?.length > 0 && (
-                  <div className="bg-zinc-900/50 rounded-2xl p-6 border border-zinc-800/50">
-                    <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-4">Available On</h3>
+                  <div className="bg-card rounded-2xl p-6 border border-border transition-colors">
+                    <h3 className="text-sm font-black text-muted-foreground uppercase tracking-widest mb-4 transition-colors">Available On</h3>
                     <div className="flex flex-wrap gap-3">
                       {details.networks.map((network: any, index: number) => (
                         <div key={`${network.id}-${index}`} className="flex flex-col items-center gap-2">
-                          <div className="w-12 h-12 bg-white rounded-lg p-2 flex items-center justify-center overflow-hidden">
+                          <div className="w-12 h-12 bg-white rounded-lg p-2 flex items-center justify-center overflow-hidden border border-border shadow-sm">
                             {network.logo_path ? (
                               <img 
                                 src={getImageUrl(network.logo_path, 'w185') || undefined} 
@@ -748,7 +751,7 @@ export default function Watch() {
                               <span className="text-[8px] text-black font-black text-center">{network.name}</span>
                             )}
                           </div>
-                          <span className="text-[10px] text-zinc-500 font-bold">{network.name}</span>
+                          <span className="text-[10px] text-muted-foreground font-bold transition-colors">{network.name}</span>
                         </div>
                       ))}
                     </div>
@@ -759,7 +762,7 @@ export default function Watch() {
 
             {/* Recommendations Section */}
             {details.recommendations?.results?.length > 0 && (
-              <div className="pt-12 border-t border-zinc-900">
+              <div className="pt-12 border-t border-border">
                 <MovieRow 
                   title="You May Also Like" 
                   items={details.recommendations.results} 
@@ -777,14 +780,14 @@ export default function Watch() {
 
       {/* Trailer Modal */}
       <Dialog open={showTrailer} onOpenChange={setShowTrailer}>
-        <DialogContent className="bg-zinc-950 border-zinc-800 text-white max-w-4xl p-0 overflow-hidden">
-          <DialogHeader className="p-4 border-b border-zinc-800">
-            <DialogTitle className="flex items-center gap-2">
+        <DialogContent className="bg-card border-border text-foreground max-w-4xl p-0 overflow-hidden transition-colors">
+          <DialogHeader className="p-4 border-b border-border transition-colors">
+            <DialogTitle className="flex items-center gap-2 transition-colors">
               <Youtube className="w-5 h-5 text-red-600" />
               {details.title || details.name} - Official Trailer
             </DialogTitle>
           </DialogHeader>
-          <div className="aspect-video w-full">
+          <div className="aspect-video w-full transition-colors">
             {trailer && (
               <iframe
                 src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1`}
@@ -799,20 +802,20 @@ export default function Watch() {
       </Dialog>
       {/* Download Info Modal */}
       <Dialog open={showDownloadInfo} onOpenChange={setShowDownloadInfo}>
-        <DialogContent className="bg-zinc-950 border-zinc-800 text-white max-w-md p-6">
+        <DialogContent className="bg-card border-border text-foreground max-w-md p-6 transition-colors">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-black flex items-center gap-2">
+            <DialogTitle className="text-2xl font-black flex items-center gap-2 transition-colors">
               <Download className="w-6 h-6 text-blue-500" />
               Download Video
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <p className="text-zinc-400">
-              To download this video, we recommend using the <span className="text-white font-bold">CocoCut Video Downloader</span> browser extension.
+          <div className="space-y-4 py-4 transition-colors">
+            <p className="text-muted-foreground transition-colors">
+              To download this video, we recommend using the <span className="text-foreground font-bold transition-colors">CocoCut Video Downloader</span> browser extension.
             </p>
-            <div className="bg-zinc-900 p-4 rounded-xl space-y-2 border border-zinc-800">
-              <h4 className="font-bold text-sm text-zinc-200">How to use:</h4>
-              <ol className="text-xs text-zinc-500 space-y-2 list-decimal list-inside">
+            <div className="bg-muted p-4 rounded-xl space-y-2 border border-border transition-colors">
+              <h4 className="font-bold text-sm text-foreground transition-colors">How to use:</h4>
+              <ol className="text-xs text-muted-foreground space-y-2 list-decimal list-inside transition-colors">
                 <li>Install the CocoCut extension from their website.</li>
                 <li>Play the video on this page.</li>
                 <li>Click the CocoCut icon in your browser toolbar.</li>
@@ -820,7 +823,7 @@ export default function Watch() {
               </ol>
             </div>
             <Button 
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 gap-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 gap-2 transition-all"
               onClick={() => window.open('https://cococut.net/', '_blank')}
             >
               Get CocoCut Extension

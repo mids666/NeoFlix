@@ -6,6 +6,7 @@
 import { useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
+import { SettingsProvider } from './hooks/useSettings';
 import { Toaster } from '@/components/ui/sonner';
 import Home from './pages/Home';
 import Browse from './pages/Browse';
@@ -29,7 +30,7 @@ function AppRoutes() {
 
   if (!isAuthReady || loading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-[#0a0a0a] text-white">
+      <div className="h-screen w-screen flex items-center justify-center bg-background text-foreground transition-colors duration-500">
         <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">FLIXLAB</div>
       </div>
     );
@@ -77,11 +78,13 @@ export default function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <Router>
-        <AppRoutes />
-        <Toaster position="top-center" richColors />
-      </Router>
-    </AuthProvider>
+    <SettingsProvider>
+      <AuthProvider>
+        <Router>
+          <AppRoutes />
+          <Toaster position="top-center" richColors />
+        </Router>
+      </AuthProvider>
+    </SettingsProvider>
   );
 }

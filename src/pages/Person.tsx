@@ -24,7 +24,7 @@ export default function Person() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">FLIXLAB</div>
       </div>
     );
@@ -37,7 +37,7 @@ export default function Person() {
     .slice(0, 24) || [];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white pb-20 pt-20 transition-all duration-700">
+    <div className="min-h-screen bg-background text-foreground pb-20 pt-20 transition-all duration-700">
       {/* Hero Section */}
       <div className="relative overflow-hidden px-6 md:px-12 py-12 md:py-20">
         {/* Background */}
@@ -45,13 +45,13 @@ export default function Person() {
           {person.images?.profiles?.[0] ? (
             <img 
               src={getImageUrl(person.images.profiles[0].file_path, 'original') || undefined}
-              className="w-full h-full object-cover opacity-10 blur-3xl scale-110"
+              className="w-full h-full object-cover opacity-20 blur-3xl scale-110"
               referrerPolicy="no-referrer"
             />
           ) : (
-            <div className="w-full h-full bg-zinc-900" />
+            <div className="w-full h-full bg-muted" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
         </div>
 
         <div className="max-w-7xl mx-auto">
@@ -64,7 +64,7 @@ export default function Person() {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate(-1)}
-              className="text-zinc-400 hover:text-white -ml-2 bg-zinc-900/50 backdrop-blur-md border border-zinc-800 relative z-20"
+              className="text-muted-foreground hover:text-foreground -ml-2 bg-muted/50 backdrop-blur-md border border-border relative z-20"
             >
               <ChevronLeft className="w-4 h-4 mr-1" /> Back to Movie
             </Button>
@@ -74,7 +74,7 @@ export default function Person() {
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-48 md:w-72 aspect-[2/3] rounded-3xl overflow-hidden bg-zinc-900 shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-zinc-800 flex-none relative z-10"
+              className="w-48 md:w-72 aspect-[2/3] rounded-3xl overflow-hidden bg-muted shadow-[0_0_50px_rgba(0,0,0,0.1)] border border-border flex-none relative z-10"
             >
               {person.profile_path ? (
                 <img 
@@ -84,7 +84,7 @@ export default function Person() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <User className="w-20 h-20 text-zinc-800" />
+                  <User className="w-20 h-20 text-muted-foreground" />
                 </div>
               )}
             </motion.div>
@@ -96,20 +96,20 @@ export default function Person() {
                 transition={{ delay: 0.1 }}
                 className="space-y-4"
               >
-                <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-white leading-[0.8] mb-4">
+                <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-foreground leading-[0.8] mb-4">
                   {person.name}
                 </h1>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm font-bold">
                   <span className="text-red-600 uppercase tracking-[0.3em] text-xs font-black bg-red-600/10 px-3 py-1 rounded-full border border-red-600/20">
                     {person.known_for_department}
                   </span>
-                  <span className="w-1.5 h-1.5 bg-zinc-800 rounded-full" />
-                  <span className="text-zinc-400 uppercase tracking-widest text-xs">
+                  <span className="w-1.5 h-1.5 bg-muted-foreground/20 rounded-full" />
+                  <span className="text-muted-foreground uppercase tracking-widest text-xs">
                     {person.gender === 1 ? 'Female' : person.gender === 2 ? 'Male' : 'Non-binary'}
                   </span>
                   {person.imdb_id && (
                     <>
-                      <span className="w-1.5 h-1.5 bg-zinc-800 rounded-full" />
+                      <span className="w-1.5 h-1.5 bg-border rounded-full" />
                       <a 
                         href={`https://www.imdb.com/name/${person.imdb_id}`}
                         target="_blank"
@@ -132,20 +132,20 @@ export default function Person() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Sidebar Info */}
           <div className="space-y-8">
-            <div className="bg-zinc-900/50 rounded-3xl p-8 border border-zinc-800/50 space-y-8">
-              <h3 className="text-xs font-black text-zinc-500 uppercase tracking-[0.3em]">Personal Info</h3>
+            <div className="bg-muted/50 rounded-3xl p-8 border border-border/50 space-y-8 transition-colors">
+              <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em]">Personal Info</h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-zinc-500 mb-1">
+                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
                     <Calendar className="w-3.5 h-3.5" />
                     <span className="text-[10px] font-black uppercase tracking-widest">Birthday</span>
                   </div>
-                  <div className="text-sm font-bold">
+                  <div className="text-sm font-bold transition-colors">
                     {person.birthday ? new Date(person.birthday).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                   </div>
                   {person.birthday && !person.deathday && (
-                    <div className="text-xs text-zinc-500">
+                    <div className="text-xs text-muted-foreground">
                       ({Math.floor((new Date().getTime() - new Date(person.birthday).getTime()) / 31557600000)} years old)
                     </div>
                   )}
@@ -153,49 +153,49 @@ export default function Person() {
 
                 {person.deathday && (
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-zinc-500 mb-1">
+                    <div className="flex items-center gap-2 text-muted-foreground mb-1">
                       <Calendar className="w-3.5 h-3.5" />
                       <span className="text-[10px] font-black uppercase tracking-widest">Died</span>
                     </div>
-                    <div className="text-sm font-bold">
+                    <div className="text-sm font-bold transition-colors">
                       {new Date(person.deathday).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
                     </div>
                   </div>
                 )}
 
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-zinc-500 mb-1">
+                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
                     <MapPin className="w-3.5 h-3.5" />
                     <span className="text-[10px] font-black uppercase tracking-widest">Place of Birth</span>
                   </div>
-                  <div className="text-sm font-bold leading-tight">
+                  <div className="text-sm font-bold leading-tight transition-colors">
                     {person.place_of_birth || 'N/A'}
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-zinc-500 mb-1">
+                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
                     <TrendingUp className="w-3.5 h-3.5" />
                     <span className="text-[10px] font-black uppercase tracking-widest">Popularity Rank</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-2 flex-1 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-2 flex-1 bg-muted rounded-full overflow-hidden transition-colors">
                       <div 
-                        className="h-full bg-red-600 rounded-full" 
+                        className="h-full bg-red-600 rounded-full transition-all" 
                         style={{ width: `${Math.min(person.popularity, 100)}%` }} 
                       />
                     </div>
-                    <span className="text-sm font-bold text-white">{Math.round(person.popularity)}</span>
+                    <span className="text-sm font-bold text-foreground transition-colors">{Math.round(person.popularity)}</span>
                   </div>
                 </div>
               </div>
 
               {person.also_known_as?.length > 0 && (
-                <div className="pt-4 border-t border-zinc-800/50">
-                  <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-3">Also Known As</div>
+                <div className="pt-4 border-t border-border/50">
+                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3">Also Known As</div>
                   <div className="flex flex-wrap gap-2">
                     {person.also_known_as.slice(0, 5).map((name: string, i: number) => (
-                      <span key={i} className="text-[10px] bg-zinc-800 px-2 py-1 rounded text-zinc-400">
+                      <span key={i} className="text-[10px] bg-muted px-2 py-1 rounded text-muted-foreground transition-colors">
                         {name}
                       </span>
                     ))}
@@ -209,8 +209,8 @@ export default function Person() {
           <div className="lg:col-span-2 space-y-12">
             {person.biography && (
               <section className="space-y-4">
-                <h3 className="text-xs font-black text-zinc-500 uppercase tracking-[0.3em]">Biography</h3>
-                <p className="text-lg text-zinc-400 leading-relaxed font-medium">
+                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em]">Biography</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed font-medium transition-colors">
                   {person.biography}
                 </p>
               </section>
@@ -219,8 +219,8 @@ export default function Person() {
             {sortedCredits.length > 0 && (
               <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-black text-zinc-500 uppercase tracking-[0.3em]">Known For</h3>
-                  <span className="text-xs text-zinc-600 font-bold">{person.combined_credits.cast.length} Total Credits</span>
+                  <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em]">Known For</h3>
+                  <span className="text-xs text-muted-foreground/60 font-bold transition-colors">{person.combined_credits.cast.length} Total Credits</span>
                 </div>
                 
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
@@ -230,7 +230,7 @@ export default function Person() {
                       to={`/watch/${item.media_type}/${item.id}`}
                       className="group space-y-3"
                     >
-                      <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 group-hover:border-red-600 transition-all duration-500 group-hover:scale-105 shadow-lg relative">
+                      <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-muted border border-border group-hover:border-red-600 transition-all duration-500 group-hover:scale-105 shadow-lg relative">
                         {item.poster_path ? (
                           <img 
                             src={getImageUrl(item.poster_path, 'w342') || undefined} 
@@ -239,7 +239,7 @@ export default function Person() {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <Play className="w-10 h-10 text-zinc-800" />
+                            <Play className="w-10 h-10 text-muted-foreground" />
                           </div>
                         )}
                         <div className="absolute top-3 right-3">
@@ -252,10 +252,10 @@ export default function Person() {
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <div className="text-xs font-black text-white line-clamp-1 group-hover:text-red-500 transition-colors">
+                        <div className="text-xs font-black text-foreground line-clamp-1 group-hover:text-red-500 transition-colors">
                           {item.title || item.name}
                         </div>
-                        <div className="text-[10px] text-zinc-500 font-bold truncate">
+                        <div className="text-[10px] text-muted-foreground font-bold truncate">
                           {item.character || 'Actor'}
                         </div>
                       </div>

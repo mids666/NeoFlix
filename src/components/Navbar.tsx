@@ -86,7 +86,7 @@ export default function Navbar() {
   return (
     <nav 
       className={`fixed top-0 w-full z-50 transition-all duration-300 px-4 lg:px-12 py-4 flex items-center justify-between ${
-        isScrolled ? 'bg-[#0a0a0a]/90 backdrop-blur-md border-b border-zinc-800' : 'bg-transparent'
+        isScrolled ? 'bg-background/90 backdrop-blur-md border-b border-border' : 'bg-transparent'
       }`}
     >
       <div className="flex items-center gap-8">
@@ -107,7 +107,7 @@ export default function Navbar() {
                 }
               }}
               className={`text-sm font-medium transition-colors hover:text-red-500 ${
-                location.pathname === link.path ? 'text-white' : 'text-zinc-400'
+                location.pathname === link.path ? 'text-foreground' : 'text-muted-foreground'
               }`}
             >
               {link.name}
@@ -120,7 +120,7 @@ export default function Navbar() {
         {/* Discover Button */}
         <Button
           variant="ghost"
-          className="text-zinc-400 hover:text-white hover:bg-zinc-800 gap-2 font-bold px-4"
+          className="text-muted-foreground hover:text-foreground hover:bg-muted gap-2 font-bold px-4 transition-colors"
           onClick={() => navigate('/discover')}
         >
           <Compass className="w-5 h-5 text-red-600" />
@@ -129,108 +129,110 @@ export default function Navbar() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="hidden lg:block text-white hover:text-red-500 transition-colors relative">
+            <button className="hidden lg:block text-foreground hover:text-red-500 transition-colors relative">
               <Bell className="w-5 h-5" />
               {notifications.length > 0 && (
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-600 rounded-full" />
               )}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-zinc-900 border-zinc-800 text-white w-80 mt-2 p-0 overflow-hidden">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel className="p-4 border-b border-zinc-800 flex items-center justify-between">
-                <span>New Releases</span>
-                <span className="text-[10px] bg-red-600 px-2 py-0.5 rounded-full uppercase font-black">Live</span>
-              </DropdownMenuLabel>
-            </DropdownMenuGroup>
-            <div className="max-h-[400px] overflow-y-auto">
-              {notifications.length > 0 ? (
-                notifications.map((movie) => (
-                  <DropdownMenuItem 
-                    key={movie.id} 
-                    className="p-3 focus:bg-zinc-800 cursor-pointer border-b border-zinc-800/50 last:border-0"
-                    onClick={() => {
-                      const type = movie.media_type || (movie.title ? 'movie' : 'tv');
-                      navigate(`/watch/${type}/${movie.id}`);
-                    }}
-                  >
-                    <div className="flex gap-3">
-                      <div className="w-16 h-24 flex-none rounded-md overflow-hidden bg-zinc-800">
-                        <img 
-                          src={getImageUrl(movie.poster_path, 'w185') || undefined} 
-                          alt={movie.title} 
-                          className="w-full h-full object-cover"
-                        />
+        <DropdownMenuContent className="bg-card border-border text-foreground w-80 mt-2 p-0 overflow-hidden">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="p-4 border-b border-border flex items-center justify-between">
+              <span>New Releases</span>
+              <span className="text-[10px] bg-red-600 px-2 py-0.5 rounded-full uppercase font-black text-white">Live</span>
+            </DropdownMenuLabel>
+          </DropdownMenuGroup>
+          <div className="max-h-[400px] overflow-y-auto">
+            {notifications.length > 0 ? (
+              notifications.map((movie) => (
+                <DropdownMenuItem 
+                  key={movie.id} 
+                  className="p-3 focus:bg-muted cursor-pointer border-b border-border/50 last:border-0"
+                  onClick={() => {
+                    const type = movie.media_type || (movie.title ? 'movie' : 'tv');
+                    navigate(`/watch/${type}/${movie.id}`);
+                  }}
+                >
+                  <div className="flex gap-3">
+                    <div className="w-16 h-24 flex-none rounded-md overflow-hidden bg-muted">
+                      <img 
+                        src={getImageUrl(movie.poster_path, 'w185') || undefined} 
+                        alt={movie.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col justify-center gap-1">
+                      <div className="font-bold text-sm line-clamp-1">{movie.title}</div>
+                      <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
+                        {new Date(movie.release_date || '').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                       </div>
-                      <div className="flex flex-col justify-center gap-1">
-                        <div className="font-bold text-sm line-clamp-1">{movie.title}</div>
-                        <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
-                          {new Date(movie.release_date || '').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </div>
-                        <div className="text-xs text-zinc-400 line-clamp-2 leading-tight">
-                          {movie.overview}
-                        </div>
+                      <div className="text-xs text-muted-foreground line-clamp-2 leading-tight">
+                        {movie.overview}
                       </div>
                     </div>
-                  </DropdownMenuItem>
-                ))
-              ) : (
-                <div className="p-8 text-center text-zinc-500 text-sm">
-                  No new notifications
-                </div>
-              )}
-            </div>
-            <DropdownMenuSeparator className="bg-zinc-800 m-0" />
-            <button 
-              className="w-full p-3 text-center text-xs font-bold text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-              onClick={() => navigate('/browse/movie')}
-            >
-              View All Movies
-            </button>
-          </DropdownMenuContent>
+                  </div>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <div className="p-8 text-center text-muted-foreground text-sm">
+                No new notifications
+              </div>
+            )}
+          </div>
+          <DropdownMenuSeparator className="bg-border m-0" />
+          <button 
+            className="w-full p-3 text-center text-xs font-bold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            onClick={() => navigate('/browse/movie')}
+          >
+            View All Movies
+          </button>
+        </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Profile Dropdown */}
+        {/* Profile & Settings */}
         {user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-2 group outline-none">
-              <div className="w-8 h-8 rounded-md overflow-hidden border border-zinc-700 group-hover:border-white transition-all">
-                <img src={currentProfile?.avatar || undefined} alt={currentProfile?.name} className="w-full h-full object-cover" />
-              </div>
-              <ChevronDown className="w-4 h-4 text-zinc-400 group-hover:text-white transition-all" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-zinc-900 border-zinc-800 text-white w-56 mt-2">
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>Profiles</DropdownMenuLabel>
-                {profiles.map((profile) => (
-                  <DropdownMenuItem 
-                    key={profile.id}
-                    className={`flex items-center gap-3 cursor-pointer ${profile.id === currentProfile?.id ? 'bg-zinc-800' : ''}`}
-                    onClick={() => setCurrentProfile(profile)}
-                  >
-                    <img src={profile.avatar || undefined} alt={profile.name} className="w-6 h-6 rounded-sm object-cover" />
-                    <span>{profile.name}</span>
+          <div className="flex items-center gap-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-2 group outline-none">
+                <div className="w-8 h-8 rounded-md overflow-hidden border border-border group-hover:border-red-600 transition-all shadow-lg active:scale-95 duration-200">
+                  <img src={currentProfile?.avatar || undefined} alt={currentProfile?.name} className="w-full h-full object-cover" />
+                </div>
+                <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-all" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-card border-border text-foreground w-56 mt-2">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Profiles</DropdownMenuLabel>
+                  {profiles.map((profile) => (
+                    <DropdownMenuItem 
+                      key={profile.id}
+                      className={`flex items-center gap-3 cursor-pointer ${profile.id === currentProfile?.id ? 'bg-muted' : ''}`}
+                      onClick={() => setCurrentProfile(profile)}
+                    >
+                      <img src={profile.avatar || undefined} alt={profile.name} className="w-6 h-6 rounded-sm object-cover" />
+                      <span>{profile.name}</span>
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuItem className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentProfile(null)}>
+                    <PlusCircle className="w-6 h-6 text-muted-foreground" />
+                    <span>Manage Profiles</span>
                   </DropdownMenuItem>
-                ))}
-                <DropdownMenuItem className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentProfile(null)}>
-                  <PlusCircle className="w-6 h-6 text-zinc-500" />
-                  <span>Manage Profiles</span>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator className="bg-border" />
+                <DropdownMenuItem 
+                  className="flex items-center gap-3 cursor-pointer"
+                  onClick={() => navigate('/settings')}
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Settings</span>
                 </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator className="bg-zinc-800" />
-              <DropdownMenuItem 
-                className="flex items-center gap-3 cursor-pointer"
-                onClick={() => navigate('/settings')}
-              >
-                <Settings className="w-4 h-4" />
-                <span>Account Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-3 cursor-pointer text-red-500 focus:text-red-400" onClick={handleLogout}>
-                <LogOut className="w-4 h-4" />
-                <span>Sign Out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem className="flex items-center gap-3 cursor-pointer text-red-500 focus:text-red-400" onClick={handleLogout}>
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         ) : (
           <Button 
             className="bg-red-600 hover:bg-red-700 font-bold px-6"
@@ -242,7 +244,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button 
-          className="lg:hidden text-white"
+          className="lg:hidden text-foreground transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -256,10 +258,10 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full bg-[#0a0a0a] border-b border-zinc-800 p-6 flex flex-col gap-4 lg:hidden"
+            className="absolute top-full left-0 w-full bg-background border-b border-border p-6 flex flex-col gap-4 lg:hidden"
           >
             <Button
-              className="bg-zinc-900 border border-zinc-800 h-12 text-white gap-3 justify-center font-bold mb-2 rounded-xl"
+              className="bg-muted border border-border h-12 text-foreground gap-3 justify-center font-bold mb-2 rounded-xl"
               onClick={() => {
                 setIsMobileMenuOpen(false);
                 navigate('/discover');
@@ -280,7 +282,7 @@ export default function Navbar() {
                   }
                 }}
                 className={`text-lg font-medium text-left ${
-                  location.pathname === link.path ? 'text-red-600' : 'text-zinc-400'
+                  location.pathname === link.path ? 'text-red-600' : 'text-muted-foreground'
                 }`}
               >
                 {link.name}

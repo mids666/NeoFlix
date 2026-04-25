@@ -25,10 +25,12 @@ import { useAuth } from '../hooks/useAuth';
 import { db } from '../lib/firebase';
 import { doc, setDoc, collection, onSnapshot, query, where, deleteDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
+import { useSettings } from '../hooks/useSettings';
 
 export default function Discover() {
   const navigate = useNavigate();
   const { user, currentProfile, setShowAuthModal } = useAuth();
+  const { settings } = useSettings();
   const [items, setItems] = useState<TMDBItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -198,16 +200,22 @@ export default function Discover() {
       );
     }
 
+    const gridClasses = {
+      small: 'grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10',
+      medium: 'grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8',
+      large: 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
+    };
+
     if (isSearching) {
       return (
-        <div className="absolute inset-0 pt-24 pb-safe overflow-y-auto bg-[#0a0a0a] overscroll-contain" style={{ touchAction: 'pan-y' }}>
-          <div className="p-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4 md:gap-6">
+        <div className="absolute inset-0 pt-24 pb-safe overflow-y-auto bg-background transition-colors duration-300 overscroll-contain" style={{ touchAction: 'pan-y' }}>
+          <div className={`p-4 grid ${gridClasses[settings.cardSize]} gap-4 md:gap-6`}>
             {searchResults.map((item: any) => (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               key={item.id}
-              className="relative aspect-[2/3] rounded-xl overflow-hidden cursor-pointer group bg-zinc-900 border border-zinc-800"
+              className="relative aspect-[2/3] rounded-xl overflow-hidden cursor-pointer group bg-card border border-border"
               onClick={() => {
                 if (item.media_type === 'person') {
                   navigate(`/person/${item.id}`);
@@ -221,10 +229,10 @@ export default function Discover() {
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 alt={item.title || item.name}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
-                <p className="font-bold text-sm truncate">{item.title || item.name}</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                <p className="font-bold text-sm truncate text-white">{item.title || item.name}</p>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-[10px] text-zinc-400 font-black uppercase tracking-widest">{item.media_type}</span>
+                  <span className="text-[10px] text-zinc-300 font-black uppercase tracking-widest">{item.media_type}</span>
                   {item.vote_average > 0 && (
                     <span className="text-[10px] text-yellow-500 font-bold">★ {item.vote_average.toFixed(1)}</span>
                   )}
@@ -234,12 +242,12 @@ export default function Discover() {
           ))}
           {searchResults.length === 0 && !loading && (
              <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
-               <SearchIcon className="w-16 h-16 text-zinc-800 mb-6" />
-               <h3 className="text-2xl font-black uppercase tracking-tighter">No Results Found</h3>
-               <p className="text-zinc-500 mt-2">Try searching for a different movie, series, or actor.</p>
+               <SearchIcon className="w-16 h-16 text-muted-foreground/20 mb-6" />
+               <h3 className="text-2xl font-black uppercase tracking-tighter text-foreground">No Results Found</h3>
+               <p className="text-muted-foreground mt-2">Try searching for a different movie, series, or actor.</p>
                <Button 
                 variant="outline" 
-                className="mt-8 border-zinc-800 hover:bg-zinc-900"
+                className="mt-8 border-border hover:bg-muted"
                 onClick={() => {
                   setSearchQuery('');
                   setIsSearching(false);
@@ -291,7 +299,7 @@ export default function Discover() {
             transition={{ duration: 1 }}
             className="absolute inset-0 z-0"
           >
-            {trailerKey ? (
+            {trailerKey && settings.autoplay ? (
               <div className="relative w-full h-full">
                 <iframe
                   src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=0&mute=1&loop=1&playlist=${trailerKey}&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&disablekb=1&fs=0&autohide=1`}
@@ -313,9 +321,14 @@ export default function Discover() {
                 alt=""
               />
             )}
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-black/60 transition-colors duration-300" />
           </motion.div>
         </AnimatePresence>
+
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-background transition-colors duration-500" />
+        </div>
 
         {/* Swipe Control Layer */}
         <motion.div
@@ -345,14 +358,14 @@ export default function Discover() {
               className="space-y-4 md:space-y-6 pointer-events-auto"
             >
               <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                 <span className="px-3 py-1 bg-red-600 text-[10px] font-black uppercase rounded-full tracking-tight whitespace-nowrap">
+                 <span className="px-3 py-1 bg-red-600 text-[10px] font-black uppercase rounded-full tracking-tight whitespace-nowrap text-white">
                    {currentItem.media_type === 'tv' ? 'Trending Series' : 'Trending Movie'}
                  </span>
-                 <div className="flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/10">
+                 <div className="flex items-center gap-1.5 px-3 py-1 bg-black/40 backdrop-blur-md rounded-full border border-white/10">
                    <span className="text-yellow-500 font-black">★</span>
                    <span className="text-sm font-black text-white">{currentItem.vote_average?.toFixed(1)}</span>
                  </div>
-                 <span className="text-zinc-300 text-sm font-bold bg-white/5 px-3 py-1 rounded-full backdrop-blur-sm border border-white/5">
+                 <span className="text-white/80 text-sm font-bold bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
                    {new Date(currentItem.release_date || currentItem.first_air_date || '').getFullYear()}
                  </span>
               </div>
@@ -361,20 +374,20 @@ export default function Discover() {
                 {currentItem.title || currentItem.name}
               </h2>
 
-              <p className="text-zinc-300 text-xs md:text-base max-w-xl leading-relaxed line-clamp-3 md:line-clamp-4 drop-shadow-lg font-medium">
+              <p className="text-white/80 text-xs md:text-base max-w-xl leading-relaxed line-clamp-3 md:line-clamp-4 drop-shadow-lg font-medium">
                 {currentItem.overview}
               </p>
 
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Button 
                   size="lg"
-                  className="bg-white text-black hover:bg-zinc-200 h-10 md:h-12 px-6 md:px-8 rounded-xl font-black uppercase tracking-tighter gap-2 transition-all hover:scale-105 active:scale-95 shadow-lg"
+                  className="bg-red-600 text-white hover:bg-red-700 h-10 md:h-12 px-6 md:px-8 rounded-xl font-black uppercase tracking-tighter gap-2 transition-all hover:scale-105 active:scale-95 shadow-lg"
                   onClick={(e) => {
                     e.stopPropagation();
                     handlePlay(currentItem);
                   }}
                 >
-                  <Play className="w-5 h-5 fill-current" />
+                  <Play className="w-5 h-5 fill-current text-white" />
                   Play
                 </Button>
 
@@ -385,8 +398,8 @@ export default function Discover() {
                     e.stopPropagation();
                     toggleWatchlist();
                   }}
-                  className={`h-10 md:h-12 px-5 md:px-6 rounded-xl font-black uppercase tracking-tighter gap-2 transition-all backdrop-blur-md border-white/20 active:scale-95 ${
-                    isInWatchlist ? 'bg-red-600 border-red-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'
+                  className={`h-10 md:h-12 px-5 md:px-6 rounded-xl font-black uppercase tracking-tighter gap-2 transition-all backdrop-blur-md border-border active:scale-95 transition-colors ${
+                    isInWatchlist ? 'bg-red-600 border-red-600 text-white' : 'bg-muted/40 text-foreground hover:bg-muted/60'
                   }`}
                 >
                   {isInWatchlist ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
@@ -416,7 +429,7 @@ export default function Discover() {
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="rounded-full w-12 h-12 md:w-14 md:h-14 bg-white/10 hover:bg-red-600 hover:scale-110 active:scale-95 text-white backdrop-blur-md transition-all border border-white/5"
+                    className="rounded-full w-12 h-12 md:w-14 md:h-14 bg-muted/40 hover:bg-red-600 hover:scale-110 active:scale-95 text-foreground hover:text-white backdrop-blur-md transition-all border border-border"
                     onClick={prevItem}
                   >
                     {isPortrait ? <ChevronUp className="w-6 h-6" /> : <ChevronLeft className="w-6 h-6" />}
@@ -441,7 +454,7 @@ export default function Discover() {
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="rounded-full w-12 h-12 md:w-14 md:h-14 bg-white/10 hover:bg-red-600 hover:scale-110 active:scale-95 text-white backdrop-blur-md transition-all border border-white/5 shadow-2xl"
+                    className="rounded-full w-12 h-12 md:w-14 md:h-14 bg-muted/40 hover:bg-red-600 hover:scale-110 active:scale-95 text-foreground hover:text-white backdrop-blur-md transition-all border border-border shadow-2xl"
                     onClick={nextItem}
                   >
                     {isPortrait ? <ChevronDown className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />}
@@ -452,19 +465,19 @@ export default function Discover() {
 
             {/* Pagination Dots (Landscape only for secondary indicator) */}
             {!isPortrait && (
-              <div className="absolute right-4 lg:right-12 top-1/2 -translate-y-1/2 mt-20 flex flex-col gap-3 z-10 opacity-40">
-                {items.slice(Math.max(0, currentIndex - 2), currentIndex + 3).map((_, i) => {
-                  const globalIdx = Math.max(0, currentIndex - 2) + i;
-                  return (
-                    <div 
-                      key={globalIdx}
-                      className={`w-1 rounded-full transition-all duration-500 ${
-                        globalIdx === currentIndex ? 'h-6 bg-red-600' : 'h-1 bg-zinc-600'
-                      }`}
-                    />
-                  );
-                })}
-              </div>
+                  <div className="absolute right-4 lg:right-12 top-1/2 -translate-y-1/2 mt-20 flex flex-col gap-3 z-10 opacity-40">
+                    {items.slice(Math.max(0, currentIndex - 2), currentIndex + 3).map((_, i) => {
+                      const globalIdx = Math.max(0, currentIndex - 2) + i;
+                      return (
+                        <div 
+                          key={globalIdx}
+                          className={`w-1 rounded-full transition-all duration-500 ${
+                            globalIdx === currentIndex ? 'h-6 bg-red-600' : 'h-1 bg-muted-foreground'
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
             )}
           </>
         )}
@@ -473,13 +486,13 @@ export default function Discover() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black text-white h-screen overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[100] bg-background text-foreground h-screen overflow-hidden flex flex-col transition-colors duration-300">
       {/* Header */}
-      <div className="absolute top-0 inset-x-0 p-4 lg:px-12 flex items-center gap-4 z-[110] bg-gradient-to-b from-black via-black/50 to-transparent">
+      <div className="absolute top-0 inset-x-0 p-4 lg:px-12 flex items-center gap-4 z-[110] bg-gradient-to-b from-background via-background/50 to-transparent">
         <Button 
           variant="ghost" 
           size="icon" 
-          className="rounded-full hover:bg-white/10"
+          className="rounded-full hover:bg-muted"
           onClick={() => navigate(-1)}
         >
           <ArrowLeft className="w-6 h-6" />
@@ -489,10 +502,10 @@ export default function Discover() {
           className="flex-1 relative group max-w-2xl mx-auto"
           onSubmit={handleSearch}
         >
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-red-600 transition-colors" />
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-red-600 transition-colors" />
           <Input 
             placeholder="Search titles, series, or actors..."
-            className="bg-zinc-900/80 border-zinc-700 pl-10 h-10 w-full focus:ring-red-600 rounded-full transition-all focus:bg-zinc-900"
+            className="bg-muted/80 border-border pl-10 h-10 w-full focus:ring-red-600 rounded-full transition-all focus:bg-muted text-foreground"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -508,7 +521,7 @@ export default function Discover() {
                }}
                className="absolute right-3 top-1/2 -translate-y-1/2"
              >
-               <X className="w-4 h-4 text-zinc-500" />
+               <X className="w-4 h-4 text-muted-foreground" />
              </button>
           )}
         </form>

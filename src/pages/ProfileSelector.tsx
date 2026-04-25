@@ -65,23 +65,23 @@ export default function ProfileSelector() {
 
   if (user && !user.emailVerified) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-8 text-center"
+          className="max-w-md w-full bg-card border border-border rounded-3xl p-8 text-center"
         >
           <div className="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Mail className="w-10 h-10 text-red-600" />
           </div>
-          <h2 className="text-3xl font-bold text-white mb-4">Verify Your Email</h2>
-          <p className="text-zinc-400 mb-8">
-            We've sent a verification email to <span className="text-white font-bold">{user.email}</span>. 
+          <h2 className="text-3xl font-bold text-foreground mb-4">Verify Your Email</h2>
+          <p className="text-muted-foreground mb-8">
+            We've sent a verification email to <span className="text-foreground font-bold">{user.email}</span>. 
             Please verify your email to access FlixLab.
           </p>
           <div className="space-y-4">
             <Button 
-              className="w-full bg-red-600 hover:bg-red-700 h-14 text-lg font-bold gap-2"
+              className="w-full bg-red-600 hover:bg-red-700 h-14 text-lg font-bold gap-2 text-white"
               onClick={handleResendVerification}
               disabled={isResending}
             >
@@ -89,13 +89,13 @@ export default function ProfileSelector() {
             </Button>
             <Button 
               variant="ghost"
-              className="w-full text-zinc-500 hover:text-white gap-2"
+              className="w-full text-muted-foreground hover:text-foreground gap-2"
               onClick={handleSignOut}
             >
               <LogOut className="w-4 h-4" />
               Sign Out / Back to Login
             </Button>
-            <p className="text-xs text-zinc-500">After verifying, please refresh this page or sign in again.</p>
+            <p className="text-xs text-muted-foreground">After verifying, please refresh this page or sign in again.</p>
           </div>
         </motion.div>
       </div>
@@ -103,11 +103,11 @@ export default function ProfileSelector() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 transition-colors duration-300">
       <motion.h1 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-4xl md:text-5xl font-bold text-white mb-12"
+        className="text-4xl md:text-5xl font-bold text-foreground mb-12"
       >
         Who's watching?
       </motion.h1>
@@ -123,10 +123,10 @@ export default function ProfileSelector() {
               className="flex flex-col items-center gap-4 cursor-pointer group"
               onClick={() => setCurrentProfile(profile)}
             >
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-4 border-transparent group-hover:border-white transition-all duration-300">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-4 border-transparent group-hover:border-foreground transition-all duration-300">
                 <img src={profile.avatar || undefined} alt={profile.name} className="w-full h-full object-cover" />
               </div>
-              <span className="text-zinc-400 group-hover:text-white text-xl font-medium transition-colors">
+              <span className="text-muted-foreground group-hover:text-foreground text-xl font-medium transition-colors">
                 {profile.name}
               </span>
             </motion.div>
@@ -143,16 +143,16 @@ export default function ProfileSelector() {
                     whileHover={{ scale: 1.05 }}
                     className="flex flex-col items-center gap-4 cursor-pointer group"
                   >
-                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl flex items-center justify-center border-4 border-dashed border-zinc-700 group-hover:border-zinc-500 transition-all duration-300">
-                      <Plus className="w-12 h-12 text-zinc-700 group-hover:text-zinc-500" />
+                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl flex items-center justify-center border-4 border-dashed border-border group-hover:border-muted-foreground transition-all duration-300">
+                      <Plus className="w-12 h-12 text-border group-hover:text-muted-foreground" />
                     </div>
-                    <span className="text-zinc-500 group-hover:text-zinc-400 text-xl font-medium transition-colors">
+                    <span className="text-muted-foreground group-hover:text-foreground text-xl font-medium transition-colors">
                       Add Profile
                     </span>
                   </motion.div>
                 }
               />
-              <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
+              <DialogContent className="bg-card border-border text-foreground">
                 <DialogHeader>
                   <DialogTitle>Add Profile</DialogTitle>
                 </DialogHeader>
@@ -176,16 +176,16 @@ export default function ProfileSelector() {
                     ))}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-zinc-400">Profile Name</label>
+                    <label className="text-sm font-medium text-muted-foreground">Profile Name</label>
                     <Input
                       placeholder="Enter name"
                       value={newProfileName}
                       onChange={(e) => setNewProfileName(e.target.value)}
-                      className="bg-zinc-800 border-zinc-700"
+                      className="bg-muted border-border"
                     />
                   </div>
                   <Button 
-                    className="w-full bg-red-600 hover:bg-red-700"
+                    className="w-full bg-red-600 hover:bg-red-700 text-white"
                     onClick={handleAddProfile}
                     disabled={!newProfileName}
                   >
@@ -200,7 +200,7 @@ export default function ProfileSelector() {
 
       <Button 
         variant="outline" 
-        className="mt-16 border-zinc-700 text-zinc-500 hover:text-white hover:border-white transition-all px-8 py-6"
+        className="mt-16 border-border text-muted-foreground hover:text-foreground hover:border-foreground transition-all px-8 py-6"
         onClick={() => {
           // Manage profiles logic
         }}

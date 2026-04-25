@@ -5,6 +5,7 @@ import { TMDBItem, Genre } from '../types';
 import MovieCard from '../components/MovieCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useNavigate } from 'react-router-dom';
+import { useSettings } from '../hooks/useSettings';
 import {
   Select,
   SelectContent,
@@ -15,6 +16,7 @@ import {
 
 export default function Browse() {
   const { type } = useParams<{ type: 'movie' | 'tv' }>();
+  const { settings } = useSettings();
   const [items, setItems] = useState<TMDBItem[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
@@ -61,19 +63,25 @@ export default function Browse() {
     navigate(`/watch/${itemType}/${item.id}`);
   };
 
+  const gridClasses = {
+    small: 'grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10',
+    medium: 'grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8',
+    large: 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
+  };
+
   return (
     <div className="min-h-screen pt-24 px-4 md:px-12 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div className="flex flex-col gap-2">
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white capitalize">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground capitalize">
             {type === 'movie' ? 'Movies' : 'TV Shows'}
           </h1>
           <div className="flex items-center gap-4">
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[180px] bg-zinc-900 border-zinc-800 text-zinc-400">
+              <SelectTrigger className="w-[180px] bg-muted border-border text-foreground">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-400">
+              <SelectContent className="bg-card border-border text-foreground">
                 <SelectItem value="popularity.desc">Popular</SelectItem>
                 <SelectItem value="vote_average.desc">Top Rated</SelectItem>
                 <SelectItem value="newest">Newest</SelectItem>
@@ -88,7 +96,7 @@ export default function Browse() {
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
               selectedGenre === null 
                 ? 'bg-red-600 text-white' 
-                : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
             }`}
           >
             All Genres
@@ -100,7 +108,7 @@ export default function Browse() {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                 selectedGenre === genre.id 
                   ? 'bg-red-600 text-white' 
-                  : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
             >
               {genre.name}
@@ -110,16 +118,16 @@ export default function Browse() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-6">
+        <div className={`grid ${gridClasses[settings.cardSize]} gap-4 md:gap-6`}>
           {Array.from({ length: 12 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-[2/3] bg-zinc-900 rounded-md" />
+            <Skeleton key={i} className="aspect-[2/3] bg-muted rounded-md" />
           ))}
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-6">
+          <div className={`grid ${gridClasses[settings.cardSize]} gap-4 md:gap-6`}>
             {items.map((item, index) => (
-              <MovieCard key={`${item.id}-${index}`} item={item} onSelect={handleSelect} />
+              <MovieCard key={`${item.id}-${index}`} item={item} onSelect={handleSelect} className="w-full h-full" />
             ))}
           </div>
 
@@ -128,7 +136,7 @@ export default function Browse() {
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
+              className="px-4 py-2 rounded-lg bg-card text-muted-foreground border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
             >
               Prev
             </button>
@@ -150,10 +158,10 @@ export default function Browse() {
                   <button
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all ${
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all border border-border ${
                       page === pageNum 
-                        ? 'bg-red-600 text-white' 
-                        : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'
+                        ? 'bg-red-600 text-white border-red-600' 
+                        : 'bg-card text-muted-foreground hover:bg-muted'
                     }`}
                   >
                     {pageNum}
@@ -165,13 +173,13 @@ export default function Browse() {
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-4 py-2 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
+              className="px-4 py-2 rounded-lg bg-card text-muted-foreground border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
             >
               Next
             </button>
           </div>
           
-          <div className="mt-4 text-center text-zinc-500 text-sm font-medium">
+          <div className="mt-4 text-center text-muted-foreground text-sm font-medium transition-colors">
             Page {page} of {totalPages}
           </div>
         </>

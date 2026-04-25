@@ -9,19 +9,28 @@ import { useAuth } from '../hooks/useAuth';
 import { doc, setDoc, deleteDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { toast } from 'sonner';
+import { useSettings } from '../hooks/useSettings';
 
 interface MovieCardProps {
   item: TMDBItem;
   onSelect?: (item: TMDBItem) => void;
   onRemove?: (item: TMDBItem) => void;
-  key?: any;
+  className?: string;
+  key?: React.Key;
 }
 
-export default function MovieCard({ item, onSelect, onRemove }: MovieCardProps) {
+export default function MovieCard({ item, onSelect, onRemove, className }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const { user, currentProfile, setShowAuthModal } = useAuth();
+  const { settings } = useSettings();
   const navigate = useNavigate();
+
+  const sizeClasses = {
+    small: 'w-[100px] md:w-[150px]',
+    medium: 'w-[140px] md:w-[200px]',
+    large: 'w-[180px] md:w-[260px]'
+  };
 
   useEffect(() => {
     if (!user || !currentProfile) return;
@@ -91,7 +100,7 @@ export default function MovieCard({ item, onSelect, onRemove }: MovieCardProps) 
 
   return (
     <div 
-      className="relative flex-none w-[140px] md:w-[200px] aspect-[2/3] cursor-pointer group"
+      className={`relative flex-none aspect-[2/3] cursor-pointer group transition-all duration-300 ${sizeClasses[settings.cardSize]} ${className || ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => handleSelect()}
@@ -118,9 +127,9 @@ export default function MovieCard({ item, onSelect, onRemove }: MovieCardProps) 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="absolute inset-0 z-10 bg-black/80 rounded-md p-4 flex flex-col justify-end gap-3"
+            className="absolute inset-0 z-10 bg-black/70 rounded-md p-4 flex flex-col justify-end gap-3 backdrop-blur-sm"
           >
-            <h3 className="text-sm md:text-base font-bold line-clamp-2">
+            <h3 className="text-sm md:text-base font-bold line-clamp-2 text-white">
               {item.title || item.name}
             </h3>
             
@@ -129,7 +138,7 @@ export default function MovieCard({ item, onSelect, onRemove }: MovieCardProps) 
                 <Star className="w-3 h-3 fill-current" />
                 <span>{item.vote_average.toFixed(1)}</span>
               </div>
-              <span className="text-zinc-400 capitalize">
+              <span className="text-white/70 capitalize">
                 {item.media_type || (item.title ? 'movie' : 'tv')}
               </span>
             </div>
@@ -145,28 +154,28 @@ export default function MovieCard({ item, onSelect, onRemove }: MovieCardProps) 
               <Button 
                 size="icon" 
                 variant="outline" 
-                className="w-8 h-8 rounded-full border-zinc-600 hover:border-white text-white"
+                className="w-8 h-8 rounded-full border-white/20 text-white hover:bg-white/10"
                 onClick={toggleWatchlist}
               >
-                {isInWatchlist ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                {isInWatchlist ? <Check className="w-4 h-4 text-red-500" /> : <Plus className="w-4 h-4" />}
               </Button>
               {onRemove ? (
                 <Button 
                   size="icon" 
                   variant="outline" 
-                  className="w-8 h-8 rounded-full border-zinc-600 hover:border-red-500 hover:text-red-500 text-white"
+                  className="w-8 h-8 rounded-full border-white/20 hover:border-red-500 hover:text-red-500 text-white"
                   onClick={(e) => {
                     e.stopPropagation();
                     onRemove(item);
                   }}
                 >
-                  <Trash2 className="w-4 h-4" />
+                   <Trash2 className="w-4 h-4" />
                 </Button>
               ) : (
                 <Button 
                   size="icon" 
                   variant="outline" 
-                  className="w-8 h-8 rounded-full border-zinc-600 hover:border-white text-white ml-auto"
+                  className="w-8 h-8 rounded-full border-white/20 hover:border-white text-white ml-auto"
                 >
                   <Info className="w-4 h-4" />
                 </Button>

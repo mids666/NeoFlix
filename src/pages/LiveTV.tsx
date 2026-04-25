@@ -37,10 +37,10 @@ function ChannelCard({ channel, isSelected, onClick }: { channel: TVChannel, isS
     <button
       onClick={onClick}
       className={`flex-none w-48 md:w-64 group relative rounded-xl overflow-hidden border transition-all duration-300 ${
-        isSelected ? 'border-red-600 ring-2 ring-red-600/20' : 'border-zinc-800 hover:border-zinc-700'
+        isSelected ? 'border-red-600 ring-2 ring-red-600/20' : 'border-border hover:border-muted-foreground/30'
       }`}
     >
-      <div className="aspect-video relative overflow-hidden bg-zinc-900 flex items-center justify-center p-4">
+      <div className="aspect-video relative overflow-hidden bg-muted flex items-center justify-center p-4">
         {channel.logo ? (
           <img 
             src={channel.logo} 
@@ -52,16 +52,16 @@ function ChannelCard({ channel, isSelected, onClick }: { channel: TVChannel, isS
             }}
           />
         ) : (
-          <Tv className="w-12 h-12 text-zinc-800" />
+          <Tv className="w-12 h-12 text-muted-foreground/40" />
         )}
         <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors" />
         <div className="absolute top-2 left-2">
           <Badge className="bg-red-600 py-0.5 px-2 text-[8px] font-black uppercase tracking-widest border-none">Live</Badge>
         </div>
       </div>
-      <div className="p-3 bg-zinc-900 border-t border-zinc-800 text-left">
-        <div className="text-xs font-bold truncate text-zinc-200 group-hover:text-white transition-colors">{channel.name}</div>
-        <div className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mt-1 flex items-center gap-1">
+      <div className="p-3 bg-card border-t border-border text-left transition-colors">
+        <div className="text-xs font-bold truncate text-foreground group-hover:text-red-600 transition-colors">{channel.name}</div>
+        <div className="text-[9px] text-muted-foreground uppercase font-black tracking-widest mt-1 flex items-center gap-1 transition-colors">
           <Globe className="w-2.5 h-2.5" />
           {channel.category}
         </div>
@@ -95,15 +95,15 @@ const ChannelRow: React.FC<ChannelRowProps> = ({ title, channels, selectedId, on
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between group/row">
-        <h3 className="text-sm font-black text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">
+        <h3 className="text-sm font-black text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-2 transition-colors">
           {title}
           <span className="w-8 h-[1px] bg-red-600/30" />
         </h3>
         <div className="flex gap-2">
-          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800" onClick={() => scroll('left')}>
+          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-border bg-muted/50 hover:bg-muted transition-colors" onClick={() => scroll('left')}>
             <ChevronLeft className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800" onClick={() => scroll('right')}>
+          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-border bg-muted/50 hover:bg-muted transition-colors" onClick={() => scroll('right')}>
             <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
@@ -255,16 +255,16 @@ export default function LiveTV() {
 
   if (loading && channels.length === 0) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center flex-col gap-6">
+      <div className="min-h-screen bg-background flex items-center justify-center flex-col gap-6">
         <Loader2 className="w-12 h-12 text-red-600 animate-spin" />
-        <div className="text-xl font-black tracking-tighter text-white uppercase">Initializing Guide...</div>
-        <p className="text-zinc-500 text-sm animate-pulse text-center">Filtering dozens of global streams for you</p>
+        <div className="text-xl font-black tracking-tighter text-foreground uppercase">Initializing Guide...</div>
+        <p className="text-muted-foreground text-sm animate-pulse text-center">Filtering dozens of global streams for you</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white pt-24 pb-20 px-4 lg:px-12">
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-20 px-4 lg:px-12 transition-colors duration-300">
       <div className="max-w-7xl mx-auto mb-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
           <div className="flex items-center gap-4">
@@ -272,8 +272,8 @@ export default function LiveTV() {
               <Tv className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-black tracking-tighter uppercase leading-none">Live TV</h1>
-              <div className="flex items-center gap-2 text-zinc-500 text-xs font-bold mt-1">
+              <h1 className="text-4xl font-black tracking-tighter uppercase leading-none text-foreground transition-colors">Live TV</h1>
+              <div className="flex items-center gap-2 text-muted-foreground text-xs font-bold mt-1 transition-colors">
                 <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3" /> Auto-Updating Guide</span>
                 <span>•</span>
                 <span>{channels.length} Global Channels</span>
@@ -291,7 +291,7 @@ export default function LiveTV() {
                 >
                   <Button 
                     variant="ghost" 
-                    className="gap-2 text-zinc-400 hover:text-white h-12 px-4 rounded-xl border border-zinc-800 bg-zinc-900/50"
+                    className="gap-2 text-muted-foreground hover:text-foreground h-12 px-4 rounded-xl border border-border bg-muted/50 transition-colors"
                     onClick={() => setSearchQuery('')}
                   >
                     <ArrowLeft className="w-4 h-4" />
@@ -301,22 +301,22 @@ export default function LiveTV() {
               )}
             </AnimatePresence>
 
-            <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 p-1 rounded-xl h-12 px-3">
-              <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${!showEnglishOnly ? 'text-white' : 'text-zinc-600'}`}>Global</span>
+            <div className="flex items-center gap-2 bg-muted border border-border p-1 rounded-xl h-12 px-3">
+              <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${!showEnglishOnly ? 'text-foreground' : 'text-muted-foreground'}`}>Global</span>
               <button 
                 onClick={() => setShowEnglishOnly(!showEnglishOnly)}
-                className={`w-10 h-5 rounded-full relative transition-colors duration-300 focus:outline-none ${showEnglishOnly ? 'bg-red-600' : 'bg-zinc-800'}`}
+                className={`w-10 h-5 rounded-full relative transition-colors duration-300 focus:outline-none ${showEnglishOnly ? 'bg-red-600' : 'bg-muted-foreground/30'}`}
               >
                 <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-transform duration-300 ${showEnglishOnly ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
-              <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${showEnglishOnly ? 'text-white' : 'text-zinc-600'}`}>English</span>
+              <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${showEnglishOnly ? 'text-foreground' : 'text-muted-foreground'}`}>English</span>
             </div>
 
             <div className="relative flex-1 md:w-80 group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-red-500 transition-colors" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-red-500 transition-colors" />
               <Input 
                 placeholder="Search TV Channels..."
-                className="bg-zinc-900 border-zinc-800 pl-11 h-12 w-full focus:ring-red-600 rounded-xl"
+                className="bg-muted border-border pl-11 h-12 w-full focus:ring-red-600 rounded-xl text-foreground"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -324,7 +324,7 @@ export default function LiveTV() {
             <Button 
               variant="outline" 
               size="icon" 
-              className="h-12 w-12 border-zinc-800 bg-zinc-900 hover:bg-zinc-800 rounded-xl"
+              className="h-12 w-12 border-border bg-muted hover:bg-card rounded-xl"
               onClick={fetchAllChannels}
               disabled={loading}
             >
@@ -333,12 +333,12 @@ export default function LiveTV() {
           </div>
         </div>
 
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-4 mb-12 flex items-center gap-4">
+        <div className="bg-muted/50 border border-border rounded-2xl p-4 mb-12 flex items-center gap-4">
           <div className="p-2 bg-yellow-500/10 rounded-lg shrink-0">
             <AlertTriangle className="w-5 h-5 text-yellow-500" />
           </div>
-          <p className="text-sm text-zinc-400 font-medium">
-            Streams are provided by public community lists. Some content may be <span className="text-white font-bold underline">Geo-Blocked</span> based on your current location. We filter most broken links automatically.
+          <p className="text-sm text-muted-foreground font-medium">
+            Streams are provided by public community lists. Some content may be <span className="text-foreground font-bold underline">Geo-Blocked</span> based on your current location. We filter most broken links automatically.
           </p>
         </div>
 
@@ -350,9 +350,9 @@ export default function LiveTV() {
               className="space-y-8 mb-20"
             >
               <LivePlayer url={selectedChannel.url} />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-zinc-900/30 p-8 rounded-3xl border border-zinc-800/50">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-muted/30 p-8 rounded-3xl border border-border/50">
                 <div className="flex items-center gap-6">
-                  <div className="w-24 h-24 bg-white rounded-2xl p-4 flex items-center justify-center border-2 border-zinc-800">
+                  <div className="w-24 h-24 bg-card rounded-2xl p-4 flex items-center justify-center border-2 border-border shadow-md">
                     {selectedChannel.logo ? (
                       <img 
                         src={selectedChannel.logo} 
@@ -361,18 +361,18 @@ export default function LiveTV() {
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <Tv className="w-10 h-10 text-zinc-900" />
+                      <Tv className="w-10 h-10 text-muted-foreground/30" />
                     )}
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center gap-3">
-                      <h2 className="text-4xl font-black tracking-tight line-clamp-1">{selectedChannel.name}</h2>
+                      <h2 className="text-4xl font-black tracking-tight line-clamp-1 text-foreground transition-colors">{selectedChannel.name}</h2>
                       <Badge className="bg-red-600 animate-pulse uppercase text-[10px] font-black tracking-widest border-none shrink-0">Live</Badge>
                     </div>
-                    <div className="flex items-center gap-4 text-zinc-500 text-sm font-bold">
+                    <div className="flex items-center gap-4 text-muted-foreground text-sm font-bold transition-colors">
                       <span className="flex items-center gap-1.5"><Globe className="w-4 h-4" /> Global</span>
-                      <span className="w-1 h-1 bg-zinc-800 rounded-full" />
-                      <span className="flex items-center gap-1.5 uppercase tracking-widest text-[10px] text-zinc-400">{selectedChannel.category}</span>
+                      <span className="w-1 h-1 bg-border rounded-full" />
+                      <span className="flex items-center gap-1.5 uppercase tracking-widest text-[10px] text-muted-foreground transition-colors">{selectedChannel.category}</span>
                     </div>
                   </div>
                 </div>
@@ -381,8 +381,8 @@ export default function LiveTV() {
                     variant="outline" 
                     className={`gap-2 h-12 rounded-xl transition-all ${
                       favorites.includes(selectedChannel.url) 
-                        ? 'border-red-600 bg-red-600/10 text-red-500' 
-                        : 'border-zinc-800 bg-zinc-900 hover:bg-zinc-800'
+                        ? 'border-red-600 bg-red-600/10 text-red-500 shadow-sm shadow-red-600/20' 
+                        : 'border-border bg-muted hover:bg-muted/80'
                     }`}
                     onClick={() => toggleFavorite(selectedChannel.url)}
                   >

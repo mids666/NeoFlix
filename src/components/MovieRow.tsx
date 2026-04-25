@@ -22,16 +22,16 @@ export default function MovieRow({ title, items, onSelect }: MovieRowProps) {
 
   return (
     <div className="space-y-4 py-4 group/row">
-      <h2 className="text-xl md:text-2xl font-bold px-4 md:px-12 text-white/90 group-hover/row:text-white transition-colors">
+      <h2 className="text-xl md:text-2xl font-bold px-4 md:px-12 text-foreground/90 group-hover/row:text-foreground transition-colors">
         {title}
       </h2>
       
       <div className="relative px-4 md:px-12">
         <button
-          className="absolute left-0 top-0 bottom-0 z-20 w-12 bg-black/50 opacity-0 group-hover/row:opacity-100 transition-opacity flex items-center justify-center hover:bg-black/70"
+          className="absolute left-0 top-0 bottom-0 z-20 w-12 bg-background/50 backdrop-blur-sm opacity-0 group-hover/row:opacity-100 transition-opacity flex items-center justify-center hover:bg-background/80"
           onClick={() => scroll('left')}
         >
-          <ChevronLeft className="w-8 h-8 text-white" />
+          <ChevronLeft className="w-8 h-8 text-foreground" />
         </button>
         
         <div 
@@ -44,10 +44,10 @@ export default function MovieRow({ title, items, onSelect }: MovieRowProps) {
         </div>
 
         <button
-          className="absolute right-0 top-0 bottom-0 z-20 w-12 bg-black/50 opacity-0 group-hover/row:opacity-100 transition-opacity flex items-center justify-center hover:bg-black/70"
+          className="absolute right-0 top-0 bottom-0 z-20 w-12 bg-background/50 backdrop-blur-sm opacity-0 group-hover/row:opacity-100 transition-opacity flex items-center justify-center hover:bg-background/80"
           onClick={() => scroll('right')}
         >
-          <ChevronRight className="w-8 h-8 text-white" />
+          <ChevronRight className="w-8 h-8 text-foreground" />
         </button>
       </div>
     </div>

@@ -88,7 +88,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative overflow-hidden transition-colors duration-300">
       {/* Background decoration */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-red-600/20 rounded-full blur-[120px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px]" />
@@ -101,13 +101,13 @@ export default function Login() {
       >
         <div className="text-center mb-8">
           <h1 className="text-5xl font-black tracking-tighter text-red-600 mb-2">FLIXLAB</h1>
-          <p className="text-gray-400">Your gateway to infinite entertainment</p>
+          <p className="text-muted-foreground">Your gateway to infinite entertainment</p>
         </div>
 
-        <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl text-white">
+        <Card className="bg-card/50 border-border backdrop-blur-xl text-foreground">
           <CardHeader>
             <CardTitle>{isLogin ? 'Welcome Back' : 'Create Account'}</CardTitle>
-            <CardDescription className="text-zinc-400">
+            <CardDescription className="text-muted-foreground">
               {isLogin ? 'Enter your credentials to access your library' : 'Join FlixLab and start streaming for free'}
             </CardDescription>
           </CardHeader>
@@ -122,27 +122,27 @@ export default function Login() {
                     className="space-y-4 overflow-hidden"
                   >
                     <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         type="text"
                         placeholder="Full Name"
-                        className="bg-zinc-800/50 border-zinc-700 pl-10 focus:ring-red-600"
+                        className="bg-muted/50 border-border pl-10 focus:ring-red-600"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required={!isLogin}
                       />
                     </div>
                     <div className="relative">
-                      <Globe className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                      <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <select
-                        className="w-full bg-zinc-800/50 border border-zinc-700 rounded-md pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-600 appearance-none text-zinc-300"
+                        className="w-full bg-muted/50 border border-border rounded-md pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-600 appearance-none text-foreground"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
                         required={!isLogin}
                       >
-                        <option value="" disabled>Select Country</option>
+                        <option value="" disabled className="bg-background">Select Country</option>
                         {countries.map(c => (
-                          <option key={c} value={c} className="bg-zinc-900">{c}</option>
+                          <option key={c} value={c} className="bg-background">{c}</option>
                         ))}
                       </select>
                     </div>
@@ -152,11 +152,11 @@ export default function Login() {
 
               <div className="space-y-2">
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="email"
                     placeholder="Email address"
-                    className="bg-zinc-800/50 border-zinc-700 pl-10 focus:ring-red-600"
+                    className="bg-muted/50 border-border pl-10 focus:ring-red-600"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -165,11 +165,11 @@ export default function Login() {
               </div>
               <div className="space-y-2">
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="password"
                     placeholder="Password"
-                    className="bg-zinc-800/50 border-zinc-700 pl-10 focus:ring-red-600"
+                    className="bg-muted/50 border-border pl-10 focus:ring-red-600"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -180,7 +180,7 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={handleForgotPassword}
-                      className="text-xs text-zinc-500 hover:text-red-500 transition-colors"
+                      className="text-xs text-muted-foreground hover:text-red-500 transition-colors"
                     >
                       Forgot password?
                     </button>
@@ -194,16 +194,16 @@ export default function Login() {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-zinc-800" />
+                <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-zinc-900 px-2 text-zinc-500">Or continue with</span>
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
               </div>
             </div>
 
             <Button
               variant="outline"
-              className="w-full border-zinc-700 bg-transparent hover:bg-zinc-800 text-white py-6"
+              className="w-full border-border bg-transparent hover:bg-muted text-foreground py-6"
               onClick={handleGoogleLogin}
             >
               <Chrome className="mr-2 h-4 w-4" />
@@ -213,7 +213,7 @@ export default function Login() {
             <div className="mt-4">
               <Button
                 variant="ghost"
-                className="w-full text-zinc-500 hover:text-white"
+                className="w-full text-muted-foreground hover:text-foreground"
                 onClick={() => navigate('/')}
               >
                 Browse as Guest
@@ -223,7 +223,7 @@ export default function Login() {
           <CardFooter className="flex justify-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-zinc-400 hover:text-white transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
             </button>

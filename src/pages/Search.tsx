@@ -6,9 +6,11 @@ import MovieCard from '../components/MovieCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Search as SearchIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useSettings } from '../hooks/useSettings';
 
 export default function Search() {
   const [searchParams] = useSearchParams();
+  const { settings } = useSettings();
   const query = searchParams.get('q') || '';
   const providerId = searchParams.get('providerId') || '';
   const [results, setResults] = useState<TMDBItem[]>([]);
@@ -47,25 +49,31 @@ export default function Search() {
     navigate(`/watch/${type}/${item.id}`);
   };
 
+  const gridClasses = {
+    small: 'grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10',
+    medium: 'grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8',
+    large: 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
+  };
+
   return (
     <div className="min-h-screen pt-24 px-4 md:px-12 pb-20">
       <div className="mb-12">
-        <h1 className="text-2xl md:text-3xl font-bold text-zinc-400">
-          Search results for: <span className="text-white">"{query}"</span>
+        <h1 className="text-2xl md:text-3xl font-bold text-muted-foreground">
+          Search results for: <span className="text-foreground">"{query}"</span>
         </h1>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-6">
+        <div className={`grid ${gridClasses[settings.cardSize]} gap-4 md:gap-6`}>
           {Array.from({ length: 12 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-[2/3] bg-zinc-900 rounded-md" />
+            <Skeleton key={i} className="aspect-[2/3] bg-muted rounded-md" />
           ))}
         </div>
       ) : results.length > 0 ? (
         <>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-6">
+          <div className={`grid ${gridClasses[settings.cardSize]} gap-4 md:gap-6`}>
             {results.map((item, index) => (
-              <MovieCard key={`${item.id}-${index}`} item={item} onSelect={handleSelect} />
+              <MovieCard key={`${item.id}-${index}`} item={item} onSelect={handleSelect} className="w-full h-full" />
             ))}
           </div>
 
@@ -75,7 +83,7 @@ export default function Search() {
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
+                className="px-4 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
               >
                 Prev
               </button>
@@ -100,7 +108,7 @@ export default function Search() {
                       className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all ${
                         page === pageNum 
                           ? 'bg-red-600 text-white' 
-                          : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
                       }`}
                     >
                       {pageNum}
@@ -112,7 +120,7 @@ export default function Search() {
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-4 py-2 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
+                className="px-4 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
               >
                 Next
               </button>
@@ -120,18 +128,18 @@ export default function Search() {
           )}
           
           {totalPages > 1 && (
-            <div className="mt-4 text-center text-zinc-500 text-sm font-medium">
+            <div className="mt-4 text-center text-muted-foreground text-sm font-medium">
               Page {page} of {totalPages}
             </div>
           )}
         </>
       ) : query ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-20 h-20 bg-zinc-900 rounded-full flex items-center justify-center mb-6">
-            <SearchIcon className="w-10 h-10 text-zinc-700" />
+          <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
+            <SearchIcon className="w-10 h-10 text-muted-foreground/30" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">No results found</h2>
-          <p className="text-zinc-500">Try searching for something else</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">No results found</h2>
+          <p className="text-muted-foreground">Try searching for something else</p>
         </div>
       ) : null}
     </div>

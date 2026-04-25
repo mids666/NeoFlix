@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 
 export default function TermsOfService() {
   return (
-    <div className="min-h-screen bg-zinc-950 pt-32 pb-20 px-4">
+    <div className="min-h-screen bg-background pt-32 pb-20 px-4 transition-colors duration-300">
       <div className="max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -10,13 +10,13 @@ export default function TermsOfService() {
           className="space-y-8"
         >
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white">Terms of Service</h1>
-            <p className="text-zinc-500 font-medium">Last updated: April 13, 2026</p>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground">Terms of Service</h1>
+            <p className="text-muted-foreground font-medium">Last updated: April 13, 2026</p>
           </div>
 
-          <div className="prose prose-invert max-w-none space-y-6 text-zinc-400">
+          <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-white">1. Acceptance of Terms</h2>
+              <h2 className="text-2xl font-bold text-foreground">1. Acceptance of Terms</h2>
               <p>
                 By accessing and using FlixLab, you accept and agree to be bound by the terms and provision 
                 of this agreement.
@@ -24,7 +24,7 @@ export default function TermsOfService() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-white">2. Use License</h2>
+              <h2 className="text-2xl font-bold text-foreground">2. Use License</h2>
               <p>
                 Permission is granted to temporarily access the materials (information or software) on 
                 FlixLab's website for personal, non-commercial transitory viewing only.
@@ -32,7 +32,7 @@ export default function TermsOfService() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-white">3. Disclaimer</h2>
+              <h2 className="text-2xl font-bold text-foreground">3. Disclaimer</h2>
               <p>
                 The materials on FlixLab's website are provided on an 'as is' basis. FlixLab makes no 
                 warranties, expressed or implied, and hereby disclaims and negates all other warranties 
@@ -43,7 +43,7 @@ export default function TermsOfService() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-white">4. Limitations</h2>
+              <h2 className="text-2xl font-bold text-foreground">4. Limitations</h2>
               <p>
                 In no event shall FlixLab or its suppliers be liable for any damages (including, without 
                 limitation, damages for loss of data or profit, or due to business interruption) arising 

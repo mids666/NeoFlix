@@ -16,11 +16,14 @@ import {
   DialogTrigger 
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { Camera, Trash2, User as UserIcon, AlertTriangle, Mail } from 'lucide-react';
+import { Camera, Trash2, User as UserIcon, AlertTriangle, Mail, Monitor, LayoutGrid, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useSettings } from '../hooks/useSettings';
+import { Switch } from '@/components/ui/switch';
 
 export default function Settings() {
   const { user, userData, currentProfile } = useAuth();
+  const { settings, updateSetting } = useSettings();
   const [name, setName] = useState(currentProfile?.name || '');
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeactivating, setIsDeactivating] = useState(false);
@@ -90,25 +93,25 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen pt-24 px-4 md:px-12 pb-20 max-w-4xl mx-auto">
-      <h1 className="text-4xl font-black tracking-tighter text-white mb-8">Settings</h1>
+    <div className="min-h-screen pt-24 px-4 md:px-12 pb-20 max-w-4xl mx-auto transition-colors duration-300">
+      <h1 className="text-4xl font-black tracking-tighter text-foreground mb-8 transition-colors">Settings</h1>
       
       <div className="space-y-8">
         {/* Profile Settings */}
-        <Card className="bg-zinc-900 border-zinc-800 text-white">
+        <Card className="bg-card border-border text-foreground transition-colors">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <UserIcon className="w-5 h-5 text-red-600" />
               Profile Settings
             </CardTitle>
-            <CardDescription className="text-zinc-400">
+            <CardDescription className="text-muted-foreground transition-colors">
               Update your profile information and avatar
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex flex-col md:flex-row items-center gap-8">
               <div className="relative group">
-                <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-zinc-800 group-hover:border-red-600 transition-all">
+                <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-border group-hover:border-red-600 transition-all shadow-xl">
                   <img 
                     src={currentProfile?.avatar || undefined} 
                     alt={currentProfile?.name} 
@@ -132,17 +135,17 @@ export default function Settings() {
               
               <div className="flex-1 space-y-4 w-full">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-zinc-400">Profile Name</label>
+                  <label className="text-sm font-medium text-muted-foreground transition-colors">Profile Name</label>
                   <Input 
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="bg-zinc-800 border-zinc-700 text-white"
+                    className="bg-muted border-border text-foreground transition-colors"
                   />
                 </div>
                 <Button 
                   onClick={handleUpdateProfile} 
                   disabled={isUpdating || name === currentProfile?.name}
-                  className="bg-red-600 hover:bg-red-700"
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold transition-all"
                 >
                   Save Changes
                 </Button>
@@ -151,33 +154,115 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Account Settings */}
-        <Card className="bg-zinc-900 border-zinc-800 text-white">
+        {/* App Preferences */}
+        <Card className="bg-card border-border transition-colors duration-300">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <Monitor className="w-5 h-5 text-red-600" />
+              App Preferences
+            </CardTitle>
+            <CardDescription className="text-muted-foreground">
+              Customize your FlixLab experience
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            {/* Theme Selection */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-sm text-foreground">Interface Theme</h4>
+                  <p className="text-xs text-muted-foreground">Choose your preferred visual style</p>
+                </div>
+                <div className="flex bg-muted p-1 rounded-xl">
+                  {(['dark', 'light', 'system'] as const).map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => updateSetting('theme', t)}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
+                        settings.theme === t 
+                          ? 'bg-red-600 text-white shadow-lg' 
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Movie Card Size */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <LayoutGrid className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <h4 className="font-bold text-sm text-foreground">Movie Card Size</h4>
+                    <p className="text-xs text-muted-foreground">Adjust the display size of media posters</p>
+                  </div>
+                </div>
+                <div className="flex bg-muted p-1 rounded-xl">
+                  {(['small', 'medium', 'large'] as const).map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => updateSetting('cardSize', size)}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
+                        settings.cardSize === size 
+                          ? 'bg-background text-foreground shadow-lg border border-border' 
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Autoplay Toggle */}
+            <div className="flex items-center justify-between pt-4 border-t border-border">
+              <div className="flex items-center gap-3">
+                <Zap className="w-5 h-5 text-muted-foreground" />
+                <div>
+                  <h4 className="font-bold text-sm text-foreground">Autoplay Trailers</h4>
+                  <p className="text-xs text-muted-foreground">Automatically play trailers on details pages</p>
+                </div>
+              </div>
+              <Switch 
+                checked={settings.autoplay}
+                onCheckedChange={(checked) => updateSetting('autoplay', checked)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Account Settings */}
+        <Card className="bg-card border-border transition-colors duration-300">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-foreground">
               <Mail className="w-5 h-5 text-red-600" />
               Account Information
             </CardTitle>
-            <CardDescription className="text-zinc-400">
+            <CardDescription className="text-muted-foreground">
               Your account details and verification status
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex justify-between items-center p-4 bg-zinc-800/50 rounded-xl">
+            <div className="flex justify-between items-center p-4 bg-muted rounded-xl transition-colors">
               <div>
-                <div className="text-zinc-500 text-xs uppercase font-bold mb-1">Email Address</div>
-                <div className="text-white">{user?.email}</div>
+                <div className="text-muted-foreground text-xs uppercase font-bold mb-1 transition-colors">Email Address</div>
+                <div className="text-foreground font-medium transition-colors">{user?.email}</div>
               </div>
-              <div className="px-3 py-1 bg-green-500/20 text-green-500 text-[10px] font-black rounded-full uppercase tracking-widest">
+              <div className="px-3 py-1 bg-green-500/20 text-green-500 text-[10px] font-black rounded-full uppercase tracking-widest transition-colors">
                 Verified
               </div>
             </div>
-            <div className="flex justify-between items-center p-4 bg-zinc-800/50 rounded-xl">
+            <div className="flex justify-between items-center p-4 bg-muted rounded-xl transition-colors">
               <div>
-                <div className="text-zinc-500 text-xs uppercase font-bold mb-1">Subscription Plan</div>
-                <div className="text-white">FlixLab Free Premium</div>
+                <div className="text-muted-foreground text-xs uppercase font-bold mb-1 transition-colors">Subscription Plan</div>
+                <div className="text-foreground font-medium transition-colors">FlixLab Free Premium</div>
               </div>
-              <div className="px-3 py-1 bg-red-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest">
+              <div className="px-3 py-1 bg-red-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest transition-colors">
                 Active
               </div>
             </div>
@@ -185,18 +270,18 @@ export default function Settings() {
         </Card>
 
         {/* Danger Zone */}
-        <Card className="bg-zinc-900 border-red-900/30 text-white">
-          <CardHeader>
-            <CardTitle className="text-red-500">Danger Zone</CardTitle>
-            <CardDescription className="text-zinc-400">
+        <Card className="bg-card border-red-600/30 text-foreground transition-colors overflow-hidden">
+          <CardHeader className="bg-red-600/5">
+            <CardTitle className="text-red-600">Danger Zone</CardTitle>
+            <CardDescription className="text-muted-foreground transition-colors">
               Irreversible actions for your account
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between p-4 border border-red-900/20 rounded-xl bg-red-900/5">
+          <CardContent className="pt-6">
+            <div className="flex flex-col md:flex-row items-center justify-between p-4 border border-red-600/20 rounded-xl bg-red-600/5 gap-4">
               <div>
-                <h4 className="font-bold">Deactivate Account</h4>
-                <p className="text-sm text-zinc-500">Permanently delete your account and all profiles</p>
+                <h4 className="font-bold text-foreground transition-colors">Deactivate Account</h4>
+                <p className="text-sm text-muted-foreground transition-colors">Permanently delete your account and all profiles</p>
               </div>
               
               <Dialog open={showDeactivateDialog} onOpenChange={setShowDeactivateDialog}>
@@ -204,20 +289,20 @@ export default function Settings() {
                   render={
                     <Button 
                       variant="destructive" 
-                      className="bg-red-600 hover:bg-red-700"
+                      className="bg-red-600 hover:bg-red-700 text-white font-bold w-full md:w-auto transition-all"
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Deactivate
                     </Button>
                   }
                 />
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                <DialogContent className="bg-card border-border text-foreground transition-colors">
                   <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-red-500">
+                    <DialogTitle className="flex items-center gap-2 text-red-600 transition-colors">
                       <AlertTriangle className="w-5 h-5" />
                       Are you absolutely sure?
                     </DialogTitle>
-                    <DialogDescription className="text-zinc-400">
+                    <DialogDescription className="text-muted-foreground transition-colors">
                       This action cannot be undone. This will permanently delete your
                       account and remove all your data from our servers.
                     </DialogDescription>
@@ -226,7 +311,7 @@ export default function Settings() {
                     <Button
                       variant="ghost"
                       onClick={() => setShowDeactivateDialog(false)}
-                      className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+                      className="text-muted-foreground hover:text-foreground hover:bg-muted transition-colors font-bold"
                     >
                       Cancel
                     </Button>
@@ -234,7 +319,7 @@ export default function Settings() {
                       variant="destructive"
                       onClick={handleDeactivate}
                       disabled={isDeactivating}
-                      className="bg-red-600 hover:bg-red-700"
+                      className="bg-red-600 hover:bg-red-700 text-white font-bold transition-all"
                     >
                       {isDeactivating ? 'Deactivating...' : 'Yes, Deactivate Account'}
                     </Button>
