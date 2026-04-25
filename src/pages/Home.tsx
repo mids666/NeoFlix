@@ -354,7 +354,7 @@ export default function Home() {
                   onClick={() => handleSelect(suggested[0])}
                 >
                   <img 
-                    src={getImageUrl(suggested[0].backdrop_path, 'original') || ''} 
+                    src={getImageUrl(suggested[0].backdrop_path, 'original') || undefined} 
                     alt={suggested[0].title || suggested[0].name}
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                     referrerPolicy="no-referrer"
@@ -403,7 +403,7 @@ export default function Home() {
                           layoutId={`poster-${suggested[0].id}`}
                           initial={{ y: 30, opacity: 0 }}
                           whileInView={{ y: 0, opacity: 1 }}
-                          src={getImageUrl(suggested[0].poster_path, 'w500') || ''}
+                          src={getImageUrl(suggested[0].poster_path, 'w500') || undefined}
                           className="rounded-2xl shadow-2xl border border-white/10 ring-1 ring-white/20"
                           referrerPolicy="no-referrer"
                         />
@@ -452,7 +452,7 @@ export default function Home() {
                       onClick={() => handleSelect(item)}
                     >
                       <img 
-                        src={getImageUrl(item.backdrop_path, 'w500') || ''} 
+                        src={getImageUrl(item.backdrop_path, 'w500') || undefined} 
                         alt={item.title || item.name}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         referrerPolicy="no-referrer"
