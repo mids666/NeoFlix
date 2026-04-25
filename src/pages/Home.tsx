@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Play, Info, Star, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../hooks/useAuth';
+import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import { 
   Dialog, 
   DialogContent, 
@@ -17,9 +19,12 @@ import {
 } from '@/components/ui/dialog';
 
 export default function Home() {
-  const { user, setShowAuthModal } = useAuth();
+  const { user, currentProfile, setShowAuthModal } = useAuth();
   const navigate = useNavigate();
   const [trending, setTrending] = useState<TMDBItem[]>([]);
+  const [suggestedType, setSuggestedType] = useState<'movie' | 'tv'>('movie');
+  const [suggestedMovies, setSuggestedMovies] = useState<TMDBItem[]>([]);
+  const [suggestedTV, setSuggestedTV] = useState<TMDBItem[]>([]);
   const [popularMovies, setPopularMovies] = useState<TMDBItem[]>([]);
   const [popularTV, setPopularTV] = useState<TMDBItem[]>([]);
   const [topRated, setTopRated] = useState<TMDBItem[]>([]);
@@ -28,14 +33,16 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [trendingData, moviesData, tvData, topData] = await Promise.all([
+      const [trendingData, suggestedMoviesData, suggestedTVData, moviesData, tvData, topData] = await Promise.all([
         tmdbService.getTrending(),
+        tmdbService.getTopRated('movie'),
+        tmdbService.getTopRated('tv'),
         tmdbService.getPopular('movie'),
         tmdbService.getPopular('tv'),
         tmdbService.getTopRated('movie'),
       ]);
 
-      // Filter trending for the banner to only show recently released items (last 6 months)
+      // Filter trending for the banner
       const now = new Date();
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(now.getMonth() - 6);
@@ -47,7 +54,6 @@ export default function Home() {
         return date >= sixMonthsAgo && date <= now;
       });
 
-      // Fallback to original trending if filter is too restrictive, but sort by date
       const finalTrending = recentlyReleasedTrending.length >= 3 
         ? recentlyReleasedTrending 
         : [...trendingData].sort((a, b) => {
@@ -57,6 +63,46 @@ export default function Home() {
           });
 
       setTrending(finalTrending);
+      
+      // Personalization logic
+      let finalSuggestedMovies: TMDBItem[] = [];
+      let finalSuggestedTV: TMDBItem[] = [];
+
+      try {
+        if (user && currentProfile) {
+          const recentlyWatchedRef = collection(db, 'users', user.uid, 'profiles', currentProfile.id, 'recentlyWatched');
+          const q = query(recentlyWatchedRef, orderBy('watchedAt', 'desc'), limit(5));
+          const snapshot = await getDocs(q);
+          const history = snapshot.docs.map(doc => doc.data());
+
+          if (history.length > 0) {
+            const movieHistory = history.filter(h => h.type === 'movie');
+            const tvHistory = history.filter(h => h.type === 'tv');
+
+            if (movieHistory.length > 0) {
+              const recs = await tmdbService.getRecommendations('movie', movieHistory[0].tmdbId);
+              finalSuggestedMovies = recs.filter((item: any) => item.vote_average > 7).slice(0, 5);
+            }
+            if (tvHistory.length > 0) {
+              const recs = await tmdbService.getRecommendations('tv', tvHistory[0].tmdbId);
+              finalSuggestedTV = recs.filter((item: any) => item.vote_average > 7).slice(0, 5);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching personalized suggestions:', error);
+      }
+
+      // Fallback values
+      if (finalSuggestedMovies.length < 5) {
+        finalSuggestedMovies = [...finalSuggestedMovies, ...suggestedMoviesData.slice(10, 20)].slice(0, 5);
+      }
+      if (finalSuggestedTV.length < 5) {
+        finalSuggestedTV = [...finalSuggestedTV, ...suggestedTVData.slice(10, 20)].slice(0, 5);
+      }
+
+      setSuggestedMovies(finalSuggestedMovies);
+      setSuggestedTV(finalSuggestedTV);
       setPopularMovies(moviesData);
       setPopularTV(tvData);
       setTopRated(topData);
@@ -67,7 +113,7 @@ export default function Home() {
     };
 
     fetchData();
-  }, []);
+  }, [user, currentProfile]);
 
   useEffect(() => {
     if (trending.length === 0) return;
@@ -225,6 +271,158 @@ export default function Home() {
         </div>
 
         <MovieRow title="Trending Now" items={trending} onSelect={handleSelect} />
+
+        {/* Suggested for you Section */}
+        {(suggestedType === 'movie' ? suggestedMovies : suggestedTV).length >= 5 && (() => {
+          const suggested = suggestedType === 'movie' ? suggestedMovies : suggestedTV;
+          return (
+            <div className="px-4 md:px-12 py-12 relative overflow-hidden">
+              {/* Contextual Backdrop Text */}
+              <div className="absolute top-0 left-12 opacity-[0.03] dark:opacity-[0.05] select-none pointer-events-none transition-colors">
+                <h1 className="text-[6rem] md:text-[8rem] font-black italic tracking-tighter leading-none uppercase">
+                  RECOMMENDED
+                </h1>
+              </div>
+
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 relative z-10 gap-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-1.5 h-8 bg-red-600 rounded-full" />
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-0.5">
+                      {suggestedType === 'movie' ? 'Movie' : 'TV Show'} spotlight
+                    </span>
+                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-foreground leading-none lowercase first-letter:uppercase">Suggested for you</h2>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-muted/30 p-1 rounded-full border border-border/50">
+                  <Button 
+                    variant={suggestedType === 'movie' ? 'secondary' : 'ghost'} 
+                    size="sm" 
+                    className={`rounded-full font-bold px-6 transition-all ${suggestedType === 'movie' ? 'bg-red-600 text-white hover:bg-red-700' : ''}`}
+                    onClick={() => setSuggestedType('movie')}
+                  >
+                    Movies
+                  </Button>
+                  <Button 
+                    variant={suggestedType === 'tv' ? 'secondary' : 'ghost'} 
+                    size="sm" 
+                    className={`rounded-full font-bold px-6 transition-all ${suggestedType === 'tv' ? 'bg-red-600 text-white hover:bg-red-700' : ''}`}
+                    onClick={() => setSuggestedType('tv')}
+                  >
+                    TV Shows
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+                {/* Main Spotlight Card */}
+                <motion.div 
+                  layout
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                  whileHover={{ scale: 0.995 }}
+                  className="lg:col-span-7 relative aspect-[16/9] lg:aspect-auto lg:h-[550px] rounded-[3rem] overflow-hidden group cursor-pointer shadow-2xl border border-white/5"
+                  onClick={() => handleSelect(suggested[0])}
+                >
+                  <img 
+                    src={getImageUrl(suggested[0].backdrop_path, 'original') || ''} 
+                    alt={suggested[0].title || suggested[0].name}
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-transparent hidden md:block" />
+                  
+                  <div className="absolute inset-0 p-8 md:p-12 flex items-end text-white">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-end w-full">
+                      <div className="relative group/poster hidden md:block max-w-[200px]">
+                        <motion.img 
+                          layoutId={`poster-${suggested[0].id}`}
+                          initial={{ y: 30, opacity: 0 }}
+                          whileInView={{ y: 0, opacity: 1 }}
+                          src={getImageUrl(suggested[0].poster_path, 'w500') || ''}
+                          className="rounded-2xl shadow-2xl border border-white/10 ring-1 ring-white/20"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                      <div className="space-y-4">
+                        <h3 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tighter leading-[0.9] drop-shadow-2xl">
+                          {suggested[0].title || suggested[0].name}
+                        </h3>
+                        <div className="flex items-center gap-3 text-xs font-black">
+                          <div className="flex items-center gap-1 text-yellow-500 bg-white/10 backdrop-blur-md px-2 py-1 rounded-md">
+                            <Star className="w-3 h-3 fill-current" />
+                            <span>{suggested[0].vote_average.toFixed(1)}</span>
+                          </div>
+                          <span className="bg-red-600 text-white px-2 py-0.5 rounded-md uppercase text-[10px]">Must Watch</span>
+                          <span className="text-white/60">{new Date(suggested[0].release_date || suggested[0].first_air_date || '').getFullYear()}</span>
+                        </div>
+                        <p className="text-xs md:text-sm text-white/80 line-clamp-2 md:line-clamp-3 leading-relaxed max-w-sm drop-shadow-md">
+                          {suggested[0].overview}
+                        </p>
+                        <Button 
+                          className="bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200 rounded-full px-6 py-4 h-auto font-black text-base gap-2 shadow-2xl transition-all hover:scale-105 active:scale-95 group/btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSelect(suggested[0]);
+                          }}
+                        >
+                          <Play className="w-5 h-5 fill-current" />
+                          Watch Now
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Sidebar Grid */}
+                <div className="lg:col-span-5 grid grid-cols-2 gap-4">
+                  {suggested.slice(1, 5).map((item, index) => (
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      key={item.id}
+                      whileHover={{ y: -8 }}
+                      className="relative aspect-video lg:aspect-square rounded-[2rem] overflow-hidden group cursor-pointer shadow-xl border border-border/50 bg-muted"
+                      onClick={() => handleSelect(item)}
+                    >
+                      <img 
+                        src={getImageUrl(item.backdrop_path, 'w500') || ''} 
+                        alt={item.title || item.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-90" />
+                      
+                      <div className="absolute bottom-0 left-0 w-full p-5 space-y-2">
+                        <div className="flex items-center gap-1.5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                          <div className="w-6 h-6 rounded-full bg-red-600 flex items-center justify-center">
+                            <Play className="w-3 h-3 text-white fill-current ml-0.5" />
+                          </div>
+                          <span className="text-[10px] font-black text-white uppercase tracking-tighter">Play now</span>
+                        </div>
+                        <h4 className="text-white font-black text-base md:text-lg leading-snug line-clamp-2 drop-shadow-xl group-hover:text-red-500 transition-colors">
+                          {item.title || item.name}
+                        </h4>
+                        <div className="flex items-center justify-between text-[11px] font-black text-white/50">
+                          <div className="flex items-center gap-1 text-yellow-500 bg-white/10 px-1.5 py-0.5 rounded backdrop-blur-sm">
+                            <Star className="w-3 h-3 fill-current" />
+                            <span>{item.vote_average.toFixed(1)}</span>
+                          </div>
+                          <span>{new Date(item.release_date || item.first_air_date || '').getFullYear()}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         <MovieRow title="Popular Movies" items={popularMovies} onSelect={handleSelect} />
         <MovieRow title="Popular TV Shows" items={popularTV} onSelect={handleSelect} />
         <MovieRow title="Top Rated" items={topRated} onSelect={handleSelect} />

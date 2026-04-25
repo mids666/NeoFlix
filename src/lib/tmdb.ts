@@ -84,6 +84,10 @@ export const tmdbService = {
     const { data } = await tmdb.get(`/tv/${id}/season/${season}`);
     return data.episodes;
   },
+  getRecommendations: async (type: 'movie' | 'tv', id: string) => {
+    const { data } = await tmdb.get(`/${type}/${id}/recommendations`);
+    return data.results;
+  },
   getUpcoming: async () => {
     const { data } = await tmdb.get('/movie/upcoming');
     return data.results;
