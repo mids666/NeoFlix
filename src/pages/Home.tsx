@@ -359,9 +359,9 @@ export default function Home() {
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-transparent hidden md:block" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10" />
+                  <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-background via-background/80 to-transparent z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-transparent hidden md:block z-10" />
                   
                   {/* Not Interested Button */}
                   <div className="absolute top-8 right-8 z-30">
@@ -396,7 +396,7 @@ export default function Home() {
                     </div>
                   </div>
                   
-                  <div className="absolute inset-0 p-8 md:p-12 flex items-end text-white">
+                  <div className="absolute inset-0 p-8 md:p-12 flex items-end text-white z-20">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-end w-full">
                       <div className="relative group/poster hidden md:block max-w-[200px]">
                         <motion.img 
@@ -439,7 +439,7 @@ export default function Home() {
                 </motion.div>
 
                 {/* Sidebar Grid */}
-                <div className="lg:col-span-5 grid grid-cols-2 gap-4">
+                <div className="lg:col-span-5 grid grid-cols-2 grid-rows-2 gap-4 lg:h-[480px]">
                   {suggested.slice(1, 5).map((item, index) => (
                     <motion.div
                       layout
@@ -448,7 +448,7 @@ export default function Home() {
                       transition={{ delay: index * 0.1 }}
                       key={item.id}
                       whileHover={{ y: -8 }}
-                      className="relative aspect-video lg:aspect-square rounded-[2rem] overflow-hidden group cursor-pointer shadow-xl border border-border/50 bg-muted"
+                      className="relative aspect-video lg:aspect-auto h-full rounded-[2rem] overflow-hidden group cursor-pointer shadow-xl border border-border/50 bg-muted"
                       onClick={() => handleSelect(item)}
                     >
                       <img 
@@ -457,7 +457,7 @@ export default function Home() {
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         referrerPolicy="no-referrer"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-90" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-90 z-10" />
                       
                       {/* Small Card Menu */}
                       <div className="absolute top-3 right-3 z-30">
@@ -491,7 +491,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                      <div className="absolute bottom-0 left-0 w-full p-5 space-y-2">
+                      <div className="absolute bottom-0 left-0 w-full p-5 space-y-2 z-20">
                         <div className="flex items-center gap-1.5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                           <div className="w-6 h-6 rounded-full bg-red-600 flex items-center justify-center">
                             <Play className="w-3 h-3 text-white fill-current ml-0.5" />
