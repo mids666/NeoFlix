@@ -374,7 +374,7 @@ export default function Watch() {
                   <div className="flex flex-wrap items-center gap-4 pt-4">
                     <Button 
                       size="lg" 
-                      className="bg-red-600 text-white hover:bg-red-700 px-8 h-14 text-lg font-bold rounded-md gap-3 shadow-lg transition-all"
+                      className="bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200 px-8 h-14 text-lg font-bold rounded-md gap-3 shadow-lg transition-all"
                       onClick={handlePlay}
                     >
                       <Play className="w-6 h-6 fill-current" />

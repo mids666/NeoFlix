@@ -179,7 +179,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                   >
                     <Button 
                       size="lg" 
-                      className="bg-white text-black hover:bg-zinc-200 h-20 px-16 rounded-full text-2xl font-bold gap-4 shadow-2xl shadow-white/10"
+                      className="bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200 h-20 px-16 rounded-full text-2xl font-bold gap-4 shadow-2xl shadow-white/10"
                       onClick={() => setIsPlaying(true)}
                     >
                       <Play className="w-10 h-10 fill-current" />

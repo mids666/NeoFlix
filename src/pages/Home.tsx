@@ -166,7 +166,7 @@ export default function Home() {
                 <div className="flex items-center gap-4 pt-4">
                   <Button 
                     size="lg" 
-                    className="bg-red-600 text-white hover:bg-red-700 h-14 px-8 rounded-full text-lg font-bold gap-2"
+                    className="bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200 h-14 px-8 rounded-full text-lg font-bold gap-2 shadow-lg"
                     onClick={() => handleSelect(featured)}
                   >
                     <Play className="w-6 h-6 fill-current" />

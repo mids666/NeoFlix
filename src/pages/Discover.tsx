@@ -381,13 +381,13 @@ export default function Discover() {
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Button 
                   size="lg"
-                  className="bg-red-600 text-white hover:bg-red-700 h-10 md:h-12 px-6 md:px-8 rounded-xl font-black uppercase tracking-tighter gap-2 transition-all hover:scale-105 active:scale-95 shadow-lg"
+                  className="bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200 h-10 md:h-12 px-6 md:px-8 rounded-xl font-black uppercase tracking-tighter gap-2 transition-all hover:scale-105 active:scale-95 shadow-lg"
                   onClick={(e) => {
                     e.stopPropagation();
                     handlePlay(currentItem);
                   }}
                 >
-                  <Play className="w-5 h-5 fill-current text-white" />
+                  <Play className="w-5 h-5 fill-current" />
                   Play
                 </Button>
 

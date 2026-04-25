@@ -146,7 +146,7 @@ export default function MovieCard({ item, onSelect, onRemove, className }: Movie
             <div className="flex items-center gap-2">
               <Button 
                 size="icon" 
-                className="w-8 h-8 rounded-full bg-white text-black hover:bg-zinc-200"
+                className="w-8 h-8 rounded-full bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200"
                 onClick={handleSelect}
               >
                 <Play className="w-4 h-4 fill-current" />
