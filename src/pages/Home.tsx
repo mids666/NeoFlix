@@ -4,7 +4,7 @@ import { tmdbService, getImageUrl } from '../lib/tmdb';
 import { TMDBItem } from '../types';
 import MovieRow from '../components/MovieRow';
 import { Button } from '@/components/ui/button';
-import { Play, Info, Star, Lock } from 'lucide-react';
+import { Play, Info, Star, Lock, MoreHorizontal } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../hooks/useAuth';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
@@ -30,6 +30,34 @@ export default function Home() {
   const [topRated, setTopRated] = useState<TMDBItem[]>([]);
   const [featured, setFeatured] = useState<TMDBItem | null>(null);
   const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+
+  const handleNotInterested = async (item: TMDBItem, index: number) => {
+    try {
+      // Fetch a new suggestion based on the item being rejected or just a random top rated one
+      const type = suggestedType;
+      const { results } = await tmdbService.getDiscover(type, undefined, 'vote_average.desc', Math.floor(Math.random() * 5) + 1);
+      
+      // Find an item not already in the list
+      const currentList = type === 'movie' ? suggestedMovies : suggestedTV;
+      const newItem = results.find((r: TMDBItem) => 
+        r.vote_average > 7 && !currentList.some(existing => existing.id === r.id)
+      ) || results[0];
+
+      if (type === 'movie') {
+        const newList = [...suggestedMovies];
+        newList[index] = newItem;
+        setSuggestedMovies(newList);
+      } else {
+        const newList = [...suggestedTV];
+        newList[index] = newItem;
+        setSuggestedTV(newList);
+      }
+      setOpenMenuId(null);
+    } catch (error) {
+      console.error('Error replacing suggestion:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -279,7 +307,7 @@ export default function Home() {
             <div className="px-4 md:px-12 py-12 relative overflow-hidden">
               {/* Contextual Backdrop Text */}
               <div className="absolute top-0 left-12 opacity-[0.03] dark:opacity-[0.05] select-none pointer-events-none transition-colors">
-                <h1 className="text-[6rem] md:text-[8rem] font-black italic tracking-tighter leading-none uppercase">
+                <h1 className="text-[6rem] md:text-[8rem] font-black tracking-tighter leading-none uppercase">
                   RECOMMENDED
                 </h1>
               </div>
@@ -322,7 +350,7 @@ export default function Home() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
                   whileHover={{ scale: 0.995 }}
-                  className="lg:col-span-7 relative aspect-[16/9] lg:aspect-auto lg:h-[550px] rounded-[3rem] overflow-hidden group cursor-pointer shadow-2xl border border-white/5"
+                  className="lg:col-span-7 relative aspect-[16/9] lg:aspect-auto lg:h-[480px] rounded-[3rem] overflow-hidden group cursor-pointer shadow-2xl border border-white/5"
                   onClick={() => handleSelect(suggested[0])}
                 >
                   <img 
@@ -331,8 +359,42 @@ export default function Home() {
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
                   <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-transparent hidden md:block" />
+                  
+                  {/* Not Interested Button */}
+                  <div className="absolute top-8 right-8 z-30">
+                    <div className="relative">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-red-600 transition-all text-white"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuId(openMenuId === suggested[0].id ? null : suggested[0].id);
+                        }}
+                      >
+                        <MoreHorizontal className="w-5 h-5" />
+                      </Button>
+                      
+                      {openMenuId === suggested[0].id && (
+                        <div className="absolute top-12 right-0 bg-background/95 backdrop-blur-xl border border-border shadow-2xl rounded-2xl p-2 min-w-[160px] z-50 animate-in fade-in zoom-in duration-200">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start text-sm font-bold hover:bg-red-600 hover:text-white rounded-xl gap-2 h-10"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleNotInterested(suggested[0], 0);
+                            }}
+                          >
+                            <Info className="w-4 h-4" />
+                            Not interested
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   
                   <div className="absolute inset-0 p-8 md:p-12 flex items-end text-white">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-end w-full">
@@ -397,6 +459,38 @@ export default function Home() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-90" />
                       
+                      {/* Small Card Menu */}
+                      <div className="absolute top-3 right-3 z-30">
+                        <div className="relative">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-red-600 transition-all text-white opacity-0 group-hover:opacity-100"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenMenuId(openMenuId === item.id ? null : item.id);
+                            }}
+                          >
+                            <MoreHorizontal className="w-4 h-4" />
+                          </Button>
+                          
+                          {openMenuId === item.id && (
+                            <div className="absolute top-10 right-0 bg-background/95 backdrop-blur-xl border border-border shadow-2xl rounded-xl p-1 min-w-[140px] z-50 animate-in fade-in zoom-in duration-200">
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-start text-xs font-bold hover:bg-red-600 hover:text-white rounded-lg gap-2 h-8"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleNotInterested(item, index + 1);
+                                }}
+                              >
+                                Not interested
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
                       <div className="absolute bottom-0 left-0 w-full p-5 space-y-2">
                         <div className="flex items-center gap-1.5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                           <div className="w-6 h-6 rounded-full bg-red-600 flex items-center justify-center">
