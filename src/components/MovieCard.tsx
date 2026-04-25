@@ -47,8 +47,12 @@ export default function MovieCard({ item, onSelect, onRemove, className }: Movie
 
   const handleSelect = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    const type = item.media_type || (item.title ? 'movie' : 'tv');
-    navigate(`/watch/${type}/${item.id}`);
+    if (item.media_type === 'person') {
+      navigate(`/person/${item.id}`);
+    } else {
+      const type = item.media_type || (item.title ? 'movie' : 'tv');
+      navigate(`/watch/${type}/${item.id}`);
+    }
     if (onSelect) onSelect(item);
   };
 
@@ -106,7 +110,7 @@ export default function MovieCard({ item, onSelect, onRemove, className }: Movie
       onClick={() => handleSelect()}
     >
       <img 
-        src={getImageUrl(item.poster_path) || undefined} 
+        src={getImageUrl(item.poster_path || item.profile_path) || undefined} 
         alt={item.title || item.name}
         className="w-full h-full object-cover rounded-md transition-transform duration-300 group-hover:scale-105"
         referrerPolicy="no-referrer"
@@ -134,10 +138,12 @@ export default function MovieCard({ item, onSelect, onRemove, className }: Movie
             </h3>
             
             <div className="flex items-center gap-2 text-xs">
-              <div className="flex items-center gap-1 text-yellow-500">
-                <Star className="w-3 h-3 fill-current" />
-                <span>{item.vote_average.toFixed(1)}</span>
-              </div>
+              {item.vote_average !== undefined && (
+                <div className="flex items-center gap-1 text-yellow-500">
+                  <Star className="w-3 h-3 fill-current" />
+                  <span>{item.vote_average.toFixed(1)}</span>
+                </div>
+              )}
               <span className="text-white/70 capitalize">
                 {item.media_type || (item.title ? 'movie' : 'tv')}
               </span>

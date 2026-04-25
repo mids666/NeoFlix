@@ -207,7 +207,7 @@ export default function Discover() {
     setIsSearching(true);
     try {
       const data = await tmdbService.search(searchQuery);
-      setSearchResults(data.results.filter((i: any) => i.poster_path));
+      setSearchResults(data.results.filter((i: any) => i.poster_path || i.profile_path));
     } catch (error) {
       console.error('Search failed:', error);
     } finally {
@@ -336,16 +336,27 @@ export default function Discover() {
                   animate={{ opacity: 1, y: 0 }}
                   key={item.id}
                   className="relative aspect-[2/3] rounded-[2rem] overflow-hidden cursor-pointer group bg-muted border border-border"
-                  onClick={() => navigate(`/watch/${item.media_type || 'movie'}/${item.id}`)}
+                  onClick={() => {
+                    if (item.media_type === 'person') {
+                      navigate(`/person/${item.id}`);
+                    } else {
+                      navigate(`/watch/${item.media_type || 'movie'}/${item.id}`);
+                    }
+                  }}
                 >
                   <img 
-                    src={getImageUrl(item.poster_path, 'w500') || undefined} 
+                    src={getImageUrl(item.poster_path || item.profile_path, 'w500') || undefined} 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     alt={item.title || item.name}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all flex flex-col justify-end p-6">
                     <h3 className="font-black text-white uppercase tracking-tighter text-lg leading-tight">{item.title || item.name}</h3>
-                    <p className="text-[10px] text-zinc-300 font-black uppercase tracking-widest mt-2">{item.media_type}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-[10px] text-zinc-300 font-black uppercase tracking-widest">{item.media_type}</p>
+                      {item.vote_average !== undefined && (
+                        <span className="text-[10px] text-yellow-500 font-bold">★ {item.vote_average?.toFixed(1)}</span>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -426,10 +437,16 @@ export default function Discover() {
                        <span className="px-3 py-1 bg-red-600 text-[10px] font-black uppercase rounded-full tracking-widest">Featured</span>
                        <span className="text-sm font-black text-white/80 uppercase tracking-widest">{currentFeatured?.media_type}</span>
                     </div>
-                    <h2 className="text-4xl lg:text-7xl font-black tracking-tighter uppercase leading-[0.8] drop-shadow-2xl">
+                    <h2 className="text-3xl lg:text-5xl font-black tracking-tighter uppercase leading-[0.8] drop-shadow-2xl">
                       {currentFeatured?.title || currentFeatured?.name}
                     </h2>
-                    <p className="text-white/80 font-medium line-clamp-2 max-w-md text-sm lg:text-base">
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-black text-white/80 uppercase tracking-widest">{currentFeatured?.media_type}</span>
+                      <span className="text-sm font-black text-yellow-500 flex items-center gap-1">
+                        ★ {currentFeatured?.vote_average?.toFixed(1)}
+                      </span>
+                    </div>
+                    <p className="text-white/80 font-medium line-clamp-2 max-w-md text-xs lg:text-sm">
                       {currentFeatured?.overview}
                     </p>
                     <div className="flex items-center gap-4 pt-4">
@@ -550,7 +567,10 @@ export default function Discover() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                     <p className="font-black text-white uppercase tracking-tighter text-sm line-clamp-1">{item.title || item.name}</p>
-                    <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mt-1">{item.media_type}</p>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest">{item.media_type}</p>
+                      <span className="text-[10px] text-yellow-500 font-bold">★ {item.vote_average?.toFixed(1)}</span>
+                    </div>
                   </div>
                 </motion.div>
               ))}

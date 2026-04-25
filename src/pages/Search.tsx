@@ -35,8 +35,8 @@ export default function Search() {
         data = await tmdbService.search(query, page);
       }
 
-      // Filter out items without posters or backdrops
-      setResults(data.results.filter((item: any) => item.poster_path && (item.media_type === 'movie' || item.media_type === 'tv' || (!item.media_type && (item.title || item.name)))));
+      // Filter out items without posters or backdrops or profile path (for people)
+      setResults(data.results.filter((item: any) => (item.poster_path || item.profile_path || item.backdrop_path) && (item.media_type === 'movie' || item.media_type === 'tv' || item.media_type === 'person' || (!item.media_type && (item.title || item.name)))));
       setTotalPages(Math.min(data.total_pages, 500));
       setLoading(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -45,8 +45,12 @@ export default function Search() {
   }, [query, providerId, page]);
 
   const handleSelect = (item: TMDBItem) => {
-    const type = item.media_type || (item.title ? 'movie' : 'tv');
-    navigate(`/watch/${type}/${item.id}`);
+    if (item.media_type === 'person') {
+      navigate(`/person/${item.id}`);
+    } else {
+      const type = item.media_type || (item.title ? 'movie' : 'tv');
+      navigate(`/watch/${type}/${item.id}`);
+    }
   };
 
   const gridClasses = {

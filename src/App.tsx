@@ -43,11 +43,11 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/discover" element={<Discover />} />
       <Route path="*" element={
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/discover" element={<Discover />} />
             <Route path="/live" element={<LiveTV />} />
             <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
             <Route path="/browse/:type" element={<Browse />} />
