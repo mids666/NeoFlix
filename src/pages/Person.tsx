@@ -37,9 +37,9 @@ export default function Person() {
     .slice(0, 24) || [];
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20 pt-20 transition-all duration-700">
+    <div className="min-h-screen bg-background text-foreground pb-20 transition-all duration-700">
       {/* Hero Section */}
-      <div className="relative overflow-hidden px-6 md:px-12 py-12 md:py-20">
+      <div className="relative overflow-hidden px-6 md:px-12 pt-32 pb-12 md:pb-20">
         {/* Background */}
         <div className="absolute inset-0 -z-10">
           {person.images?.profiles?.[0] ? (

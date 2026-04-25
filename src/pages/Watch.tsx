@@ -235,8 +235,8 @@ export default function Watch() {
   const trailer = details?.videos?.results?.find((v: any) => v.type === 'Trailer' && v.site === 'YouTube') || details?.videos?.results?.find((v: any) => v.site === 'YouTube');
 
   return (
-    <div className="min-h-screen bg-background pt-20 text-foreground transition-colors duration-300">
-      <div className="relative w-full flex flex-col">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      <div className={`relative w-full flex flex-col ${isPlaying ? 'pt-20' : ''}`}>
         <div className="relative w-full h-[70vh] md:h-[90vh] bg-black">
           {isPlaying ? (
             <div className="w-full h-full flex flex-col">
