@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useAuth } from './useAuth';
 
 type CardSize = 'small' | 'medium' | 'large';
 type Theme = 'dark' | 'light' | 'system';
@@ -25,13 +26,38 @@ const defaultSettings: Settings = {
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(() => {
-    const saved = localStorage.getItem('flixlab_settings');
-    return saved ? JSON.parse(saved) : defaultSettings;
-  });
+  const { currentProfile } = useAuth();
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  // Load settings when profile changes
   useEffect(() => {
-    localStorage.setItem('flixlab_settings', JSON.stringify(settings));
+    if (!currentProfile) {
+      setSettings(defaultSettings);
+      setIsLoaded(false);
+      return;
+    }
+
+    const key = `flixlab_settings_${currentProfile.id}`;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try {
+        setSettings(JSON.parse(saved));
+      } catch (e) {
+        setSettings(defaultSettings);
+      }
+    } else {
+      setSettings(defaultSettings);
+    }
+    setIsLoaded(true);
+  }, [currentProfile?.id]);
+
+  // Save settings and apply theme
+  useEffect(() => {
+    if (!currentProfile || !isLoaded) return;
+    
+    const key = `flixlab_settings_${currentProfile.id}`;
+    localStorage.setItem(key, JSON.stringify(settings));
     
     // Apply theme
     const root = window.document.documentElement;
@@ -43,7 +69,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     } else {
       root.classList.add(settings.theme);
     }
-  }, [settings]);
+  }, [settings, currentProfile?.id, isLoaded]);
 
   const updateSetting = <K extends keyof Settings>(key: K, value: Settings[K]) => {
     setSettings(prev => ({ ...prev, [key]: value }));

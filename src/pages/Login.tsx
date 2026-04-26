@@ -90,7 +90,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4 relative overflow-hidden transition-colors duration-300">
       {/* Background decoration */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-red-600/20 rounded-full blur-[120px]" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand/20 rounded-full blur-[120px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px]" />
 
       <motion.div
@@ -100,7 +100,7 @@ export default function Login() {
         className="w-full max-w-md z-10"
       >
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-black tracking-tighter text-red-600 mb-2">FLIXLAB</h1>
+          <h1 className="text-5xl font-black tracking-tighter text-brand mb-2">FLIXLAB</h1>
           <p className="text-muted-foreground">Your gateway to infinite entertainment</p>
         </div>
 
@@ -126,7 +126,7 @@ export default function Login() {
                       <Input
                         type="text"
                         placeholder="Full Name"
-                        className="bg-muted/50 border-border pl-10 focus:ring-red-600"
+                        className="bg-muted/50 border-border pl-10 focus:ring-brand"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required={!isLogin}
@@ -135,7 +135,7 @@ export default function Login() {
                     <div className="relative">
                       <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <select
-                        className="w-full bg-muted/50 border border-border rounded-md pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-600 appearance-none text-foreground"
+                        className="w-full bg-muted/50 border border-border rounded-md pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand appearance-none text-foreground"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
                         required={!isLogin}
@@ -153,11 +153,11 @@ export default function Login() {
               <div className="space-y-2">
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="email"
-                    placeholder="Email address"
-                    className="bg-muted/50 border-border pl-10 focus:ring-red-600"
-                    value={email}
+                    <Input
+                      type="email"
+                      placeholder="Email address"
+                      className="bg-muted/50 border-border pl-10 focus:ring-brand"
+                      value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
@@ -166,11 +166,11 @@ export default function Login() {
               <div className="space-y-2">
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    className="bg-muted/50 border-border pl-10 focus:ring-red-600"
-                    value={password}
+                    <Input
+                      type="password"
+                      placeholder="Password"
+                      className="bg-muted/50 border-border pl-10 focus:ring-brand"
+                      value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
@@ -180,14 +180,14 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={handleForgotPassword}
-                      className="text-xs text-muted-foreground hover:text-red-500 transition-colors"
+                      className="text-xs text-muted-foreground hover:text-brand transition-colors"
                     >
                       Forgot password?
                     </button>
                   </div>
                 )}
               </div>
-              <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-6" disabled={loading}>
+              <Button type="submit" className="w-full bg-brand hover:bg-brand/80 text-white font-bold py-6" disabled={loading}>
                 {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
               </Button>
             </form>

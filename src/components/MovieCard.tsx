@@ -137,11 +137,11 @@ export default function MovieCard({ item, onSelect, onRemove, className }: Movie
               {item.title || item.name}
             </h3>
             
-            <div className="flex items-center gap-2 text-xs">
-              {item.vote_average !== undefined && (
+            <div className="flex items-center gap-2 text-[10px] md:text-xs">
+              {item.vote_average !== undefined && item.vote_average > 0 && (
                 <div className="flex items-center gap-1 text-yellow-500">
-                  <Star className="w-3 h-3 fill-current" />
-                  <span>{item.vote_average.toFixed(1)}</span>
+                  <span className="text-[8px] border border-yellow-500 px-1 rounded font-black tracking-tighter leading-none">IMDb</span>
+                  <span className="font-bold">{item.vote_average.toFixed(1)}</span>
                 </div>
               )}
               <span className="text-white/70 capitalize">
@@ -152,24 +152,22 @@ export default function MovieCard({ item, onSelect, onRemove, className }: Movie
             <div className="flex items-center gap-2">
               <Button 
                 size="icon" 
-                className="w-8 h-8 rounded-full bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200"
+                className="w-8 h-8 rounded-full bg-brand text-white hover:bg-brand/80 border-none"
                 onClick={handleSelect}
               >
                 <Play className="w-4 h-4 fill-current" />
               </Button>
               <Button 
                 size="icon" 
-                variant="outline" 
-                className="w-8 h-8 rounded-full border-white/20 text-white hover:bg-white/10"
+                className="w-8 h-8 rounded-full border border-white/20 text-white bg-transparent hover:bg-white/10 hover:text-white"
                 onClick={toggleWatchlist}
               >
-                {isInWatchlist ? <Check className="w-4 h-4 text-red-500" /> : <Plus className="w-4 h-4" />}
+                {isInWatchlist ? <Check className="w-4 h-4 text-brand" /> : <Plus className="w-4 h-4 text-white" />}
               </Button>
               {onRemove ? (
                 <Button 
                   size="icon" 
-                  variant="outline" 
-                  className="w-8 h-8 rounded-full border-white/20 hover:border-red-500 hover:text-red-500 text-white"
+                  className="w-8 h-8 rounded-full border border-white/20 hover:border-brand hover:text-brand text-white bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     onRemove(item);
@@ -180,8 +178,7 @@ export default function MovieCard({ item, onSelect, onRemove, className }: Movie
               ) : (
                 <Button 
                   size="icon" 
-                  variant="outline" 
-                  className="w-8 h-8 rounded-full border-white/20 hover:border-white text-white ml-auto"
+                  className="w-8 h-8 rounded-full border border-white/20 hover:border-white hover:text-white text-white ml-auto bg-transparent"
                 >
                   <Info className="w-4 h-4" />
                 </Button>

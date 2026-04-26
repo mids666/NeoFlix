@@ -108,7 +108,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
           <Button 
             variant="ghost" 
             size="icon" 
-            className="fixed top-6 right-6 text-white hover:bg-white/20 z-[100] rounded-full w-12 h-12 bg-black/40 backdrop-blur-md"
+            className="fixed top-6 right-6 text-white hover:bg-white/20 z-[100] rounded-full w-12 h-12 bg-black/40 backdrop-blur-md hover:text-white"
             onClick={onClose}
           >
             <X className="w-8 h-8" />
@@ -132,7 +132,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                     <Button
                       size="sm"
                       variant={selectedServer === 'vidsrc' ? 'default' : 'outline'}
-                      className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidsrc' ? 'bg-red-600 hover:bg-red-700 text-white' : 'border-border text-muted-foreground'}`}
+                      className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidsrc' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground'}`}
                       onClick={() => setSelectedServer('vidsrc')}
                     >
                       VidSrc (Main)
@@ -140,7 +140,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                     <Button
                       size="sm"
                       variant={selectedServer === 'videasy' ? 'default' : 'outline'}
-                      className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'videasy' ? 'bg-red-600 hover:bg-red-700 text-white' : 'border-border text-muted-foreground'}`}
+                      className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'videasy' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground'}`}
                       onClick={() => setSelectedServer('videasy')}
                     >
                       VidEasy (Backup)
@@ -148,7 +148,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                     <Button
                       size="sm"
                       variant={selectedServer === 'vidlink' ? 'default' : 'outline'}
-                      className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidlink' ? 'bg-red-600 hover:bg-red-700 text-white' : 'border-border text-muted-foreground'}`}
+                      className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidlink' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground'}`}
                       onClick={() => setSelectedServer('vidlink')}
                     >
                       VidLink (Backup 2)
@@ -179,7 +179,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                   >
                     <Button 
                       size="lg" 
-                      className="bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200 h-20 px-16 rounded-full text-2xl font-bold gap-4 shadow-2xl shadow-white/10"
+                      className="bg-brand text-white dark:bg-white dark:text-black hover:bg-brand/80 dark:hover:bg-zinc-200 h-20 px-16 rounded-full text-2xl font-bold gap-4 shadow-2xl shadow-white/10"
                       onClick={() => setIsPlaying(true)}
                     >
                       <Play className="w-10 h-10 fill-current" />
@@ -273,7 +273,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                     <div className="flex items-center gap-4">
                       <span className="text-muted-foreground font-bold uppercase text-sm">Season</span>
                       <select 
-                        className="bg-muted border border-border text-foreground rounded-xl px-6 py-3 outline-none focus:ring-2 focus:ring-red-600 appearance-none min-w-[140px] text-center font-bold transition-colors"
+                        className="bg-muted border border-border text-foreground rounded-xl px-6 py-3 outline-none focus:ring-2 focus:ring-brand appearance-none min-w-[140px] text-center font-bold transition-colors"
                         value={selectedSeason}
                         onChange={(e) => setSelectedSeason(Number(e.target.value))}
                       >
@@ -290,8 +290,8 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                         key={ep.id}
                         className={`flex flex-col gap-4 p-6 rounded-3xl transition-all text-left group/ep ${
                           selectedEpisode === ep.episode_number 
-                            ? 'bg-red-600/10 border-2 border-red-600' 
-                            : 'bg-muted/40 border-2 border-border hover:border-red-600/50 hover:bg-muted/60'
+                            ? 'bg-brand/10 border-2 border-brand' 
+                            : 'bg-muted/40 border-2 border-border hover:border-brand/50 hover:bg-muted/60'
                         }`}
                         onClick={() => {
                           setSelectedEpisode(ep.episode_number);
@@ -334,7 +334,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-6">
                   {details.credits?.cast?.slice(0, 12).map((person: any) => (
                     <div key={person.id} className="group/cast space-y-4">
-                      <div className="aspect-square rounded-full overflow-hidden bg-muted border-2 border-border group-hover/cast:border-red-600 transition-all duration-300 shadow-xl">
+                      <div className="aspect-square rounded-full overflow-hidden bg-muted border-2 border-border group-hover/cast:border-brand transition-all duration-300 shadow-xl">
                         {person.profile_path ? (
                           <img 
                             src={getImageUrl(person.profile_path, 'w185') || undefined} 
@@ -348,7 +348,7 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                         )}
                       </div>
                       <div className="text-center">
-                        <div className="font-bold text-foreground group-hover/cast:text-red-600 transition-colors">{person.name}</div>
+                        <div className="font-bold text-foreground group-hover/cast:text-brand transition-colors">{person.name}</div>
                         <div className="text-sm text-muted-foreground">{person.character}</div>
                       </div>
                     </div>
@@ -372,14 +372,14 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
                           if (scrollContainer) scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
                       >
-                        <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-muted border-2 border-border group-hover/rec:border-red-600 transition-all">
+                        <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-muted border-2 border-border group-hover/rec:border-brand transition-all">
                           <img 
                             src={getImageUrl(rec.poster_path) || undefined} 
                             className="w-full h-full object-cover group-hover/rec:scale-105 transition-transform duration-500"
                             referrerPolicy="no-referrer"
                           />
                         </div>
-                        <div className="font-bold text-foreground line-clamp-1 group-hover/rec:text-red-600 transition-colors">
+                        <div className="font-bold text-foreground line-clamp-1 group-hover/rec:text-brand transition-colors">
                           {rec.title || rec.name}
                         </div>
                       </button>

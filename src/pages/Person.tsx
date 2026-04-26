@@ -25,7 +25,7 @@ export default function Person() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">FLIXLAB</div>
+        <div className="animate-pulse text-4xl font-black tracking-tighter text-brand">FLIXLAB</div>
       </div>
     );
   }
@@ -100,7 +100,7 @@ export default function Person() {
                   {person.name}
                 </h1>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm font-bold">
-                  <span className="text-red-600 uppercase tracking-[0.3em] text-xs font-black bg-red-600/10 px-3 py-1 rounded-full border border-red-600/20">
+                  <span className="text-brand uppercase tracking-[0.3em] text-xs font-black bg-brand/10 px-3 py-1 rounded-full border border-brand/20">
                     {person.known_for_department}
                   </span>
                   <span className="w-1.5 h-1.5 bg-muted-foreground/20 rounded-full" />
@@ -181,7 +181,7 @@ export default function Person() {
                   <div className="flex items-center gap-3">
                     <div className="h-2 flex-1 bg-muted rounded-full overflow-hidden transition-colors">
                       <div 
-                        className="h-full bg-red-600 rounded-full transition-all" 
+                        className="h-full bg-brand rounded-full transition-all" 
                         style={{ width: `${Math.min(person.popularity, 100)}%` }} 
                       />
                     </div>
@@ -230,7 +230,7 @@ export default function Person() {
                       to={`/watch/${item.media_type}/${item.id}`}
                       className="group space-y-3"
                     >
-                      <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-muted border border-border group-hover:border-red-600 transition-all duration-500 group-hover:scale-105 shadow-lg relative">
+                      <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-muted border border-border group-hover:border-brand transition-all duration-500 group-hover:scale-105 shadow-lg relative">
                         {item.poster_path ? (
                           <img 
                             src={getImageUrl(item.poster_path, 'w342') || undefined} 
@@ -242,17 +242,23 @@ export default function Person() {
                             <Play className="w-10 h-10 text-muted-foreground" />
                           </div>
                         )}
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
                           <span className="bg-black/60 backdrop-blur-md text-[8px] font-black px-2 py-1 rounded-md text-white uppercase tracking-widest">
                             {item.media_type}
                           </span>
+                          {item.vote_average !== undefined && item.vote_average > 0 && (
+                            <span className="bg-black/60 backdrop-blur-md text-[8px] font-black px-2 py-1 rounded-md text-yellow-500 uppercase tracking-widest flex items-center gap-1">
+                              <span className="text-[6px] border border-yellow-500 px-0.5 rounded tracking-tighter">IMDb</span>
+                              {item.vote_average.toFixed(1)}
+                            </span>
+                          )}
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
                           <div className="text-[10px] font-black text-white uppercase tracking-widest">View Details</div>
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <div className="text-xs font-black text-foreground line-clamp-1 group-hover:text-red-500 transition-colors">
+                        <div className="text-xs font-black text-foreground line-clamp-1 group-hover:text-brand transition-colors">
                           {item.title || item.name}
                         </div>
                         <div className="text-[10px] text-muted-foreground font-bold truncate">

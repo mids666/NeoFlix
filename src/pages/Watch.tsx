@@ -198,7 +198,7 @@ export default function Watch() {
 
   if (!details) return (
     <div className="h-screen w-screen flex items-center justify-center bg-background text-foreground">
-      <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">FLIXLAB</div>
+      <div className="animate-pulse text-4xl font-black tracking-tighter text-brand">FLIXLAB</div>
     </div>
   );
 
@@ -257,7 +257,7 @@ export default function Watch() {
                   <Button
                     size="sm"
                     variant={selectedServer === 'videasy' ? 'default' : 'outline'}
-                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'videasy' ? 'bg-red-600 hover:bg-red-700 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'videasy' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
                     onClick={() => setSelectedServer('videasy')}
                   >
                     Primary Server
@@ -265,7 +265,7 @@ export default function Watch() {
                   <Button
                     size="sm"
                     variant={selectedServer === 'vidsrc' ? 'default' : 'outline'}
-                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidsrc' ? 'bg-red-600 hover:bg-red-700 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidsrc' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
                     onClick={() => setSelectedServer('vidsrc')}
                   >
                     Secondary Server
@@ -273,7 +273,7 @@ export default function Watch() {
                   <Button
                     size="sm"
                     variant={selectedServer === 'vidlink' ? 'default' : 'outline'}
-                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidlink' ? 'bg-red-600 hover:bg-red-700 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidlink' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
                     onClick={() => setSelectedServer('vidlink')}
                   >
                     Alternative Server
@@ -292,19 +292,19 @@ export default function Watch() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-card border-border text-foreground">
                       <DropdownMenuItem 
-                        className={`cursor-pointer focus:bg-red-600 focus:text-white ${selectedServer === '111movies' ? 'bg-red-600 text-white' : ''}`}
+                        className={`cursor-pointer focus:bg-brand focus:text-white ${selectedServer === '111movies' ? 'bg-brand text-white' : ''}`}
                         onClick={() => setSelectedServer('111movies')}
                       >
                         111Movies Server
                       </DropdownMenuItem>
                       <DropdownMenuItem 
-                        className={`cursor-pointer focus:bg-red-600 focus:text-white ${selectedServer === 'vidfast' ? 'bg-red-600 text-white' : ''}`}
+                        className={`cursor-pointer focus:bg-brand focus:text-white ${selectedServer === 'vidfast' ? 'bg-brand text-white' : ''}`}
                         onClick={() => setSelectedServer('vidfast')}
                       >
                         VidFast Server
                       </DropdownMenuItem>
                       <DropdownMenuItem 
-                        className={`cursor-pointer focus:bg-red-600 focus:text-white ${selectedServer === 'vidnest' ? 'bg-red-600 text-white' : ''}`}
+                        className={`cursor-pointer focus:bg-brand focus:text-white ${selectedServer === 'vidnest' ? 'bg-brand text-white' : ''}`}
                         onClick={() => setSelectedServer('vidnest')}
                       >
                         VidNest Server
@@ -374,7 +374,7 @@ export default function Watch() {
                   <div className="flex flex-wrap items-center gap-4 pt-4">
                     <Button 
                       size="lg" 
-                      className="bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200 px-8 h-14 text-lg font-bold rounded-md gap-3 shadow-lg transition-all"
+                      className="bg-brand text-white dark:bg-white dark:text-black hover:bg-brand/80 dark:hover:bg-zinc-200 px-8 h-14 text-lg font-bold rounded-md gap-3 shadow-lg transition-all"
                       onClick={handlePlay}
                     >
                       <Play className="w-6 h-6 fill-current" />
@@ -388,7 +388,7 @@ export default function Watch() {
                         className="bg-muted/30 backdrop-blur-md border-border hover:bg-muted/50 text-foreground px-8 h-14 text-lg font-bold rounded-md gap-3 transition-all"
                         onClick={() => setShowTrailer(true)}
                       >
-                        <Youtube className="w-6 h-6 text-red-600" />
+                        <Youtube className="w-6 h-6 text-brand" />
                         Trailer
                       </Button>
                     )}
@@ -416,7 +416,7 @@ export default function Watch() {
                       }}
                       className={`h-14 flex items-center justify-center gap-2 rounded-md border transition-all overflow-hidden group backdrop-blur-md ${
                         isInWatchlist 
-                          ? 'bg-red-600 border-red-600 text-white w-14 shadow-lg' 
+                          ? 'bg-brand border-brand text-white w-14 shadow-lg' 
                           : 'bg-muted/30 border-border text-foreground hover:bg-muted/50 px-4'
                       }`}
                       onClick={toggleWatchlist}
@@ -486,7 +486,7 @@ export default function Watch() {
                         }}
                         className={`h-8 flex items-center justify-center gap-2 rounded-full border transition-all overflow-hidden group ${
                           isInWatchlist 
-                            ? 'bg-red-600 border-red-600 text-white w-8' 
+                            ? 'bg-brand border-brand text-white w-8' 
                             : 'border-border text-muted-foreground hover:text-foreground px-2'
                         }`}
                         onClick={toggleWatchlist}
@@ -544,7 +544,7 @@ export default function Watch() {
                 <div className="space-y-6">
                   <h3 className="text-xl font-bold flex items-center gap-2">
                     Cast
-                    <span className="w-8 h-0.5 bg-red-600 rounded-full" />
+                    <span className="w-8 h-0.5 bg-brand rounded-full" />
                   </h3>
                   <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-4">
                     {details.credits?.cast?.slice(0, 10).map((person: any, index: number) => (
@@ -553,7 +553,7 @@ export default function Watch() {
                         className="flex flex-col items-center gap-3 group text-center"
                         onClick={() => handlePersonClick(person.id)}
                       >
-                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-muted border-2 border-border group-hover:border-red-600 transition-all duration-300 shadow-xl">
+                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-muted border-2 border-border group-hover:border-brand transition-all duration-300 shadow-xl">
                           {person.profile_path ? (
                             <img 
                               src={getImageUrl(person.profile_path, 'w185') || undefined} 
@@ -567,7 +567,7 @@ export default function Watch() {
                           )}
                         </div>
                         <div className="min-w-0 space-y-0.5">
-                          <div className="text-xs font-bold text-foreground group-hover:text-red-500 transition-colors truncate w-full">{person.name}</div>
+                          <div className="text-xs font-bold text-foreground group-hover:text-brand transition-colors truncate w-full">{person.name}</div>
                           <div className="text-[10px] text-muted-foreground truncate w-full">{person.character}</div>
                         </div>
                       </button>
@@ -650,7 +650,7 @@ export default function Watch() {
                               <SelectItem 
                                 key={i} 
                                 value={(i + 1).toString()}
-                                className="focus:bg-red-600 focus:text-white cursor-pointer"
+                                className="focus:bg-brand focus:text-white cursor-pointer"
                               >
                                 Season {i + 1}
                               </SelectItem>
@@ -666,7 +666,7 @@ export default function Watch() {
                           key={ep.id}
                           className={`flex gap-4 p-3 rounded-xl transition-all text-left group ${
                             selectedEpisode === ep.episode_number 
-                              ? 'bg-red-600/10 border border-red-600/50' 
+                              ? 'bg-brand/10 border border-brand/50' 
                               : 'bg-muted/50 border border-transparent hover:bg-muted transition-colors'
                           }`}
                           onClick={() => {
@@ -689,8 +689,8 @@ export default function Watch() {
                             )}
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
                             {selectedEpisode === ep.episode_number && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-red-600/20">
-                                <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                              <div className="absolute inset-0 flex items-center justify-center bg-brand/20">
+                                <div className="w-8 h-8 bg-brand rounded-full flex items-center justify-center shadow-lg">
                                   <Play className="w-4 h-4 fill-current text-white" />
                                 </div>
                               </div>
@@ -700,7 +700,7 @@ export default function Watch() {
                             <div className="text-xs font-bold text-muted-foreground mb-1 transition-colors">
                               Episode {ep.episode_number}
                             </div>
-                            <div className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-red-500 transition-colors">
+                            <div className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-brand transition-colors">
                               {ep.name}
                             </div>
                             <div className="text-xs text-muted-foreground line-clamp-2 mt-1 transition-colors">
@@ -718,7 +718,7 @@ export default function Watch() {
                   <div className="pt-12 border-t border-border">
                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                       Official Trailer
-                      <span className="w-8 h-0.5 bg-red-600 rounded-full" />
+                      <span className="w-8 h-0.5 bg-brand rounded-full" />
                     </h3>
                     <div className="relative aspect-video w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-border bg-muted">
                       <iframe
@@ -783,7 +783,7 @@ export default function Watch() {
         <DialogContent className="bg-card border-border text-foreground max-w-4xl p-0 overflow-hidden transition-colors">
           <DialogHeader className="p-4 border-b border-border transition-colors">
             <DialogTitle className="flex items-center gap-2 transition-colors">
-              <Youtube className="w-5 h-5 text-red-600" />
+              <Youtube className="w-5 h-5 text-brand" />
               {details.title || details.name} - Official Trailer
             </DialogTitle>
           </DialogHeader>

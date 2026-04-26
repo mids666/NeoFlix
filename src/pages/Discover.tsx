@@ -241,10 +241,10 @@ export default function Discover() {
         {/* Header with Search */}
         <div className="flex flex-col items-center justify-center gap-6 pb-2">
           <form className="relative group max-w-2xl w-full" onSubmit={handleSearch}>
-            <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-red-600 transition-colors" />
+            <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-brand transition-colors" />
             <Input 
               placeholder="Search movies, tv shows..."
-              className="bg-muted/50 border-none pl-16 h-16 rounded-[2rem] w-full text-lg focus:ring-2 focus:ring-red-600/20 shadow-xl"
+              className="bg-muted/50 border-none pl-16 h-16 rounded-[2rem] w-full text-lg focus:ring-2 focus:ring-brand/20 shadow-xl"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -278,7 +278,7 @@ export default function Discover() {
             <Button
               variant={activeGenre === null ? "default" : "secondary"}
               className={`flex-shrink-0 h-16 px-8 rounded-2xl font-bold uppercase tracking-tighter transition-all ${
-                activeGenre === null ? 'bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/20' : ''
+                activeGenre === null ? 'bg-brand hover:bg-brand/80 text-white shadow-lg shadow-brand/20' : ''
               }`}
               onClick={() => setActiveGenre(null)}
             >
@@ -290,7 +290,7 @@ export default function Discover() {
                 onClick={() => setActiveGenre(genre.genreId)}
                 className={`group relative flex-shrink-0 w-40 h-16 rounded-2xl overflow-hidden border-2 transition-all active:scale-95 ${
                   activeGenre === genre.genreId 
-                    ? 'border-red-600 ring-2 ring-red-600/20' 
+                    ? 'border-brand ring-2 ring-brand/20' 
                     : 'border-transparent hover:border-white/20'
                 }`}
               >
@@ -352,9 +352,12 @@ export default function Discover() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all flex flex-col justify-end p-6">
                     <h3 className="font-black text-white uppercase tracking-tighter text-lg leading-tight">{item.title || item.name}</h3>
                     <div className="flex items-center justify-between mt-2">
-                      <p className="text-[10px] text-zinc-300 font-black uppercase tracking-widest">{item.media_type}</p>
-                      {item.vote_average !== undefined && (
-                        <span className="text-[10px] text-yellow-500 font-bold">★ {item.vote_average?.toFixed(1)}</span>
+                      <p className="text-[10px] text-zinc-300 font-black uppercase tracking-widest">{item.media_type || (item.profile_path ? 'Person' : 'Unknown')}</p>
+                      {item.vote_average !== undefined && item.vote_average > 0 && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-[8px] border border-yellow-500 text-yellow-500 px-1 rounded font-black tracking-tighter leading-none">IMDb</span>
+                          <span className="text-[10px] text-yellow-500 font-bold">{item.vote_average?.toFixed(1)}</span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -366,7 +369,7 @@ export default function Discover() {
               {/* Featured Banner */}
               <motion.div 
                 layout
-                className="lg:col-span-7 relative aspect-[16/9] lg:aspect-auto lg:h-[550px] rounded-[3rem] overflow-hidden group cursor-pointer shadow-2xl border border-white/5 bg-muted"
+                className="lg:col-span-7 relative aspect-[16/9] lg:aspect-auto lg:h-[450px] rounded-[3rem] overflow-hidden group cursor-pointer shadow-2xl border border-white/5 bg-muted"
               >
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -397,7 +400,7 @@ export default function Discover() {
                 </AnimatePresence>
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10" />
-                <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
+                <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
                 
                 {/* Actions */}
                 <div className="absolute top-8 right-8 z-30 flex items-center gap-3">
@@ -405,7 +408,7 @@ export default function Discover() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-red-600 transition-all text-white"
+                        className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-brand transition-all text-white hover:text-white"
                         onClick={(e) => {
                           e.stopPropagation();
                           setOpenMenuId(openMenuId === currentFeatured?.id ? null : currentFeatured?.id);
@@ -418,7 +421,7 @@ export default function Discover() {
                         <div className="absolute top-12 right-0 bg-background/95 backdrop-blur-xl border border-border shadow-2xl rounded-2xl p-2 min-w-[160px] z-50 animate-in fade-in zoom-in duration-200">
                           <Button
                             variant="ghost"
-                            className="w-full justify-start text-sm font-bold hover:bg-red-600 hover:text-white rounded-xl gap-2 h-10"
+                            className="w-full justify-start text-sm font-bold hover:bg-brand hover:text-white rounded-xl gap-2 h-10"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleNotInterested(0);
@@ -431,42 +434,43 @@ export default function Discover() {
                     </div>
                 </div>
 
-                <div className="absolute inset-0 p-8 lg:p-12 flex items-end text-white z-20">
-                  <div className="max-w-xl space-y-4">
+                <div className="absolute inset-0 p-6 lg:p-10 flex items-end text-white z-20">
+                  <div className="max-w-xl space-y-3">
                     <div className="flex items-center gap-2">
-                       <span className="px-3 py-1 bg-red-600 text-[10px] font-black uppercase rounded-full tracking-widest">Featured</span>
-                       <span className="text-sm font-black text-white/80 uppercase tracking-widest">{currentFeatured?.media_type}</span>
+                       <span className="px-3 py-1 bg-brand text-[10px] font-black uppercase rounded-full tracking-widest">Featured</span>
                     </div>
-                    <h2 className="text-3xl lg:text-5xl font-black tracking-tighter uppercase leading-[0.8] drop-shadow-2xl">
+                    <h2 className="text-xl lg:text-3xl font-black tracking-tighter uppercase leading-[0.8] drop-shadow-2xl">
                       {currentFeatured?.title || currentFeatured?.name}
                     </h2>
                     <div className="flex items-center gap-3">
-                      <span className="text-sm font-black text-white/80 uppercase tracking-widest">{currentFeatured?.media_type}</span>
-                      <span className="text-sm font-black text-yellow-500 flex items-center gap-1">
-                        ★ {currentFeatured?.vote_average?.toFixed(1)}
-                      </span>
+                      <span className="text-xs font-black text-white/80 uppercase tracking-widest">{currentFeatured?.media_type}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] border border-yellow-500 text-yellow-500 px-1 rounded font-black tracking-tighter">IMDb</span>
+                        <span className="text-sm font-black text-yellow-500">
+                          {currentFeatured?.vote_average?.toFixed(1)}
+                        </span>
+                      </div>
                     </div>
-                    <p className="text-white/80 font-medium line-clamp-2 max-w-md text-xs lg:text-sm">
+                    <p className="text-white/80 font-medium line-clamp-2 max-w-sm text-xs lg:text-sm">
                       {currentFeatured?.overview}
                     </p>
-                    <div className="flex items-center gap-4 pt-4">
+                    <div className="flex items-center gap-3 pt-2">
                       <Button 
                         size="lg"
-                        className="bg-white text-black hover:bg-zinc-200 h-12 px-8 rounded-2xl font-black uppercase tracking-tighter gap-2"
+                        className="bg-white text-black hover:bg-zinc-200 h-11 px-6 rounded-2xl font-black uppercase tracking-tighter gap-2 text-sm"
                         onClick={() => navigate(`/watch/${currentFeatured?.media_type || 'movie'}/${currentFeatured?.id}`)}
                       >
-                        <Play className="w-5 h-5 fill-current" />
+                        <Play className="w-4 h-4 fill-current" />
                         Watch Now
                       </Button>
                       <Button 
                         size="icon"
-                        variant="outline"
-                        className={`w-12 h-12 rounded-2xl border-white/20 backdrop-blur-md transition-colors ${
-                          watchlistIds.has(currentFeatured?.id.toString()) ? 'bg-red-600 border-red-600 text-white' : 'bg-white/10 hover:bg-white/20 text-white'
+                        className={`w-11 h-11 rounded-2xl border border-white/20 backdrop-blur-md transition-colors hover:text-white bg-transparent ${
+                          watchlistIds.has(currentFeatured?.id.toString()) ? 'bg-brand border-brand text-white' : 'bg-white/10 hover:bg-white/20 text-white'
                         }`}
                         onClick={(e) => toggleWatchlist(e, currentFeatured)}
                       >
-                        {watchlistIds.has(currentFeatured?.id.toString()) ? <Check className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                        {watchlistIds.has(currentFeatured?.id.toString()) ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                       </Button>
                     </div>
                   </div>
@@ -474,7 +478,7 @@ export default function Discover() {
               </motion.div>
 
               {/* Sidebar Grid */}
-              <div className="lg:col-span-5 grid grid-cols-2 grid-rows-2 gap-4 lg:h-[550px]">
+              <div className="lg:col-span-5 grid grid-cols-2 grid-rows-2 gap-4 lg:h-[450px]">
                 {items.slice(1, 5).map((item, index) => (
                   <motion.div
                     layout
@@ -500,7 +504,7 @@ export default function Discover() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-red-600 transition-all text-white lg:opacity-0 lg:group-hover:opacity-100"
+                          className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-brand transition-all text-white hover:text-white lg:opacity-0 lg:group-hover:opacity-100"
                           onClick={(e) => {
                             e.stopPropagation();
                             setOpenMenuId(openMenuId === item.id ? null : item.id);
@@ -513,7 +517,7 @@ export default function Discover() {
                           <div className="absolute top-10 right-0 bg-background/95 backdrop-blur-xl border border-border shadow-2xl rounded-xl p-1 min-w-[140px] z-50 animate-in fade-in zoom-in duration-200">
                             <Button
                               variant="ghost"
-                              className="w-full justify-start text-xs font-bold hover:bg-red-600 hover:text-white rounded-lg gap-2 h-8"
+                              className="w-full justify-start text-xs font-bold hover:bg-brand hover:text-white rounded-lg gap-2 h-8"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleNotInterested(index + 1);
@@ -528,14 +532,17 @@ export default function Discover() {
 
                     <div className="absolute bottom-0 left-0 w-full p-6 z-20">
                       <div className="translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                        <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center mb-3">
+                        <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center mb-3">
                           <Play className="w-4 h-4 text-white fill-current ml-0.5" />
                         </div>
                       </div>
                       <h3 className="font-black text-white uppercase tracking-tighter text-lg leading-tight line-clamp-1">{item.title || item.name}</h3>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-[10px] text-zinc-400 font-black tracking-widest uppercase">{item.media_type}</span>
-                        <span className="text-[10px] text-yellow-500 font-bold">★ {item.vote_average?.toFixed(1)}</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[8px] border border-yellow-500 text-yellow-500 px-1 rounded font-black tracking-tighter leading-none">IMDb</span>
+                          <span className="text-[10px] text-yellow-500 font-bold">{item.vote_average?.toFixed(1)}</span>
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -569,7 +576,10 @@ export default function Discover() {
                     <p className="font-black text-white uppercase tracking-tighter text-sm line-clamp-1">{item.title || item.name}</p>
                     <div className="flex items-center justify-between mt-1">
                       <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest">{item.media_type}</p>
-                      <span className="text-[10px] text-yellow-500 font-bold">★ {item.vote_average?.toFixed(1)}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[8px] border border-yellow-500 text-yellow-500 px-1 rounded font-black tracking-tighter leading-none">IMDb</span>
+                        <span className="text-[10px] text-yellow-500 font-bold">{item.vote_average?.toFixed(1)}</span>
+                      </div>
                     </div>
                   </div>
                 </motion.div>

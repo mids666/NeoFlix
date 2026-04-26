@@ -111,7 +111,7 @@ export default function Search() {
                       onClick={() => setPage(pageNum)}
                       className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all ${
                         page === pageNum 
-                          ? 'bg-red-600 text-white' 
+                          ? 'bg-brand text-white' 
                           : 'bg-muted text-muted-foreground hover:bg-muted/80'
                       }`}
                     >

@@ -53,7 +53,7 @@ export default function HelpCenter() {
           <div className="max-w-2xl mx-auto relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 w-5 h-5" />
             <Input 
-              className="w-full h-14 pl-12 bg-muted border-border text-foreground rounded-xl focus:ring-red-600 transition-all" 
+              className="w-full h-14 pl-12 bg-muted border-border text-foreground rounded-xl focus:ring-brand transition-all" 
               placeholder="Search for answers..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -68,9 +68,9 @@ export default function HelpCenter() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="p-6 bg-card border border-border rounded-2xl hover:border-red-600 transition-all group cursor-pointer hover:bg-muted"
+              className="p-6 bg-card border border-border rounded-2xl hover:border-brand transition-all group cursor-pointer hover:bg-muted"
             >
-              <cat.icon className="w-8 h-8 text-red-600 mb-4 group-hover:scale-110 transition-transform" />
+              <cat.icon className="w-8 h-8 text-brand mb-4 group-hover:scale-110 transition-transform" />
               <h3 className="text-lg font-bold text-foreground mb-2">{cat.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{cat.desc}</p>
             </motion.div>
@@ -79,7 +79,7 @@ export default function HelpCenter() {
 
         <div className="space-y-8">
           <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <HelpCircle className="w-6 h-6 text-red-600" />
+            <HelpCircle className="w-6 h-6 text-brand" />
             Frequently Asked Questions
           </h2>
           

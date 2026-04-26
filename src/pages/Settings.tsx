@@ -31,6 +31,13 @@ export default function Settings() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
+  // Sync name with profile changes
+  React.useEffect(() => {
+    if (currentProfile) {
+      setName(currentProfile.name);
+    }
+  }, [currentProfile?.id, currentProfile?.name]);
+
   const handleUpdateProfile = async () => {
     if (!user || !currentProfile) return;
     setIsUpdating(true);
@@ -101,7 +108,7 @@ export default function Settings() {
         <Card className="bg-card border-border text-foreground transition-colors">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <UserIcon className="w-5 h-5 text-red-600" />
+              <UserIcon className="w-5 h-5 text-brand" />
               Profile Settings
             </CardTitle>
             <CardDescription className="text-muted-foreground transition-colors">
@@ -111,7 +118,7 @@ export default function Settings() {
           <CardContent className="space-y-6">
             <div className="flex flex-col md:flex-row items-center gap-8">
               <div className="relative group">
-                <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-border group-hover:border-red-600 transition-all shadow-xl">
+                <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-border group-hover:border-brand transition-all shadow-xl">
                   <img 
                     src={currentProfile?.avatar || undefined} 
                     alt={currentProfile?.name} 
@@ -120,7 +127,7 @@ export default function Settings() {
                 </div>
                 <button 
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-2 right-2 p-2 bg-red-600 rounded-full text-white shadow-lg hover:bg-red-700 transition-all"
+                  className="absolute bottom-2 right-2 p-2 bg-brand rounded-full text-white shadow-lg hover:bg-brand/80 transition-all"
                 >
                   <Camera className="w-4 h-4" />
                 </button>
@@ -145,7 +152,7 @@ export default function Settings() {
                 <Button 
                   onClick={handleUpdateProfile} 
                   disabled={isUpdating || name === currentProfile?.name}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold transition-all"
+                  className="bg-brand hover:bg-brand/80 text-white font-bold transition-all"
                 >
                   Save Changes
                 </Button>
@@ -158,7 +165,7 @@ export default function Settings() {
         <Card className="bg-card border-border transition-colors duration-300">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
-              <Monitor className="w-5 h-5 text-red-600" />
+              <Monitor className="w-5 h-5 text-brand" />
               App Preferences
             </CardTitle>
             <CardDescription className="text-muted-foreground">
@@ -180,7 +187,7 @@ export default function Settings() {
                       onClick={() => updateSetting('theme', t)}
                       className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
                         settings.theme === t 
-                          ? 'bg-red-600 text-white shadow-lg' 
+                          ? 'bg-brand text-white shadow-lg' 
                           : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
@@ -240,7 +247,7 @@ export default function Settings() {
         <Card className="bg-card border-border transition-colors duration-300">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
-              <Mail className="w-5 h-5 text-red-600" />
+              <Mail className="w-5 h-5 text-brand" />
               Account Information
             </CardTitle>
             <CardDescription className="text-muted-foreground">
@@ -262,7 +269,7 @@ export default function Settings() {
                 <div className="text-muted-foreground text-xs uppercase font-bold mb-1 transition-colors">Subscription Plan</div>
                 <div className="text-foreground font-medium transition-colors">FlixLab Free Premium</div>
               </div>
-              <div className="px-3 py-1 bg-red-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest transition-colors">
+              <div className="px-3 py-1 bg-brand text-white text-[10px] font-black rounded-full uppercase tracking-widest transition-colors">
                 Active
               </div>
             </div>
@@ -270,15 +277,15 @@ export default function Settings() {
         </Card>
 
         {/* Danger Zone */}
-        <Card className="bg-card border-red-600/30 text-foreground transition-colors overflow-hidden">
-          <CardHeader className="bg-red-600/5">
-            <CardTitle className="text-red-600">Danger Zone</CardTitle>
+        <Card className="bg-card border-brand/30 text-foreground transition-colors overflow-hidden">
+          <CardHeader className="bg-brand/5">
+            <CardTitle className="text-brand">Danger Zone</CardTitle>
             <CardDescription className="text-muted-foreground transition-colors">
               Irreversible actions for your account
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="flex flex-col md:flex-row items-center justify-between p-4 border border-red-600/20 rounded-xl bg-red-600/5 gap-4">
+            <div className="flex flex-col md:flex-row items-center justify-between p-4 border border-brand/20 rounded-xl bg-brand/5 gap-4">
               <div>
                 <h4 className="font-bold text-foreground transition-colors">Deactivate Account</h4>
                 <p className="text-sm text-muted-foreground transition-colors">Permanently delete your account and all profiles</p>
@@ -289,7 +296,7 @@ export default function Settings() {
                   render={
                     <Button 
                       variant="destructive" 
-                      className="bg-red-600 hover:bg-red-700 text-white font-bold w-full md:w-auto transition-all"
+                      className="bg-brand hover:bg-brand/80 text-white font-bold w-full md:w-auto transition-all"
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Deactivate
@@ -298,7 +305,7 @@ export default function Settings() {
                 />
                 <DialogContent className="bg-card border-border text-foreground transition-colors">
                   <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-red-600 transition-colors">
+                    <DialogTitle className="flex items-center gap-2 text-brand transition-colors">
                       <AlertTriangle className="w-5 h-5" />
                       Are you absolutely sure?
                     </DialogTitle>
@@ -319,7 +326,7 @@ export default function Settings() {
                       variant="destructive"
                       onClick={handleDeactivate}
                       disabled={isDeactivating}
-                      className="bg-red-600 hover:bg-red-700 text-white font-bold transition-all"
+                      className="bg-brand hover:bg-brand/80 text-white font-bold transition-all"
                     >
                       {isDeactivating ? 'Deactivating...' : 'Yes, Deactivate Account'}
                     </Button>

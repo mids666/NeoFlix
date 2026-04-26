@@ -240,7 +240,7 @@ export default function Home() {
                 <div className="flex items-center gap-4 pt-4">
                   <Button 
                     size="lg" 
-                    className="bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200 h-14 px-8 rounded-full text-lg font-bold gap-2 shadow-lg"
+                    className="bg-brand text-white dark:bg-white dark:text-black hover:bg-brand/80 dark:hover:bg-zinc-200 h-14 px-8 rounded-full text-lg font-bold gap-2 shadow-lg"
                     onClick={() => handleSelect(featured)}
                   >
                     <Play className="w-6 h-6 fill-current" />
@@ -267,12 +267,12 @@ export default function Home() {
         {/* Streaming Platforms Section */}
         <div className="px-4 md:px-12">
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-1 h-6 bg-red-600 rounded-full" />
+            <div className="w-1 h-6 bg-brand rounded-full" />
             <h2 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-foreground">Streaming Platforms</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {[
-              { name: 'Netflix', id: '8', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', color: 'bg-red-600/20 dark:bg-red-600/10 hover:bg-muted', border: 'border-red-600/30 dark:border-red-600/20' },
+              { name: 'Netflix', id: '8', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', color: 'bg-brand/20 dark:bg-brand/10 hover:bg-muted', border: 'border-brand/30 dark:border-brand/20' },
               { name: 'HBO', id: '1899|27|384', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/de/HBO_logo.svg', color: 'bg-indigo-600/20 dark:bg-indigo-600/10 hover:bg-muted', border: 'border-indigo-600/30 dark:border-indigo-600/20' },
               { name: 'Disney+', id: '337', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg', color: 'bg-blue-600/20 dark:bg-blue-600/10 hover:bg-muted', border: 'border-blue-600/30 dark:border-blue-600/20' },
               { name: 'Prime Video', id: '9|119', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png', color: 'bg-cyan-600/20 dark:bg-cyan-600/10 hover:bg-muted', border: 'border-cyan-600/30 dark:border-cyan-600/20' },
@@ -314,9 +314,9 @@ export default function Home() {
 
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 relative z-10 gap-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-1.5 h-8 bg-red-600 rounded-full" />
+                  <div className="w-1.5 h-8 bg-brand rounded-full" />
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-0.5">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-brand mb-0.5">
                       {suggestedType === 'movie' ? 'Movie' : 'TV Show'} spotlight
                     </span>
                     <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-foreground leading-none lowercase first-letter:uppercase">Suggested for you</h2>
@@ -326,7 +326,7 @@ export default function Home() {
                   <Button 
                     variant={suggestedType === 'movie' ? 'secondary' : 'ghost'} 
                     size="sm" 
-                    className={`rounded-full font-bold px-6 transition-all ${suggestedType === 'movie' ? 'bg-red-600 text-white hover:bg-red-700' : ''}`}
+                    className={`rounded-full font-bold px-6 transition-all ${suggestedType === 'movie' ? 'bg-brand text-white hover:bg-brand/80' : ''}`}
                     onClick={() => setSuggestedType('movie')}
                   >
                     Movies
@@ -334,7 +334,7 @@ export default function Home() {
                   <Button 
                     variant={suggestedType === 'tv' ? 'secondary' : 'ghost'} 
                     size="sm" 
-                    className={`rounded-full font-bold px-6 transition-all ${suggestedType === 'tv' ? 'bg-red-600 text-white hover:bg-red-700' : ''}`}
+                    className={`rounded-full font-bold px-6 transition-all ${suggestedType === 'tv' ? 'bg-brand text-white hover:bg-brand/80' : ''}`}
                     onClick={() => setSuggestedType('tv')}
                   >
                     TV Shows
@@ -369,7 +369,7 @@ export default function Home() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-red-600 transition-all text-white"
+                        className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-brand transition-all text-white hover:text-white"
                         onClick={(e) => {
                           e.stopPropagation();
                           setOpenMenuId(openMenuId === suggested[0].id ? null : suggested[0].id);
@@ -382,7 +382,7 @@ export default function Home() {
                         <div className="absolute top-12 right-0 bg-background/95 backdrop-blur-xl border border-border shadow-2xl rounded-2xl p-2 min-w-[160px] z-50 animate-in fade-in zoom-in duration-200">
                           <Button
                             variant="ghost"
-                            className="w-full justify-start text-sm font-bold hover:bg-red-600 hover:text-white rounded-xl gap-2 h-10"
+                            className="w-full justify-start text-sm font-bold hover:bg-brand hover:text-white rounded-xl gap-2 h-10"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleNotInterested(suggested[0], 0);
@@ -417,14 +417,14 @@ export default function Home() {
                             <Star className="w-3 h-3 fill-current" />
                             <span>{suggested[0].vote_average.toFixed(1)}</span>
                           </div>
-                          <span className="bg-red-600 text-white px-2 py-0.5 rounded-md uppercase text-[10px]">Must Watch</span>
+                          <span className="bg-brand text-white px-2 py-0.5 rounded-md uppercase text-[10px]">Must Watch</span>
                           <span className="text-white/60">{new Date(suggested[0].release_date || suggested[0].first_air_date || '').getFullYear()}</span>
                         </div>
                         <p className="text-xs md:text-sm text-white/80 line-clamp-2 md:line-clamp-3 leading-relaxed max-w-sm drop-shadow-md">
                           {suggested[0].overview}
                         </p>
                         <Button 
-                          className="bg-red-600 text-white dark:bg-white dark:text-black hover:bg-red-700 dark:hover:bg-zinc-200 rounded-full px-6 py-4 h-auto font-black text-base gap-2 shadow-2xl transition-all hover:scale-105 active:scale-95 group/btn"
+                          className="bg-brand text-white hover:bg-brand/80 rounded-full px-6 py-4 h-auto font-black text-base gap-2 shadow-2xl transition-all hover:scale-105 active:scale-95 group/btn"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleSelect(suggested[0]);
@@ -465,7 +465,7 @@ export default function Home() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-red-600 transition-all text-white opacity-0 group-hover:opacity-100"
+                            className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-brand transition-all text-white hover:text-white opacity-0 group-hover:opacity-100"
                             onClick={(e) => {
                               e.stopPropagation();
                               setOpenMenuId(openMenuId === item.id ? null : item.id);
@@ -478,7 +478,7 @@ export default function Home() {
                             <div className="absolute top-10 right-0 bg-background/95 backdrop-blur-xl border border-border shadow-2xl rounded-xl p-1 min-w-[140px] z-50 animate-in fade-in zoom-in duration-200">
                               <Button
                                 variant="ghost"
-                                className="w-full justify-start text-xs font-bold hover:bg-red-600 hover:text-white rounded-lg gap-2 h-8"
+                                className="w-full justify-start text-xs font-bold hover:bg-brand hover:text-white rounded-lg gap-2 h-8"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleNotInterested(item, index + 1);
@@ -493,12 +493,12 @@ export default function Home() {
 
                       <div className="absolute bottom-0 left-0 w-full p-5 space-y-2 z-20">
                         <div className="flex items-center gap-1.5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                          <div className="w-6 h-6 rounded-full bg-red-600 flex items-center justify-center">
+                          <div className="w-6 h-6 rounded-full bg-brand flex items-center justify-center">
                             <Play className="w-3 h-3 text-white fill-current ml-0.5" />
                           </div>
                           <span className="text-[10px] font-black text-white uppercase tracking-tighter">Play now</span>
                         </div>
-                        <h4 className="text-white font-black text-base md:text-lg leading-snug line-clamp-2 drop-shadow-xl group-hover:text-red-500 transition-colors">
+                        <h4 className="text-white font-black text-base md:text-lg leading-snug line-clamp-2 drop-shadow-xl group-hover:text-brand transition-colors">
                           {item.title || item.name}
                         </h4>
                         <div className="flex items-center justify-between text-[11px] font-black text-white/50">

@@ -103,7 +103,7 @@ export default function RecentlyWatched() {
             Movies and TV shows you watch will appear here so you can easily find them again.
           </p>
           <Link to="/">
-            <Button className="bg-red-600 hover:bg-red-700 px-8 h-12 font-bold">
+            <Button className="bg-brand hover:bg-brand/80 px-8 h-12 font-bold">
               Start Watching
             </Button>
           </Link>

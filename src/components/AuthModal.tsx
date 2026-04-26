@@ -25,8 +25,8 @@ export default function AuthModal() {
     <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
       <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-md">
         <DialogHeader className="items-center text-center space-y-4">
-          <div className="w-16 h-16 bg-red-600/20 rounded-full flex items-center justify-center">
-            <Lock className="w-8 h-8 text-red-600" />
+          <div className="w-16 h-16 bg-brand/20 rounded-full flex items-center justify-center">
+            <Lock className="w-8 h-8 text-brand" />
           </div>
           <DialogTitle className="text-3xl font-black tracking-tighter">JOIN FLIXLAB</DialogTitle>
           <div className="space-y-4 text-left w-full">
@@ -36,7 +36,7 @@ export default function AuthModal() {
             <ul className="space-y-2">
               {features.map((feature, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-zinc-300">
-                  <CheckCircle2 className="w-4 h-4 text-red-600 mt-0.5 flex-none" />
+                  <CheckCircle2 className="w-4 h-4 text-brand mt-0.5 flex-none" />
                   <span>{feature}</span>
                 </li>
               ))}
@@ -45,7 +45,7 @@ export default function AuthModal() {
         </DialogHeader>
         <div className="py-6 space-y-4">
           <Button 
-            className="w-full bg-red-600 hover:bg-red-700 h-14 text-lg font-bold rounded-2xl"
+            className="w-full bg-brand hover:bg-brand/80 h-14 text-lg font-bold rounded-2xl"
             onClick={() => {
               setShowAuthModal(false);
               navigate('/login');

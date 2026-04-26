@@ -22,10 +22,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
+  const [currentProfileId, setCurrentProfileId] = useState<string | null>(() => {
+    // We can't access user.uid here yet, but we'll handle it in useEffect
+    return null;
+  });
   const [loading, setLoading] = useState(true);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const currentProfile = profiles.find(p => p.id === currentProfileId) || null;
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -35,8 +40,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!firebaseUser) {
         setUserData(null);
         setProfiles([]);
-        setCurrentProfile(null);
+        setCurrentProfileId(null);
         setLoading(false);
+      } else {
+        // Load last profile ID from localStorage
+        const savedProfileId = localStorage.getItem(`currentProfile_${firebaseUser.uid}`);
+        if (savedProfileId) {
+          setCurrentProfileId(savedProfileId);
+        }
       }
     });
 
@@ -69,16 +80,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })) as Profile[];
       setProfiles(profilesData);
       
-      // If there's only one profile and none selected, select it
-      if (profilesData.length > 0 && !currentProfile) {
-        // Try to get from localStorage
-        const savedProfileId = localStorage.getItem(`currentProfile_${user.uid}`);
-        const savedProfile = profilesData.find(p => p.id === savedProfileId);
-        if (savedProfile) {
-          setCurrentProfile(savedProfile);
-        } else if (profilesData.length === 1) {
-          setCurrentProfile(profilesData[0]);
-        }
+      // If there's only one profile and none selected, auto-select it
+      if (profilesData.length === 1 && !currentProfileId) {
+        setCurrentProfileId(profilesData[0].id);
+        localStorage.setItem(`currentProfile_${user.uid}`, profilesData[0].id);
       }
       setLoading(false);
     });
@@ -87,12 +92,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       unsubscribeUser();
       unsubscribeProfiles();
     };
-  }, [user]);
+  }, [user, currentProfileId]);
+
+  useEffect(() => {
+    if (currentProfile?.themeColor) {
+      document.documentElement.style.setProperty('--brand', currentProfile.themeColor);
+    } else {
+      // Default to red-600 equivalent
+      document.documentElement.style.setProperty('--brand', 'oklch(0.6 0.25 25)');
+    }
+  }, [currentProfile?.themeColor]);
 
   const handleSetCurrentProfile = (profile: Profile | null) => {
-    setCurrentProfile(profile);
-    if (user && profile) {
-      localStorage.setItem(`currentProfile_${user.uid}`, profile.id);
+    const profileId = profile?.id || null;
+    setCurrentProfileId(profileId);
+    if (user && profileId) {
+      localStorage.setItem(`currentProfile_${user.uid}`, profileId);
+    } else if (user) {
+      localStorage.removeItem(`currentProfile_${user.uid}`);
     }
   };
 

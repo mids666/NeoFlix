@@ -88,7 +88,7 @@ export default function Watchlist() {
             Add movies and TV shows to your watchlist to keep track of what you want to watch.
           </p>
           <Link to="/">
-            <Button className="bg-red-600 hover:bg-red-700 px-8 h-12 font-bold">
+            <Button className="bg-brand hover:bg-brand/80 px-8 h-12 font-bold">
               Browse Content
             </Button>
           </Link>

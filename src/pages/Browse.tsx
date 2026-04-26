@@ -95,7 +95,7 @@ export default function Browse() {
             onClick={() => setSelectedGenre(null)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
               selectedGenre === null 
-                ? 'bg-red-600 text-white' 
+                ? 'bg-brand text-white' 
                 : 'bg-muted text-muted-foreground hover:bg-muted/80'
             }`}
           >
@@ -107,7 +107,7 @@ export default function Browse() {
               onClick={() => setSelectedGenre(genre.id)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                 selectedGenre === genre.id 
-                  ? 'bg-red-600 text-white' 
+                  ? 'bg-brand text-white' 
                   : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
             >
@@ -160,7 +160,7 @@ export default function Browse() {
                     onClick={() => setPage(pageNum)}
                     className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all border border-border ${
                       page === pageNum 
-                        ? 'bg-red-600 text-white border-red-600' 
+                        ? 'bg-brand text-white border-brand' 
                         : 'bg-card text-muted-foreground hover:bg-muted'
                     }`}
                   >

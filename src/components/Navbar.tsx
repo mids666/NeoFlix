@@ -88,11 +88,11 @@ export default function Navbar() {
   return (
     <nav 
       className={`fixed top-0 w-full z-50 transition-all duration-300 px-4 lg:px-12 py-4 flex items-center justify-between ${
-        isScrolled ? 'bg-background/90 backdrop-blur-md border-b border-border' : 'bg-transparent'
+        isScrolled || isDiscoverPage ? 'bg-background/90 backdrop-blur-md border-b border-border' : 'bg-transparent'
       }`}
     >
       <div className="flex items-center gap-8">
-        <Link to="/" className="text-3xl font-black tracking-tighter text-red-600">
+        <Link to="/" className="text-3xl font-black tracking-tighter text-brand">
           FLIXLAB
         </Link>
         
@@ -109,7 +109,7 @@ export default function Navbar() {
                     navigate(link.path);
                   }
                 }}
-                className={`text-sm font-medium transition-colors hover:text-red-500 ${
+                className={`text-sm font-medium transition-colors hover:text-brand ${
                   location.pathname === link.path ? 'text-foreground' : 'text-muted-foreground'
                 }`}
               >
@@ -128,17 +128,17 @@ export default function Navbar() {
             className="text-muted-foreground hover:text-foreground hover:bg-muted gap-2 font-bold px-4 transition-colors"
             onClick={() => navigate('/discover')}
           >
-            <Compass className="w-5 h-5 text-red-600" />
+            <Compass className="w-5 h-5 text-brand" />
             <span className="hidden sm:inline uppercase tracking-tighter">Discover</span>
           </Button>
         )}
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="hidden lg:block text-foreground hover:text-red-500 transition-colors relative">
+            <button className="hidden lg:block text-foreground hover:text-brand transition-colors relative">
               <Bell className="w-5 h-5" />
               {notifications.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-600 rounded-full" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand rounded-full" />
               )}
             </button>
           </DropdownMenuTrigger>
@@ -146,7 +146,7 @@ export default function Navbar() {
           <DropdownMenuGroup>
             <DropdownMenuLabel className="p-4 border-b border-border flex items-center justify-between">
               <span>New Releases</span>
-              <span className="text-[10px] bg-red-600 px-2 py-0.5 rounded-full uppercase font-black text-white">Live</span>
+              <span className="text-[10px] bg-brand px-2 py-0.5 rounded-full uppercase font-black text-white">Live</span>
             </DropdownMenuLabel>
           </DropdownMenuGroup>
           <div className="max-h-[400px] overflow-y-auto">
@@ -201,7 +201,7 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-2 group outline-none">
-                <div className="w-8 h-8 rounded-md overflow-hidden border border-border group-hover:border-red-600 transition-all shadow-lg active:scale-95 duration-200">
+                <div className="w-8 h-8 rounded-md overflow-hidden border border-border group-hover:border-brand transition-all shadow-lg active:scale-95 duration-200">
                   <img src={currentProfile?.avatar || undefined} alt={currentProfile?.name} className="w-full h-full object-cover" />
                 </div>
                 <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-all" />
@@ -232,7 +232,7 @@ export default function Navbar() {
                   <Settings className="w-4 h-4" />
                   <span>Settings</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-3 cursor-pointer text-red-500 focus:text-red-400" onClick={handleLogout}>
+                <DropdownMenuItem className="flex items-center gap-3 cursor-pointer text-brand focus:text-brand/80" onClick={handleLogout}>
                   <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
                 </DropdownMenuItem>
@@ -241,7 +241,7 @@ export default function Navbar() {
           </div>
         ) : (
           <Button 
-            className="bg-red-600 hover:bg-red-700 font-bold px-6"
+            className="bg-brand hover:bg-brand/80 font-bold px-6"
             onClick={() => navigate('/login')}
           >
             Sign In
@@ -274,7 +274,7 @@ export default function Navbar() {
                   navigate('/discover');
                 }}
               >
-                <Compass className="w-5 h-5 text-red-600" />
+                <Compass className="w-5 h-5 text-brand" />
                 DISCOVER NEW MOVIES
               </Button>
             )}
@@ -290,7 +290,7 @@ export default function Navbar() {
                   }
                 }}
                 className={`text-lg font-medium text-left ${
-                  location.pathname === link.path ? 'text-red-600' : 'text-muted-foreground'
+                  location.pathname === link.path ? 'text-brand' : 'text-muted-foreground'
                 }`}
               >
                 {link.name}

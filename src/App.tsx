@@ -31,7 +31,7 @@ function AppRoutes() {
   if (!isAuthReady || loading) {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-background text-foreground transition-colors duration-500">
-        <div className="animate-pulse text-4xl font-black tracking-tighter text-red-600">FLIXLAB</div>
+        <div className="animate-pulse text-4xl font-black tracking-tighter text-brand">FLIXLAB</div>
       </div>
     );
   }
@@ -78,13 +78,13 @@ export default function App() {
   }, []);
 
   return (
-    <SettingsProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <SettingsProvider>
         <Router>
           <AppRoutes />
           <Toaster position="top-center" richColors />
         </Router>
-      </AuthProvider>
-    </SettingsProvider>
+      </SettingsProvider>
+    </AuthProvider>
   );
 }

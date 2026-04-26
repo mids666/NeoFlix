@@ -20,10 +20,19 @@ const AVATARS = [
   'https://api.dicebear.com/7.x/avataaars/svg?seed=Oscar',
 ];
 
+const THEME_COLORS = [
+  { name: 'Red', value: 'oklch(0.6 0.25 25)' },
+  { name: 'Blue', value: 'oklch(0.588 0.158 241.966)' },
+  { name: 'Green', value: 'oklch(0.727 0.192 149.313)' },
+  { name: 'Yellow', value: 'oklch(0.795 0.184 86.047)' },
+  { name: 'Purple', value: 'oklch(0.536 0.222 316.037)' },
+];
+
 export default function ProfileSelector() {
   const { user, userData, profiles, setCurrentProfile } = useAuth();
   const [newProfileName, setNewProfileName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
+  const [selectedColor, setSelectedColor] = useState(THEME_COLORS[0].value);
   const [isAdding, setIsAdding] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const navigate = useNavigate();
@@ -53,6 +62,7 @@ export default function ProfileSelector() {
       await addDoc(collection(db, 'users', user.uid, 'profiles'), {
         name: newProfileName,
         avatar: selectedAvatar,
+        themeColor: selectedColor,
         createdAt: serverTimestamp(),
       });
       setNewProfileName('');
@@ -71,8 +81,8 @@ export default function ProfileSelector() {
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-md w-full bg-card border border-border rounded-3xl p-8 text-center"
         >
-          <div className="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Mail className="w-10 h-10 text-red-600" />
+          <div className="w-20 h-20 bg-brand/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Mail className="w-10 h-10 text-brand" />
           </div>
           <h2 className="text-3xl font-bold text-foreground mb-4">Verify Your Email</h2>
           <p className="text-muted-foreground mb-8">
@@ -81,7 +91,7 @@ export default function ProfileSelector() {
           </p>
           <div className="space-y-4">
             <Button 
-              className="w-full bg-red-600 hover:bg-red-700 h-14 text-lg font-bold gap-2 text-white"
+              className="w-full bg-brand hover:bg-brand/80 h-14 text-lg font-bold gap-2 text-white"
               onClick={handleResendVerification}
               disabled={isResending}
             >
@@ -162,18 +172,36 @@ export default function ProfileSelector() {
                       <button
                         key={avatar}
                         onClick={() => setSelectedAvatar(avatar)}
-                        className={`relative w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${
-                          selectedAvatar === avatar ? 'border-red-600 scale-110' : 'border-transparent'
-                        }`}
+                        className={`relative w-16 h-16 rounded-xl overflow-hidden border-2 transition-all`}
+                        style={{ borderColor: selectedAvatar === avatar ? selectedColor : 'transparent', transform: selectedAvatar === avatar ? 'scale(1.1)' : 'scale(1)' }}
                       >
                         <img src={avatar || undefined} alt="Avatar option" className="w-full h-full object-cover" />
                         {selectedAvatar === avatar && (
-                          <div className="absolute inset-0 bg-red-600/20 flex items-center justify-center">
+                          <div className="absolute inset-0 flex items-center justify-center" style={{ backgroundColor: `${selectedColor}33` }}>
                             <Check className="w-6 h-6 text-white" />
                           </div>
                         )}
                       </button>
                     ))}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Theme Color</label>
+                    <div className="flex justify-center gap-3">
+                      {THEME_COLORS.map((color) => (
+                        <button
+                          key={color.value}
+                          onClick={() => setSelectedColor(color.value)}
+                          className={`w-10 h-10 rounded-full border-2 transition-all ${
+                            selectedColor === color.value ? 'border-foreground scale-110 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'
+                          }`}
+                          style={{ backgroundColor: color.value }}
+                        >
+                          {selectedColor === color.value && (
+                            <Check className="w-5 h-5 text-white mx-auto shadow-sm" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground">Profile Name</label>
@@ -185,7 +213,8 @@ export default function ProfileSelector() {
                     />
                   </div>
                   <Button 
-                    className="w-full bg-red-600 hover:bg-red-700 text-white"
+                    className="w-full text-white font-bold h-12"
+                    style={{ backgroundColor: selectedColor }}
                     onClick={handleAddProfile}
                     disabled={!newProfileName}
                   >
