@@ -33,7 +33,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'motion/react';
 
-type ServerOption = 'vidsrc' | 'videasy' | 'vidlink' | '111movies' | 'vidfast' | 'vidnest';
+type ServerOption = 'vidcore' | 'peachify' | 'videasy' | 'vidsrc' | 'vidlink' | '111movies' | 'vidfast' | 'vidnest';
 
 export default function Watch() {
   const { type, id } = useParams<{ type: string; id: string }>();
@@ -48,7 +48,7 @@ export default function Watch() {
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
   const [episodes, setEpisodes] = useState<any[]>([]);
-  const [selectedServer, setSelectedServer] = useState<ServerOption>('videasy');
+  const [selectedServer, setSelectedServer] = useState<ServerOption>('vidcore');
   const [isInWatchlist, setIsInWatchlist] = useState(false);
 
   useEffect(() => {
@@ -203,19 +203,29 @@ export default function Watch() {
   );
 
   const getEmbedUrl = () => {
-    const params = settings.autoplay ? '?autoplay=1' : '?autoplay=0';
-    if (selectedServer === 'vidsrc') {
-      return type === 'movie' 
-        ? `https://vidsrc.ru/movie/${id}${params}`
-        : `https://vidsrc.ru/tv/${id}/${selectedSeason}/${selectedEpisode}${params}`;
+    const params = settings.autoplay ? 'autoPlay=true' : 'autoPlay=false';
+    const tmdbParams = settings.autoplay ? '?autoplay=1' : '?autoplay=0';
+    
+    if (selectedServer === 'vidcore') {
+      return type === 'movie'
+        ? `https://vidcore.net/movie/${id}?${params}`
+        : `https://vidcore.net/tv/${id}/${selectedSeason}/${selectedEpisode}?${params}`;
+    } else if (selectedServer === 'peachify') {
+      return type === 'movie'
+        ? `https://peachify.top/embed/movie/${id}`
+        : `https://peachify.top/embed/tv/${id}/${selectedSeason}/${selectedEpisode}`;
     } else if (selectedServer === 'videasy') {
       return type === 'movie'
-        ? `https://player.videasy.net/movie/${id}${params}`
-        : `https://player.videasy.net/tv/${id}/${selectedSeason}/${selectedEpisode}${params}`;
+        ? `https://player.videasy.net/movie/${id}${tmdbParams}`
+        : `https://player.videasy.net/tv/${id}/${selectedSeason}/${selectedEpisode}${tmdbParams}`;
+    } else if (selectedServer === 'vidsrc') {
+      return type === 'movie' 
+        ? `https://vidsrc.ru/movie/${id}${tmdbParams}`
+        : `https://vidsrc.ru/tv/${id}/${selectedSeason}/${selectedEpisode}${tmdbParams}`;
     } else if (selectedServer === 'vidlink') {
       return type === 'movie'
-        ? `https://vidlink.pro/movie/${id}${params}`
-        : `https://vidlink.pro/tv/${id}/${selectedSeason}/${selectedEpisode}${params}`;
+        ? `https://vidlink.pro/movie/${id}${tmdbParams}`
+        : `https://vidlink.pro/tv/${id}/${selectedSeason}/${selectedEpisode}${tmdbParams}`;
     } else if (selectedServer === '111movies') {
       return type === 'movie'
         ? `https://111movies.net/movie/${id}`
@@ -256,25 +266,26 @@ export default function Watch() {
                 <div className="flex gap-2">
                   <Button
                     size="sm"
-                    variant={selectedServer === 'videasy' ? 'default' : 'outline'}
-                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'videasy' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
-                    onClick={() => setSelectedServer('videasy')}
+                    variant={selectedServer === 'vidcore' ? 'default' : 'outline'}
+                    className={`h-8 px-4 rounded-full text-xs font-bold gap-2 ${selectedServer === 'vidcore' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                    onClick={() => setSelectedServer('vidcore')}
                   >
                     Primary Server
+                    <span className="bg-white/20 text-[8px] px-1.5 py-0.5 rounded uppercase tracking-tighter">Ad-Free</span>
                   </Button>
                   <Button
                     size="sm"
-                    variant={selectedServer === 'vidsrc' ? 'default' : 'outline'}
-                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidsrc' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
-                    onClick={() => setSelectedServer('vidsrc')}
+                    variant={selectedServer === 'videasy' ? 'default' : 'outline'}
+                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'videasy' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                    onClick={() => setSelectedServer('videasy')}
                   >
                     Secondary Server
                   </Button>
                   <Button
                     size="sm"
-                    variant={selectedServer === 'vidlink' ? 'default' : 'outline'}
-                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'vidlink' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
-                    onClick={() => setSelectedServer('vidlink')}
+                    variant={selectedServer === 'peachify' ? 'default' : 'outline'}
+                    className={`h-8 px-4 rounded-full text-xs font-bold ${selectedServer === 'peachify' ? 'bg-brand hover:bg-brand/80 text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                    onClick={() => setSelectedServer('peachify')}
                   >
                     Alternative Server
                   </Button>
@@ -283,14 +294,26 @@ export default function Watch() {
                     <DropdownMenuTrigger asChild>
                       <Button
                         size="sm"
-                        variant={['111movies', 'vidfast', 'vidnest'].includes(selectedServer) ? 'default' : 'outline'}
-                        className={`h-8 px-4 rounded-full text-xs font-bold gap-2 ${['111movies', 'vidfast', 'vidnest'].includes(selectedServer) ? 'bg-foreground text-background hover:bg-foreground/90' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                        variant={['vidsrc', 'vidlink', '111movies', 'vidfast', 'vidnest'].includes(selectedServer) ? 'default' : 'outline'}
+                        className={`h-8 px-4 rounded-full text-xs font-bold gap-2 ${['vidsrc', 'vidlink', '111movies', 'vidfast', 'vidnest'].includes(selectedServer) ? 'bg-foreground text-background hover:bg-foreground/90' : 'border-border text-muted-foreground hover:text-foreground'}`}
                       >
                         Additional Servers
                         <ChevronDown className="w-3 h-3" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-card border-border text-foreground">
+                      <DropdownMenuItem 
+                        className={`cursor-pointer focus:bg-brand focus:text-white ${selectedServer === 'vidsrc' ? 'bg-brand text-white' : ''}`}
+                        onClick={() => setSelectedServer('vidsrc')}
+                      >
+                        VidSrc Server
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className={`cursor-pointer focus:bg-brand focus:text-white ${selectedServer === 'vidlink' ? 'bg-brand text-white' : ''}`}
+                        onClick={() => setSelectedServer('vidlink')}
+                      >
+                        VidLink Server
+                      </DropdownMenuItem>
                       <DropdownMenuItem 
                         className={`cursor-pointer focus:bg-brand focus:text-white ${selectedServer === '111movies' ? 'bg-brand text-white' : ''}`}
                         onClick={() => setSelectedServer('111movies')}
