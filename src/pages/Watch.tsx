@@ -247,6 +247,16 @@ export default function Watch() {
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <div className={`relative w-full flex flex-col ${isPlaying ? 'pt-20' : ''}`}>
+        {/* Back Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fixed top-32 left-8 z-[100] rounded-full w-14 h-14 bg-black/60 backdrop-blur-xl text-white hover:bg-brand hover:text-white transition-all shadow-2xl border border-white/20"
+          onClick={() => navigate(-1)}
+        >
+          <ChevronLeft className="w-10 h-10" />
+        </Button>
+
         <div className="relative w-full h-[70vh] md:h-[90vh] bg-black">
           {isPlaying ? (
             <div className="w-full h-full flex flex-col">

@@ -9,7 +9,7 @@ import {
 import { TMDBItem } from '../types';
 import { tmdbService, getImageUrl } from '../lib/tmdb';
 import { Button } from '@/components/ui/button';
-import { Play, X, Star, Calendar, Clock, User, Server, ChevronDown } from 'lucide-react';
+import { Play, X, Star, Calendar, Clock, User, Server, ChevronDown, ChevronLeft } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'motion/react';
@@ -130,6 +130,16 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
         className="max-w-none sm:max-w-none w-screen h-screen bg-background border-none p-0 overflow-y-auto rounded-none translate-x-0 translate-y-0 top-0 left-0 block! scrollbar-hide"
       >
         <div className="relative w-full min-h-screen flex flex-col">
+          {/* Back Button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="fixed top-32 left-8 text-white hover:bg-brand z-[100] rounded-full w-14 h-14 bg-black/60 backdrop-blur-xl hover:text-white border border-white/20 shadow-2xl transition-all"
+            onClick={onClose}
+          >
+            <ChevronLeft className="w-10 h-10" />
+          </Button>
+
           {/* Close Button - Fixed to stay visible while scrolling */}
           <Button 
             variant="ghost" 

@@ -13,14 +13,26 @@ export default function Search() {
   const { settings } = useSettings();
   const query = searchParams.get('q') || '';
   const providerId = searchParams.get('providerId') || '';
+  const pageParam = searchParams.get('page');
   const [results, setResults] = useState<TMDBItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(pageParam ? parseInt(pageParam) : 1);
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setPage(1);
+    const currentPage = pageParam ? parseInt(pageParam) : 1;
+    if (currentPage !== page) {
+      setPage(currentPage);
+    }
+  }, [pageParam]);
+
+  useEffect(() => {
+    // Only reset page if query or providerId actually changed, not when navigating back
+    const isInitialMount = !results.length && !loading;
+    if (!isInitialMount && !pageParam) {
+       setPage(1);
+    }
   }, [query, providerId]);
 
   useEffect(() => {
@@ -39,6 +51,14 @@ export default function Search() {
       setResults(data.results.filter((item: any) => (item.poster_path || item.profile_path || item.backdrop_path) && (item.media_type === 'movie' || item.media_type === 'tv' || item.media_type === 'person' || (!item.media_type && (item.title || item.name)))));
       setTotalPages(Math.min(data.total_pages, 500));
       setLoading(false);
+      
+      // Update URL with page if not present or different
+      const currentSearchParams = new URLSearchParams(window.location.hash.split('?')[1]);
+      if (page > 1 || currentSearchParams.get('page')) {
+        currentSearchParams.set('page', page.toString());
+        navigate(`/search?${currentSearchParams.toString()}`, { replace: true });
+      }
+      
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     fetchResults();
@@ -51,6 +71,13 @@ export default function Search() {
       const type = item.media_type || (item.title ? 'movie' : 'tv');
       navigate(`/watch/${type}/${item.id}`);
     }
+  };
+
+  const setPageAndNavigate = (newPage: number) => {
+    setPage(newPage);
+    const currentSearchParams = new URLSearchParams(window.location.hash.split('?')[1]);
+    currentSearchParams.set('page', newPage.toString());
+    navigate(`/search?${currentSearchParams.toString()}`);
   };
 
   const gridClasses = {
@@ -85,7 +112,7 @@ export default function Search() {
           {totalPages > 1 && (
             <div className="mt-16 flex flex-wrap items-center justify-center gap-2">
               <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
+                onClick={() => setPageAndNavigate(Math.max(1, page - 1))}
                 disabled={page === 1}
                 className="px-4 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
               >
@@ -108,7 +135,7 @@ export default function Search() {
                   return (
                     <button
                       key={pageNum}
-                      onClick={() => setPage(pageNum)}
+                      onClick={() => setPageAndNavigate(pageNum)}
                       className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all ${
                         page === pageNum 
                           ? 'bg-brand text-white' 
@@ -122,7 +149,7 @@ export default function Search() {
               </div>
 
               <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                onClick={() => setPageAndNavigate(Math.min(totalPages, page + 1))}
                 disabled={page === totalPages}
                 className="px-4 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
               >

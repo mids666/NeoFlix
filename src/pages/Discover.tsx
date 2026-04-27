@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { tmdbService, getImageUrl } from '../lib/tmdb';
 import { TMDBItem } from '../types';
@@ -27,13 +27,49 @@ interface GenreWithPoster extends TMDBItem {
 
 export default function Discover() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const queryParam = searchParams.get('q') || '';
   const { user, currentProfile, setShowAuthModal } = useAuth();
   const [items, setItems] = useState<TMDBItem[]>([]);
   const [genres, setGenres] = useState<GenreWithPoster[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(queryParam);
+  const [isSearching, setIsSearching] = useState(!!queryParam);
   const [searchResults, setSearchResults] = useState<any[]>([]);
+
+  const handleSearchInternal = useCallback(async (q: string) => {
+    setLoading(true);
+    try {
+      const data = await tmdbService.search(q);
+      setSearchResults(data.results.filter((i: any) => i.poster_path || i.profile_path));
+    } catch (error) {
+      console.error('Search failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (queryParam) {
+      setSearchQuery(queryParam);
+      setIsSearching(true);
+      handleSearchInternal(queryParam);
+    } else {
+      setIsSearching(false);
+      setSearchQuery('');
+    }
+  }, [queryParam, handleSearchInternal]);
+
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!searchQuery.trim()) {
+      setIsSearching(false);
+      navigate('/discover');
+      return;
+    }
+    navigate(`/discover?q=${encodeURIComponent(searchQuery)}`);
+  };
   const [activeGenre, setActiveGenre] = useState<number | null>(null);
   const [featuredTrailer, setFeaturedTrailer] = useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
@@ -196,24 +232,6 @@ export default function Discover() {
     }
   };
 
-  const handleSearch = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!searchQuery.trim()) {
-      setIsSearching(false);
-      return;
-    }
-
-    setLoading(true);
-    setIsSearching(true);
-    try {
-      const data = await tmdbService.search(searchQuery);
-      setSearchResults(data.results.filter((i: any) => i.poster_path || i.profile_path));
-    } catch (error) {
-      console.error('Search failed:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleNotInterested = (index: number) => {
     setItems(prev => {
