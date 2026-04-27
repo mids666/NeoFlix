@@ -291,7 +291,7 @@ export default function Home() {
                 <img 
                   src={service.logo} 
                   alt={service.name} 
-                  className={`max-h-8 md:max-h-10 w-auto object-contain transition-all duration-300 ${['Apple TV+', 'HBO'].includes(service.name) ? 'dark:brightness-0 dark:invert transition-all' : 'group-hover:brightness-125 dark:group-hover:brightness-125 hover:scale-110'}`} 
+                  className={`${['Disney+', 'Prime Video', 'Paramount+'].includes(service.name) ? 'max-h-11 md:max-h-12' : 'max-h-8 md:max-h-10'} w-auto object-contain transition-all duration-300 ${['Apple TV+', 'HBO'].includes(service.name) ? 'dark:brightness-0 dark:invert transition-all' : 'group-hover:brightness-125 dark:group-hover:brightness-125 hover:scale-110'}`} 
                 />
               </motion.button>
             ))}
