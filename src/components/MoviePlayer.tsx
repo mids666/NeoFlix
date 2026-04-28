@@ -25,8 +25,30 @@ type ServerOption = 'vidcore' | 'peachify' | 'videasy' | 'vidsrc' | 'vidlink' | 
 export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps) {
   const [details, setDetails] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedSeason, setSelectedSeason] = useState(1);
-  const [selectedEpisode, setSelectedEpisode] = useState(1);
+  const [selectedSeason, setSelectedSeason] = useState<number>(() => {
+    if (typeof window !== 'undefined' && item?.id) {
+      const saved = localStorage.getItem(`last_watched_${item.id}`);
+      if (saved) {
+        try {
+          const { season } = JSON.parse(saved);
+          return season || 1;
+        } catch (e) {}
+      }
+    }
+    return 1;
+  });
+  const [selectedEpisode, setSelectedEpisode] = useState<number>(() => {
+    if (typeof window !== 'undefined' && item?.id) {
+      const saved = localStorage.getItem(`last_watched_${item.id}`);
+      if (saved) {
+        try {
+          const { episode } = JSON.parse(saved);
+          return episode || 1;
+        } catch (e) {}
+      }
+    }
+    return 1;
+  });
   const [episodes, setEpisodes] = useState<any[]>([]);
   const [selectedServer, setSelectedServer] = useState<ServerOption>('vidcore');
 
@@ -60,13 +82,13 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
   // Save last watched episode to localStorage
   useEffect(() => {
     if (details && (details.number_of_seasons || !details.title)) {
-      const saved = localStorage.getItem(`last_watched_${details.id}`);
-      if (saved || selectedSeason !== 1 || selectedEpisode !== 1) {
+      const timer = setTimeout(() => {
         localStorage.setItem(`last_watched_${details.id}`, JSON.stringify({
           season: selectedSeason,
           episode: selectedEpisode
         }));
-      }
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [selectedSeason, selectedEpisode, details?.id]);
 
@@ -84,19 +106,34 @@ export default function MoviePlayer({ item, isOpen, onClose }: MoviePlayerProps)
     };
 
     const handleMessage = (event: MessageEvent) => {
-      if (typeof event.data === 'string') {
+      const nextEvents = ['next_episode', 'video_next', 'vidsrc_next', 'vidsrc_event_next', 'next', 'video_ended', 'ended'];
+      const data = event.data;
+
+      if (typeof data === 'string') {
+        if (nextEvents.includes(data) || data.includes('next_episode') || data.includes('vidsrc_next')) {
+          handleNextEpisodeInternal();
+          return;
+        }
         try {
-          const data = JSON.parse(event.data);
-          if (data.event === 'next_episode' || data.event === 'video_next') {
+          const parsed = JSON.parse(data);
+          if (
+            nextEvents.includes(parsed.event) || 
+            nextEvents.includes(parsed.type) || 
+            (parsed.event === 'vidsrc_event' && parsed.data === 'next_episode') ||
+            parsed.method === 'nextEpisode'
+          ) {
             handleNextEpisodeInternal();
           }
         } catch (e) {
-          if (event.data === 'next_episode') {
-            handleNextEpisodeInternal();
-          }
+          // Ignore parse errors
         }
-      } else if (event.data && typeof event.data === 'object') {
-        if (event.data.event === 'next_episode' || event.data.type === 'next_episode') {
+      } else if (data && typeof data === 'object') {
+        if (
+          nextEvents.includes(data.event) || 
+          nextEvents.includes(data.type) || 
+          (data.event === 'vidsrc_event' && data.data === 'next_episode') ||
+          data.method === 'nextEpisode'
+        ) {
           handleNextEpisodeInternal();
         }
       }

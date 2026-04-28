@@ -45,8 +45,30 @@ export default function Watch() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [showDownloadInfo, setShowDownloadInfo] = useState(false);
-  const [selectedSeason, setSelectedSeason] = useState(1);
-  const [selectedEpisode, setSelectedEpisode] = useState(1);
+  const [selectedSeason, setSelectedSeason] = useState<number>(() => {
+    if (typeof window !== 'undefined' && id) {
+      const saved = localStorage.getItem(`last_watched_${id}`);
+      if (saved) {
+        try {
+          const { season } = JSON.parse(saved);
+          return season || 1;
+        } catch (e) {}
+      }
+    }
+    return 1;
+  });
+  const [selectedEpisode, setSelectedEpisode] = useState<number>(() => {
+    if (typeof window !== 'undefined' && id) {
+      const saved = localStorage.getItem(`last_watched_${id}`);
+      if (saved) {
+        try {
+          const { episode } = JSON.parse(saved);
+          return episode || 1;
+        } catch (e) {}
+      }
+    }
+    return 1;
+  });
   const [episodes, setEpisodes] = useState<any[]>([]);
   const [selectedServer, setSelectedServer] = useState<ServerOption>('vidcore');
   const [isInWatchlist, setIsInWatchlist] = useState(false);
@@ -91,14 +113,14 @@ export default function Watch() {
 
   useEffect(() => {
     if (details && (details.number_of_seasons || !details.title)) {
-      // Only save if it's not the default 1,1 unless we've already tried to load
-      const saved = localStorage.getItem(`last_watched_${details.id}`);
-      if (saved || selectedSeason !== 1 || selectedEpisode !== 1) {
+      // Small delay to ensure we've had time to load from localStorage first if we just mounted
+      const timer = setTimeout(() => {
         localStorage.setItem(`last_watched_${details.id}`, JSON.stringify({
           season: selectedSeason,
           episode: selectedEpisode
         }));
-      }
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [selectedSeason, selectedEpisode, details?.id]);
 
@@ -201,21 +223,34 @@ export default function Watch() {
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      if (typeof event.data === 'string') {
+      const nextEvents = ['next_episode', 'video_next', 'vidsrc_next', 'vidsrc_event_next', 'next', 'video_ended', 'ended'];
+      const data = event.data;
+
+      if (typeof data === 'string') {
+        if (nextEvents.includes(data) || data.includes('next_episode') || data.includes('vidsrc_next')) {
+          handleNextEpisode();
+          return;
+        }
         try {
-          const data = JSON.parse(event.data);
-          // Common event names for various embed players
-          if (data.event === 'next_episode' || data.event === 'video_next') {
+          const parsed = JSON.parse(data);
+          if (
+            nextEvents.includes(parsed.event) || 
+            nextEvents.includes(parsed.type) || 
+            (parsed.event === 'vidsrc_event' && parsed.data === 'next_episode') ||
+            parsed.method === 'nextEpisode'
+          ) {
             handleNextEpisode();
           }
         } catch (e) {
-          // Some players send non-JSON strings
-          if (event.data === 'next_episode') {
-            handleNextEpisode();
-          }
+          // Ignore parse errors
         }
-      } else if (event.data && typeof event.data === 'object') {
-        if (event.data.event === 'next_episode' || event.data.type === 'next_episode') {
+      } else if (data && typeof data === 'object') {
+        if (
+          nextEvents.includes(data.event) || 
+          nextEvents.includes(data.type) || 
+          (data.event === 'vidsrc_event' && data.data === 'next_episode') ||
+          data.method === 'nextEpisode'
+        ) {
           handleNextEpisode();
         }
       }
